@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
-use App\Http\Resources\User\UserAccountInactiveResource;
-use App\Http\Resources\User\UserLoginInvalidResource;
-use App\Models\User;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\User\UserLoginRequest;
+use App\Http\Resources\User\UserLoginInvalidResource;
+use App\Http\Resources\User\UserAccountInactiveResource;
 
 class AuthController extends Controller
 {

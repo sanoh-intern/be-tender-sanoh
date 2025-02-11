@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UserLoginRequest extends FormRequest
 {
@@ -25,5 +26,31 @@ class UserLoginRequest extends FormRequest
             'email' => 'required|email:rfc,strict',
             'password' => 'required|min:8',
         ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'The email field is required.',
+            'email.email' => 'The email must be a valid email address.',
+            'password.required' => 'The password field is required.',
+            'password.min' => 'The password must be at least 8 characters.',
+        ];
+    }
+
+    public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                "status" => false,
+                "message" => "invalid email or password",
+                "error" => $validator->errors()
+            ],401)
+        );
     }
 }
