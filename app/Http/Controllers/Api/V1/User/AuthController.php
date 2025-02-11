@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\User;
 
 
+use App\Http\Resources\User\UserAuthResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -30,13 +31,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         // Return token response
-        return response()->json([
-            'status' => true,
-            'email' => $user->email,
-            'role' => $user->role,
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+        return (new UserAuthResource($user, $token))->response()->setStatusCode(200);
     }
 
     public function logout(Request $request)

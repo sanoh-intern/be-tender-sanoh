@@ -10,24 +10,28 @@ use Symfony\Component\HttpFoundation\Response;
 class UserRole
 {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * Check user permissible role before accessing the route
+     * @param mixed $request
+     * @param \Closure $next
+     * @param string $isRole this parameter will assign the permisible role
      */
-    public function handle(Request $request, Closure $next, string $isRole): Response
+    public function handle($request, Closure $next, string $isRole)
     {
-        // Explode the roles into an array if passed as a comma-separated string
-        $roles = explode(',', $isRole);
+        // Initialize variable
+        $user = $request->user();
+        $role = [];
+        $role[] = $isRole;
 
-        // authenticating user login
-        $user = Auth::user();
+        // Get the user role from request
+        $userRole = $user->role->pluck('role_tag')->toArray();
 
-        // check the authentication
-        if (!in_array($user->role, $roles)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+        // Match the array from variable role and userrole
+        $rolesAllowed = array_intersect($role, $userRole);
+
+        // Validation
+        if (empty($rolesAllowed)) {
+            return response()->json(['message' => 'Forbidden'], 403);
         }
-
-        // return
         return $next($request);
     }
 }
