@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::connection('mysql')->create('user', function (Blueprint $table) {
             $table->id();
             $table->string('company_photo', 255)->nullable();
-            $table->string('email',255)->unique();
-            $table->string('password',255);
+            $table->string('email', 255)->unique();
+            $table->string('password', 255);
             $table->string('account_status', 25)->default('1')->nullable();
             $table->timestamp('profile_verified_at')->nullable();
             $table->timestamp('email_verified_at')->nullable();

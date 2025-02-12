@@ -47,10 +47,10 @@ class UserLoginRequest extends FormRequest
     {
         throw new HttpResponseException(
             response()->json([
-                "status" => false,
-                "message" => "invalid email or password",
-                "error" => $validator->errors()
-            ],401)
+                'status' => false,
+                'message' => 'invalid email or password',
+                'error' => $validator->errors(),
+            ], 401)
         );
     }
 }

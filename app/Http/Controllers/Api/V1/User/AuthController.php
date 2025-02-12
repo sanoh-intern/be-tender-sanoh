@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
-
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UserLoginRequest;
 use App\Http\Resources\User\UserAuthResource;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\User\UserLoginRequest;
-use App\Http\Resources\User\UserLoginInvalidResource;
-use App\Http\Resources\User\UserAccountInactiveResource;
 
 class AuthController extends Controller
 {
     /**
      * Authenticate user login
-     * @param \App\Http\Requests\User\UserLoginRequest $request
-     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     *
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */
     public function login(UserLoginRequest $request)
     {
@@ -28,8 +26,8 @@ class AuthController extends Controller
                 throw new HttpResponseException(
                     response()->json([
                         'status' => false,
-                        'message' => "Account is Inactive. Please Contact PT Sanoh Indonesia.",
-                        'error' => "Account with (email:{$request->email}) is Inactive"
+                        'message' => 'Account is Inactive. Please Contact PT Sanoh Indonesia.',
+                        'error' => "Account with (email:{$request->email}) is Inactive",
                     ], 401)
                 );
             }
@@ -37,8 +35,8 @@ class AuthController extends Controller
             throw new HttpResponseException(
                 response()->json([
                     'status' => false,
-                    'message' => "Invalid Email or Password. Please Try Again.",
-                    'error' => " Please Fill with Valid Data. if The Email and Password Correct but Still Error, Please Contact PT Sanoh Indonesia."
+                    'message' => 'Invalid Email or Password. Please Try Again.',
+                    'error' => ' Please Fill with Valid Data. if The Email and Password Correct but Still Error, Please Contact PT Sanoh Indonesia.',
                 ], 401)
             );
         }
@@ -55,7 +53,7 @@ class AuthController extends Controller
 
     /**
      * Revoke token user logout
-     * @param \Illuminate\Http\Request $request
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function logout(Request $request)

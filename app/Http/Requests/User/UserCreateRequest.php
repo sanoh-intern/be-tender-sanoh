@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UserCreateRequest extends FormRequest
 {
@@ -23,7 +24,7 @@ class UserCreateRequest extends FormRequest
     {
         return [
             'company_photo' => 'nullable|image',
-            'email' => 'required|email:rfc,static|max:225',
+            'email' => 'required|unique:user,email|email:rfc,static|max:225',
             'password' => 'required|min:8',
             'role' => 'array',
             'role.*' => 'required|string|in:1,2,3',
@@ -51,5 +52,16 @@ class UserCreateRequest extends FormRequest
             'role.*.in' => 'Each role must be one of the following: Supplier, Admin-Purchasing, President.',
             'remember_token.nullable' => 'The remember token field is optional.',
         ];
+    }
+
+    public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'status' => false,
+                'message' => 'Please Fill Input Field with Valid Data',
+                'error' => $validator->errors(),
+            ], 403)
+        );
     }
 }
