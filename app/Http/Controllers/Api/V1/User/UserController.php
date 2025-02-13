@@ -34,12 +34,10 @@ class UserController extends Controller
             'account_status' => '1',
             'remember_token' => $request->remember_token,
         ]);
-
         // Attach user role
         $user->role()->attach($request->role);
 
-        $data = User::with('role')->find($user->id);
-
+        // $data = User::with('role')->find($user->id);
         return $this->returnResponseApi(true, 'Create User Success', new UserResource($data), 201);
     }
 
