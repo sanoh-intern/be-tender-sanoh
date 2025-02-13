@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UserCreateRequest;
-use App\Http\Resources\User\UserResource;
+use App\Models\CompanyProfile;
 use App\Models\User;
 use App\ResponseApi;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\User\UserResource;
+use App\Http\Requests\User\UserCreateRequest;
 
 class UserController extends Controller
 {
@@ -25,19 +27,30 @@ class UserController extends Controller
      */
     public function create(UserCreateRequest $request)
     {
-        $request->validated();
+        $data = DB::transaction(function () use($request) {
+            $request->validated();
 
-        $user = User::create([
-            'company_photo' => $request->company_photo,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'account_status' => '1',
-            'remember_token' => $request->remember_token,
-        ]);
-        // Attach user role
-        $user->role()->attach($request->role);
+            $user = User::create([
+                'company_photo' => $request->company_photo,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'account_status' => '1',
+                'remember_token' => $request->remember_token,
+            ]);
+            // Attach user role
+            $user->role()->attach($request->role);
 
-        // $data = User::with('role')->find($user->id);
+            CompanyProfile::create([
+                'user_id' => $user->id,
+                'company_name' => $request->company_name,
+                'tax_id' => $request->tax_id,
+            ]);
+
+            $getData = User::with('role','companyProfile')->find($user->id);
+
+            return $getData;
+        });
+
         return $this->returnResponseApi(true, 'Create User Success', new UserResource($data), 201);
     }
 
