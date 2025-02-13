@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Role>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CompanyProfile>
  */
-class RoleFactory extends Factory
+class CompanyProfileFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,9 +17,7 @@ class RoleFactory extends Factory
     public function definition(): array
     {
         return [
-            'role_tag' => $this->faker->name,
-            'created_at' => now(),
-            'updated_at' => now(),
+            //
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,11 +14,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $role = Role::factory()->createMany([
+            ['role_tag' => 'Supplier'],
+            ['role_tag' => 'Admin-Purchasing'],
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $user = User::factory()->create([
+            'email' => 'tes@gmail.com',
+        ]);
+
+        // Attach roles to the user (many-to-many)
+        $user->role()->attach([
+            $role[0]->id, // Supplier role
+            $role[1]->id, // Admin-Purchasing role
         ]);
     }
 }
