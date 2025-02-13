@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('company_profile', function (Blueprint $table) {
+        Schema::connection('mysql')->create('company_profile', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
