@@ -61,7 +61,7 @@ class UserController extends Controller
      */
     public function get(int $id)
     {
-        $user = User::with('role')->where('id', $id)->first();
+        $user = User::with('role','companyProfile')->where('id', $id)->first();
 
         return $this->returnResponseApi(true, 'Get Data Success', new UserResource($user), 200);
     }
