@@ -17,7 +17,9 @@ class RoleFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'role_tag' => $this->faker->name,
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }
