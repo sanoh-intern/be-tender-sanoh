@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UserCreateRequest;
+use App\Http\Resources\User\UserResource;
 use App\Models\CompanyProfile;
 use App\Models\User;
-use App\ResponseApi;
+use App\Trait\ResponseApi;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Resources\User\UserResource;
-use App\Http\Requests\User\UserCreateRequest;
 
 class UserController extends Controller
 {
@@ -27,7 +27,7 @@ class UserController extends Controller
      */
     public function create(UserCreateRequest $request)
     {
-        $data = DB::transaction(function () use($request) {
+        $data = DB::transaction(function () use ($request) {
             $request->validated();
 
             $user = User::create([
@@ -46,7 +46,7 @@ class UserController extends Controller
                 'tax_id' => $request->tax_id,
             ]);
 
-            $getData = User::with('role','companyProfile')->find($user->id);
+            $getData = User::with('role', 'companyProfile')->find($user->id);
 
             return $getData;
         });
@@ -61,7 +61,7 @@ class UserController extends Controller
      */
     public function get(int $id)
     {
-        $user = User::with('role','companyProfile')->where('id', $id)->first();
+        $user = User::with('role', 'companyProfile')->where('id', $id)->first();
 
         return $this->returnResponseApi(true, 'Get Data Success', new UserResource($user), 200);
     }

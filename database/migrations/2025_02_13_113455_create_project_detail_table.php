@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->foreign('supplier_id')->references('id')->on('user')->onDelete('cascade');
-            $table->string('proposal_report',255)->nullable();
+            $table->string('proposal_report', 255)->nullable();
             $table->bigInteger('proposal_total_amount')->nullable();
-            $table->string('proposal_status',25)->nullable();
+            $table->string('proposal_status', 25)->nullable();
             $table->text('proposal_comment')->nullable();
-            $table->string('proposal_revision_no',25)->nullable();
+            $table->string('proposal_revision_no', 25)->nullable();
             $table->unsignedBigInteger('reviewed_by')->nullable();
             $table->foreign('reviewed_by')->references('id')->on('user')->onDelete('cascade');
             $table->timestamp('reviewed_at')->nullable();

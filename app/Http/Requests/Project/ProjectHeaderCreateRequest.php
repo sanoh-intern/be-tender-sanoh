@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests\Project;
 
-use App\AuthorizationRole;
-use Illuminate\Support\Facades\Auth;
+use App\Trait\AuthorizationRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -15,6 +14,7 @@ class ProjectHeaderCreateRequest extends FormRequest
      * 1. AuthorizationRole = for checking permissible user role
      */
     use AuthorizationRole;
+
     /**
      * Determine if the user is authorized to make this request.
      */

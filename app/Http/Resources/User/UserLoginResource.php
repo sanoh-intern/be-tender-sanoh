@@ -9,10 +9,12 @@ class UserLoginResource extends JsonResource
 {
     // Initialize variable
     protected $token;
+
     protected $user;
 
     // Constructor
-    public function __construct($user, $token) {
+    public function __construct($user, $token)
+    {
         $this->user = $user;
         $this->token = $token;
     }

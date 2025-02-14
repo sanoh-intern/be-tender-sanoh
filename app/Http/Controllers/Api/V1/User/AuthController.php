@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\User\UserLoginRequest;
-use App\Http\Resources\User\UserAuthResource;
 use App\Http\Resources\User\UserLoginResource;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {

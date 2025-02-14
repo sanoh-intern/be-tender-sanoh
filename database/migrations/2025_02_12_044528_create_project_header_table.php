@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::connection('mysql')->create('project_header', function (Blueprint $table) {
             $table->id();
-            $table->string('project_name',255)->nullable();
-            $table->string('project_status',25)->nullable();
-            $table->string('project_type',25)->nullable();
+            $table->string('project_name', 255)->nullable();
+            $table->string('project_status', 25)->nullable();
+            $table->string('project_type', 25)->nullable();
             $table->text('project_description')->nullable();
-            $table->string('project_attach',255)->nullable();
-            $table->string('project_winner',255)->nullable();
-            $table->string('registration_status',25)->nullable();
+            $table->string('project_attach', 255)->nullable();
+            $table->string('project_winner', 255)->nullable();
+            $table->string('registration_status', 25)->nullable();
             $table->dateTime('registration_due_at')->nullable();
             $table->unsignedBigInteger('final_review_by')->nullable();
             $table->foreign('final_review_by')->references('id')->on('user')->onDelete('cascade');
