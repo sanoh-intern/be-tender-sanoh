@@ -11,10 +11,10 @@ trait AuthorizationRole
      * When you need to check what role have the access to the function
      * @param string $role
      */
-    public function permissibleRole(string $role) {
+    public function permissibleRole(string ...$role) {
         $getRole = Auth::user()->role->pluck('role_tag');
 
-        $check = $getRole->contains($role);
+        $check = $getRole->intersect($role)->isNotEmpty();
 
         return $check;
     }
