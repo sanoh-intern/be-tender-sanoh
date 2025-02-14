@@ -12,9 +12,9 @@ trait AuthorizationRole
      * @param string $role
      */
     public function permissibleRole(string $role) {
-        $role = Auth::user()->role->pluck('role_tag');
+        $getRole = Auth::user()->role->pluck('role_tag');
 
-        $check = $role->contains($role);
+        $check = $getRole->contains($role);
 
         return $check;
     }
