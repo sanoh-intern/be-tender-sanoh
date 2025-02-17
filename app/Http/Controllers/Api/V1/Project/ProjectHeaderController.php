@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Api\V1\Project;
 
-use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
-use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
-use App\Trait\StoreFile;
-use Auth;
-use App\Models\User;
-use App\Trait\ResponseApi;
-use Carbon\Carbon;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Request;
-use App\Models\ProjectHeader;
-use App\Models\ProjectInvitation;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\ProjectHeaderCreateRequest;
+use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
+use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
+use App\Models\ProjectHeader;
+use App\Models\ProjectInvitation;
+use App\Models\User;
+use App\Trait\ResponseApi;
+use App\Trait\StoreFile;
+use Auth;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ProjectHeaderController extends Controller
 {
@@ -29,7 +27,7 @@ class ProjectHeaderController extends Controller
 
     /**
      * Create New project
-     * @param \App\Http\Requests\Project\ProjectHeaderCreateRequest $request
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function create(ProjectHeaderCreateRequest $request)
@@ -50,7 +48,7 @@ class ProjectHeaderController extends Controller
                 'created_by' => Auth::user()->id,
             ]);
 
-            if (!empty($request->invite_email)) {
+            if (! empty($request->invite_email)) {
                 foreach ($request->invite_email as $email) {
                     $getUserId = User::with('role')->where('email', $email)->value('id');
                     ProjectInvitation::create([
@@ -60,6 +58,7 @@ class ProjectHeaderController extends Controller
                     ]);
                 }
             }
+
             return $projectHeader;
         });
 
@@ -68,8 +67,9 @@ class ProjectHeaderController extends Controller
 
     /**
      * Update all project header data
-     * @param int $id this is id project header
-     * @param mixed $request
+     *
+     * @param  int  $id  this is id project header
+     * @param  mixed  $request
      */
     public function update(int $id, ProjectHeaderUpdateRequest $request)
     {
@@ -99,9 +99,8 @@ class ProjectHeaderController extends Controller
                 'updated_by' => Auth::user()->id,
             ]);
 
-
             // bisa hapus bisa tambah kalau gaada yg baru tetap
-            if (!empty($request->invite_email)) {
+            if (! empty($request->invite_email)) {
                 $newEmail = $request->invite_email;
                 $oldInviteEmail = ProjectInvitation::where('id', $getProject->id)->get()->toArray();
                 $check = array_diff($newEmail, $oldInviteEmail);
@@ -125,13 +124,14 @@ class ProjectHeaderController extends Controller
 
     /**
      * Update registration status project header data
-     * @param int $id this is id project header
+     *
+     * @param  int  $id  this is id project header
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function updateProjectStatus(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (!$getProject) {
+        if (! $getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -140,7 +140,7 @@ class ProjectHeaderController extends Controller
                 'registration_status' => 'Closed',
                 'updated_by' => Auth::user()->id,
             ]);
-        } else if ($getProject->registration_status == 'Closed') {
+        } elseif ($getProject->registration_status == 'Closed') {
             $getProject->update([
                 'registration_status' => 'Open',
                 'updated_by' => Auth::user()->id,
@@ -152,13 +152,14 @@ class ProjectHeaderController extends Controller
 
     /**
      * Delete Project Header
-     * @param int $id this is id project header
+     *
+     * @param  int  $id  this is id project header
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function delete(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (!$getProject) {
+        if (! $getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
         $getProject->delete();
@@ -169,13 +170,14 @@ class ProjectHeaderController extends Controller
     /**
      * User join project
      * User can join when registration still open
-     * @param int $id this is id project header
+     *
+     * @param  int  $id  this is id project header
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function join(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (!$getProject) {
+        if (! $getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -193,25 +195,25 @@ class ProjectHeaderController extends Controller
     /**
      * Select the user who win the project
      * Can add more the one winner in project
-     * @param \App\Http\Requests\Project\ProjectHeaderWinnerRequest $request
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function winner(ProjectHeaderWinnerRequest $request)
     {
         $getProject = ProjectHeader::where('id', $request->project_header_id)->first();
-        if (!$getProject) {
+        if (! $getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
         $userWinner = [];
         foreach ($request->user_id as $id) {
             $checkUser = User::with('companyProfile')->where('id', $id)->first();
-            if (!$checkUser) {
+            if (! $checkUser) {
                 return $this->returnResponseApi(false, 'User Not Found', '', 404);
             } else {
                 $getProject->userWinner()->attach($id);
             }
-            
+
             $userWinner[] = $checkUser->companyProfile->company_name ?? null;
         }
 

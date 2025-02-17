@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ProjectHeader extends Model
@@ -39,8 +39,6 @@ class ProjectHeader extends Model
 
     /**
      * The userJoin that belong to the ProjectHeader
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function userJoin(): BelongsToMany
     {
@@ -49,8 +47,6 @@ class ProjectHeader extends Model
 
     /**
      * The userWinner that belong to the ProjectHeader
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function userWinner(): BelongsToMany
     {

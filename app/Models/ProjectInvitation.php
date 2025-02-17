@@ -24,6 +24,6 @@ class ProjectInvitation extends Model
     protected $fillable = [
         'user_id',
         'project_header_id',
-        'invitation_by'
+        'invitation_by',
     ];
 }

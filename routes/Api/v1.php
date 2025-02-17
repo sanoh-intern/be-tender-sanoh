@@ -17,7 +17,7 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
     Route::get('user/get/{id}', [UserController::class, 'get']);
 
     // Project Header
-    Route::get('project-header/join/{id}',[ProjectHeaderController::class,'join']);
+    Route::get('project-header/join/{id}', [ProjectHeaderController::class, 'join']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
@@ -31,9 +31,9 @@ Route::middleware(['auth:sanctum', 'userRole:admin-purchasing'])->prefix('v1/adm
 
     // Feat Project Header
     Route::post('project-header/create', [ProjectHeaderController::class, 'create']);
-    Route::put('project-header/update/{id}',[ProjectHeaderController::class, 'update']);
-    Route::patch('project-header/update/regis-status/{id}',[ProjectHeaderController::class, 'updateProjectStatus']);
-    Route::delete('project-header/delete/{id}',[ProjectHeaderController::class,'delete']);
+    Route::put('project-header/update/{id}', [ProjectHeaderController::class, 'update']);
+    Route::patch('project-header/update/regis-status/{id}', [ProjectHeaderController::class, 'updateProjectStatus']);
+    Route::delete('project-header/delete/{id}', [ProjectHeaderController::class, 'delete']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
@@ -41,7 +41,7 @@ Route::middleware(['auth:sanctum', 'userRole:admin-purchasing'])->prefix('v1/adm
 
 Route::middleware(['auth:sanctum', 'userRole:admin-presdir'])->prefix('v1/admin-presdir')->group(function () {
     // Feat Project Header
-    Route::post('project-header/winner',[ProjectHeaderController::class,'winner']);
+    Route::post('project-header/winner', [ProjectHeaderController::class, 'winner']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
