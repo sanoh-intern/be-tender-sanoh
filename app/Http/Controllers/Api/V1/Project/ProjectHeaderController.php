@@ -9,6 +9,7 @@ use Auth;
 use App\Models\User;
 use App\Trait\ResponseApi;
 use Carbon\Carbon;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use App\Models\ProjectHeader;
 use App\Models\ProjectInvitation;
@@ -52,7 +53,6 @@ class ProjectHeaderController extends Controller
             if (!empty($request->invite_email)) {
                 foreach ($request->invite_email as $email) {
                     $getUserId = User::with('role')->where('email', $email)->value('id');
-                    // dd($getUserId);
                     ProjectInvitation::create([
                         'user_id' => $getUserId,
                         'project_header_id' => $projectHeader->id,
@@ -75,26 +75,25 @@ class ProjectHeaderController extends Controller
     {
         $data = DB::transaction(function () use ($id, $request) {
             $request->validated();
-
-            $getProject = ProjectHeader::find($id)->first();
+            $getProject = ProjectHeader::where('id', $id)->first();
             if (empty($getProject)) {
-                return $this->returnResponseApi(false, 'Project Not Found', '', 401);
-            }
-
-            if ($request->hasFile('project_attach')) {
-                $oldFile = $this->deleteFile($getProject->project_attach);
-                if ($oldFile == false) {
-                    return $this->returnResponseApi(false, 'Old File Not Found', '', 401);
-                }
+                return $this->returnResponseApi(false, 'Project Not Found', '', 404);
             }
 
             $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project');
+            if ($request->hasFile('project_attach')) {
+                // dd($getProject->project_attach);
+                $oldFile = $this->deleteFile($getProject->project_attach);
+                if ($oldFile == false) {
+                    return $this->returnResponseApi(false, 'Old File Not Found', '', 404);
+                }
+            }
 
-            ProjectHeader::update([
+            $getProject->update([
                 'project_name' => $request->project_name ?? $getProject->project_name,
                 'project_type' => $request->project_type ?? $getProject->project_type,
                 'project_description' => $request->project_description ?? $getProject->project_description,
-                'project_attach' => $filePath ?? $getProject->$filePath,
+                'project_attach' => $filePath ?? $getProject->project_attach,
                 'registration_status' => $request->registration_status ?? $getProject->registration_status,
                 'registration_due_at' => $request->registration_due_at ?? $getProject->registration_due_at,
                 'updated_by' => Auth::user()->id,
@@ -104,14 +103,11 @@ class ProjectHeaderController extends Controller
             // bisa hapus bisa tambah kalau gaada yg baru tetap
             if (!empty($request->invite_email)) {
                 $newEmail = $request->invite_email;
-                $oldInviteEmail = ProjectInvitation::where('id', $getProject->id)->toArray();
-
+                $oldInviteEmail = ProjectInvitation::where('id', $getProject->id)->get()->toArray();
                 $check = array_diff($newEmail, $oldInviteEmail);
 
-                dd($check);
-
-                foreach ($request->invite_email as $email) {
-                    $getUserId = User::with('role')->where('email', $email)->first()->value('id');
+                foreach ($check as $email) {
+                    $getUserId = User::with('role')->where('email', $email)->value('id');
 
                     ProjectInvitation::create([
                         'user_id' => $getUserId,
@@ -146,7 +142,7 @@ class ProjectHeaderController extends Controller
             ]);
         } else if ($getProject->registration_status == 'Closed') {
             $getProject->update([
-                'registration_status' => 'Closed',
+                'registration_status' => 'Open',
                 'updated_by' => Auth::user()->id,
             ]);
         }
@@ -224,6 +220,6 @@ class ProjectHeaderController extends Controller
             'final_review_at' => Carbon::now(),
         ]);
 
-        return $this->returnResponseApi(true,'Project Winner Successfuly Added','',200);
+        return $this->returnResponseApi(true, 'Project Winner Successfuly Added', '', 200);
     }
 }
