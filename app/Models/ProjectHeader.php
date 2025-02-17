@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ProjectHeader extends Model
 {
@@ -34,4 +35,25 @@ class ProjectHeader extends Model
         'final_review_at',
         'created_by',
     ];
+
+    /**
+     * The userJoin that belong to the ProjectHeader
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function userJoin(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'list_user_project', 'project_header_id', 'user_id')->withTimestamps();
+    }
+
+    /**
+     * The userWinner that belong to the ProjectHeader
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function userWinner(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'list_winner_project', 'project_header_id', 'user_id')->withTimestamps();
+    }
 }
+    

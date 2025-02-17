@@ -74,7 +74,7 @@ class ProjectHeaderController extends Controller
      */
     public function update(int $id, ProjectHeaderUpdateRequest $request)
     {
-        $data = DB::transaction(function () use($id, $request) {
+        $data = DB::transaction(function () use ($id, $request) {
             $request->validated();
 
             // person in charge
@@ -82,13 +82,13 @@ class ProjectHeaderController extends Controller
 
             $getProject = ProjectHeader::find($id)->first();
             if (empty($getProject)) {
-                return $this->returnResponseApi(false,'Project Not Found','',401);
+                return $this->returnResponseApi(false, 'Project Not Found', '', 401);
             }
 
             if ($request->hasFile('project_attach')) {
                 $oldFile = $this->deleteFile($getProject->project_attach);
                 if ($oldFile == false) {
-                    return $this->returnResponseApi(false,'Old File Not Found','',401);
+                    return $this->returnResponseApi(false, 'Old File Not Found', '', 401);
                 }
             }
 
@@ -127,19 +127,19 @@ class ProjectHeaderController extends Controller
             return $getProject;
         });
 
-        return $this->returnResponseApi(true,'Update Project Successful',$data,200);
+        return $this->returnResponseApi(true, 'Update Project Successful', $data, 200);
     }
 
     /**
      * Update registration status project header data
-     * @param int $id
+     * @param int $id this is id project header
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function updateProjectStatus(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
         if (!$getProject) {
-            return $this->returnResponseApi(false,'Project Header Not Found','',404);
+            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
         if ($getProject->registration_status == 'Open') {
@@ -152,22 +152,49 @@ class ProjectHeaderController extends Controller
             ]);
         }
 
-        return $this->returnResponseApi(true,'Update project registration status successful','',200);
+        return $this->returnResponseApi(true, 'Update project registration status successful', '', 200);
     }
 
     /**
      * Delete Project Header
-     * @param int $id
+     * @param int $id this is id project header
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function delete(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
         if (!$getProject) {
-            return $this->returnResponseApi(false,'Project Header Not Found','',404);
+            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
         $getProject->delete();
 
-        return $this->returnResponseApi(true,'Project Deleted Successful','',200);
+        return $this->returnResponseApi(true, 'Project Deleted Successful', '', 200);
+    }
+
+    /**
+     * User join project
+     * User can join when registration still open
+     * @param int $id this is id project header
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function join(int $id)
+    {
+        $getProject = ProjectHeader::where('id', $id)->first();
+        if (!$getProject) {
+            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
+        }
+
+        if ($getProject->registration_status == 'Closed') {
+            return $this->returnResponseApi(false, 'Project Registration Closed', '', 404);
+        } else {
+            $getProject->userJoin()->attach(Auth::user()->id);
+        }
+
+        return $this->returnResponseApi(true,'Join Project Successful','',200);
+    }
+
+    public function winner($request)
+    {
+        
     }
 }
