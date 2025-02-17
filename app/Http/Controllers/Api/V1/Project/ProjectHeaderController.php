@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\V1\Project;
 
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
+use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
 use App\Trait\StoreFile;
 use Auth;
 use App\Models\User;
 use App\Trait\ResponseApi;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ProjectHeader;
 use App\Models\ProjectInvitation;
@@ -190,11 +192,41 @@ class ProjectHeaderController extends Controller
             $getProject->userJoin()->attach(Auth::user()->id);
         }
 
-        return $this->returnResponseApi(true,'Join Project Successful','',200);
+        return $this->returnResponseApi(true, 'Join Project Successful', '', 200);
     }
 
-    public function winner($request)
+    /**
+     * Select the user who win the project
+     * Can add more the one winner in project
+     * @param \App\Http\Requests\Project\ProjectHeaderWinnerRequest $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function winner(ProjectHeaderWinnerRequest $request)
     {
-        
+        $getProject = ProjectHeader::where('id', $request->project_header_id)->first();
+        if (!$getProject) {
+            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
+        }
+
+        $userWinner = [];
+        foreach ($request->user_id as $id) {
+            $checkUser = ProjectHeader::where('id', $id)->first()->exists();
+            if ($checkUser == false) {
+                return $this->returnResponseApi(false, 'User Not Found', '', 404);
+            } else {
+                $getProject->userJoin()->attach($id);
+            }
+
+            $userWinner[] = $id;
+        }
+
+        $userWinnerToString = implode(',', $userWinner);
+        $getProject->update([
+            'project_winner' => $userWinnerToString,
+            'final_review_by' => Auth::user()->id,
+            'final_review_at' => Carbon::now(),
+        ]);
+
+        return $this->returnResponseApi(true,'Project Winner Successfuly Added','',200);
     }
 }
