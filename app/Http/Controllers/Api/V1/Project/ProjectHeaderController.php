@@ -179,7 +179,9 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
-        if ($getProject->registration_status == 'Closed') {
+        if ($getProject->project_type == 'Private') {
+            return $this->returnResponseApi(false, 'Project is Private', '', 403);
+        } elseif ($getProject->registration_status == 'Closed') {
             return $this->returnResponseApi(false, 'Project Registration Closed', '', 404);
         } else {
             $getProject->userJoin()->attach(Auth::user()->id);
@@ -203,14 +205,14 @@ class ProjectHeaderController extends Controller
 
         $userWinner = [];
         foreach ($request->user_id as $id) {
-            $checkUser = ProjectHeader::where('id', $id)->first()->exists();
-            if ($checkUser == false) {
+            $checkUser = User::with('companyProfile')->where('id', $id)->first();
+            if (!$checkUser) {
                 return $this->returnResponseApi(false, 'User Not Found', '', 404);
             } else {
-                $getProject->userJoin()->attach($id);
+                $getProject->userWinner()->attach($id);
             }
-
-            $userWinner[] = $id;
+            
+            $userWinner[] = $checkUser->companyProfile->company_name ?? null;
         }
 
         $userWinnerToString = implode(',', $userWinner);
