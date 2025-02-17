@@ -20,7 +20,7 @@ class ProjectHeaderUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->permissibleRole('Admin-Purchasing','President');
+        return $this->permissibleRole('admin-purchasing','admin-presdir');
     }
 
     /**

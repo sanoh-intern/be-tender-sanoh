@@ -2,17 +2,25 @@
 
 namespace App\Http\Requests\User;
 
+use App\Trait\AuthorizationRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UserCreateRequest extends FormRequest
 {
     /**
+     * -------TRAIT---------
+     * Mandatory:
+     * 1. AuthorizationRole = for checking permissible user role
+     */
+    use AuthorizationRole;
+
+    /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->permissibleRole('super-admin');
     }
 
     /**

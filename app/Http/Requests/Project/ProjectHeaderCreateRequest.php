@@ -20,7 +20,7 @@ class ProjectHeaderCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->permissibleRole('Admin-Purchasing');
+        return $this->permissibleRole('admin-purchasing');
     }
 
     /**
