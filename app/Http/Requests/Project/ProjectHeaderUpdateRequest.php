@@ -6,7 +6,7 @@ use App\Trait\AuthorizationRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ProjectHeaderCreateRequest extends FormRequest
+class ProjectHeaderUpdateRequest extends FormRequest
 {
     /**
      * -------TRAIT---------
@@ -20,7 +20,7 @@ class ProjectHeaderCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->permissibleRole('Admin-Purchasing');
+        return $this->permissibleRole('Admin-Purchasing','President');
     }
 
     /**
@@ -31,11 +31,14 @@ class ProjectHeaderCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'project_name' => 'required|string',
-            'project_type' => 'required|string|in:Open,Private',
+            'project_name' => 'string',
+            'project_status' => 'string',
+            'project_type' => 'string',
             'project_description' => 'string',
             'project_attach' => 'file',
-            'registration_due_at' => 'required|date',
+            'project_winner' => 'string',
+            'registration_status' => 'string',
+            'registration_due_at' => 'date',
             'invite_email' => 'array',
             'invite_email.*' => 'email:rfc,strict',
         ];
@@ -49,13 +52,13 @@ class ProjectHeaderCreateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'project_name.required' => 'The project name is required.',
             'project_name.string' => 'The project name must be a string.',
-            'project_type.required' => 'The project type is required.',
+            'project_status.string' => 'The project status must be a string.',
             'project_type.string' => 'The project type must be a string.',
             'project_description.string' => 'The project description must be a string.',
             'project_attach.file' => 'The project attachment must be a file.',
-            'registration_due_at.required' => 'The registration due date is required.',
+            'project_winner.string' => 'The project winner must be a string.',
+            'registration_status.string' => 'The registration status must be a string.',
             'registration_due_at.date' => 'The registration due date must be a valid date.',
             'invite_email.array' => 'The invite email must be an array.',
             'invite_email.*.email' => 'Each invite email must be a valid email address.',

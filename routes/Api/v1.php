@@ -29,6 +29,10 @@ Route::middleware(['auth:sanctum', 'userRole:Admin-Purchasing'])->prefix('v1/adm
 
     // Feat Project Header
     Route::post('project-header/create', [ProjectHeaderController::class, 'create']);
+    Route::put('project-header/update/{id}',[ProjectHeaderController::class, 'update']);
+    Route::patch('project-header/update/regis-status/{id}',[ProjectHeaderController::class, 'updateProjectStatus']);
+    Route::delete('project-header/delete/{id}',[ProjectHeaderController::class,'delete']);
+
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
 });
