@@ -34,6 +34,7 @@ class ProjectHeader extends Model
         'final_review_by',
         'final_review_at',
         'created_by',
+        'updated_by',
     ];
 
     /**
@@ -56,4 +57,3 @@ class ProjectHeader extends Model
         return $this->belongsToMany(User::class, 'list_winner_project', 'project_header_id', 'user_id')->withTimestamps();
     }
 }
-    

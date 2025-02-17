@@ -36,9 +36,6 @@ class ProjectHeaderController extends Controller
         $data = DB::transaction(function () use ($request) {
             $request->validated();
 
-            // person in charge
-            $pic = Auth::user()->id;
-
             $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project');
 
             $projectHeader = ProjectHeader::create([
@@ -49,7 +46,7 @@ class ProjectHeaderController extends Controller
                 'project_attach' => $filePath,
                 'registration_status' => 'Open',
                 'registration_due_at' => $request->registration_due_at,
-                'created_by' => $pic,
+                'created_by' => Auth::user()->id,
             ]);
 
             if (!empty($request->invite_email)) {
@@ -59,7 +56,7 @@ class ProjectHeaderController extends Controller
                     ProjectInvitation::create([
                         'user_id' => $getUserId,
                         'project_id' => $projectHeader->id,
-                        'invitation_by' => $pic,
+                        'invitation_by' => Auth::user()->id,
                     ]);
                 }
             }
@@ -78,9 +75,6 @@ class ProjectHeaderController extends Controller
     {
         $data = DB::transaction(function () use ($id, $request) {
             $request->validated();
-
-            // person in charge
-            $pic = Auth::user()->id;
 
             $getProject = ProjectHeader::find($id)->first();
             if (empty($getProject)) {
@@ -103,6 +97,7 @@ class ProjectHeaderController extends Controller
                 'project_attach' => $filePath ?? $getProject->$filePath,
                 'registration_status' => $request->registration_status ?? $getProject->registration_status,
                 'registration_due_at' => $request->registration_due_at ?? $getProject->registration_due_at,
+                'updated_by' => Auth::user()->id,
             ]);
 
 
@@ -121,7 +116,7 @@ class ProjectHeaderController extends Controller
                     ProjectInvitation::create([
                         'user_id' => $getUserId,
                         'project_id' => $getProject->id,
-                        'invitation_by' => $pic,
+                        'invitation_by' => Auth::user()->id,
                     ]);
                 }
             }
@@ -147,10 +142,12 @@ class ProjectHeaderController extends Controller
         if ($getProject->registration_status == 'Open') {
             $getProject->update([
                 'registration_status' => 'Closed',
+                'updated_by' => Auth::user()->id,
             ]);
         } else if ($getProject->registration_status == 'Closed') {
             $getProject->update([
                 'registration_status' => 'Closed',
+                'updated_by' => Auth::user()->id,
             ]);
         }
 
