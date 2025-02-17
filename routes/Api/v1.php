@@ -11,18 +11,20 @@ Route::post('/login', [AuthController::class, 'login']);
 // Route for creating a user
 Route::post('user/create', [UserController::class, 'create']);
 
-// Route for supplier (will allow users with either "Supplier" or "Admin-Supplier" role)
-Route::middleware(['auth:sanctum', 'userRole:Supplier'])->prefix('v1/supplier')->group(function () {
-    Route::get('user', function () {
-        return 'tes 1';
-    })->name('user');
+// Route for supplier
+Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')->group(function () {
+    // Feat User
+    Route::get('user/get/{id}', [UserController::class, 'get']);
+
+    // Project Header
+    Route::get('project-header/join/{id}',[ProjectHeaderController::class,'join']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
-// Route for admin-purchasing (only users with "Admin-Purchasing" role can access)
-Route::middleware(['auth:sanctum', 'userRole:Admin-Purchasing'])->prefix('v1/admin-purchasing')->group(function () {
+// Route for admin-purchasing
+Route::middleware(['auth:sanctum', 'userRole:admin-purchasing'])->prefix('v1/admin-purchasing')->group(function () {
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'get']);
     Route::post('user/create', [UserController::class, 'create']);
@@ -32,6 +34,14 @@ Route::middleware(['auth:sanctum', 'userRole:Admin-Purchasing'])->prefix('v1/adm
     Route::put('project-header/update/{id}',[ProjectHeaderController::class, 'update']);
     Route::patch('project-header/update/regis-status/{id}',[ProjectHeaderController::class, 'updateProjectStatus']);
     Route::delete('project-header/delete/{id}',[ProjectHeaderController::class,'delete']);
+
+    // Route for logout
+    Route::post('logout', [AuthController::class, 'logout']);
+});
+
+Route::middleware(['auth:sanctum', 'userRole:admin-presdir'])->prefix('v1/admin-presdir')->group(function () {
+    // Feat Project Header
+    Route::post('project-header/winner',[ProjectHeaderController::class,'winner']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
