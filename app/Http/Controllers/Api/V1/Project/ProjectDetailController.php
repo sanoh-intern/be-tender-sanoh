@@ -2,49 +2,67 @@
 
 namespace App\Http\Controllers\Api\V1\Project;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Trait\StoreFile;
+use App\Trait\ResponseApi;
 use App\Models\ProjectDetail;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Project\ProjectDetailCreateRequest;
+use App\Http\Requests\Project\ProjectDetailReviewRequest;
 
 class ProjectDetailController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * -------TRAIT---------
+     * Mandatory:
+     * 1. ResponseApi = Response api should use ResponseApi trait template
+     * 2. StoreFile = Save file to server storage
      */
-    public function index()
-    {
-        //
-    }
+    use ResponseApi, StoreFile;
 
     /**
-     * Store a newly created resource in storage.
+     * Create new negotiation record
+     * @param \App\Http\Requests\Project\ProjectDetailCreateRequest $request
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function create(ProjectDetailCreateRequest $request)
     {
-        //
+
+        $request->validated();
+        $user = $request->supplier_id ?? Auth::user()->id;
+
+        if ($request->hasFile('proposal_attach')) {
+            $filePath = $this->saveFile($request->file('proposal_attach'), 'Negotiation', 'Project_Detail_Negotitation');
+        } else {
+            $filePath = null;
+        }
+
+        $projectDetail = ProjectDetail::create([
+            'project_header_id' => $request->project_header_id,
+            'supplier_id' => $user,
+            'proposal_attach' => $filePath,
+            'proposal_total_amount' => $request->proposal_total_amount,
+            'proposal_status' => $request->proposal_status,
+        ]);
+
+        return $this->returnResponseApi(true, 'Add Negotiation Successful', $projectDetail, 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ProjectDetail $projectDetail)
+    public function review(int $id, ProjectDetailReviewRequest $request)
     {
-        //
-    }
+        $request->validated();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ProjectDetail $projectDetail)
-    {
-        //
-    }
+        $getProjectDetail = ProjectDetail::where('id', $id)->first();
+        if (!$getProjectDetail) {
+            return $this->returnResponseApi(false, 'Project Detail Negotiation Not Found','', 404);
+        }
+        $getProjectDetail->update([
+            'proposal_comment' => $request->proposal_comment,
+            'reviewed_by' => Auth::user()->id,
+            'reviewed_at' => Carbon::now(),
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ProjectDetail $projectDetail)
-    {
-        //
+        return $this->returnResponseApi(true, 'Project Detail Negotiation Review Successful', $getProjectDetail, 200);
     }
 }

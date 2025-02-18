@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ProjectHeader extends Model
@@ -51,5 +52,15 @@ class ProjectHeader extends Model
     public function userWinner(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'list_winner_project', 'project_header_id', 'user_id')->withTimestamps();
+    }
+
+    /**
+     * Get all of the projectDetail for the ProjectHeader
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function projectDetail(): HasMany
+    {
+        return $this->hasMany(ProjectDetail::class, 'project_header_id', 'id');
     }
 }

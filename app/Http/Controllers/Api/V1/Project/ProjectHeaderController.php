@@ -21,7 +21,7 @@ class ProjectHeaderController extends Controller
      * -------TRAIT---------
      * Mandatory:
      * 1. ResponseApi = Response api should use ResponseApi trait template
-     * 2. StoreFile =
+     * 2. StoreFile = Save file to server storage
      */
     use ResponseApi, StoreFile;
 
