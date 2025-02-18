@@ -35,7 +35,11 @@ class ProjectHeaderController extends Controller
         $data = DB::transaction(function () use ($request) {
             $request->validated();
 
-            $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project');
+            if ($request->hasFile('project_attach')) {
+                $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project');
+            } else {
+                $filePath = null;
+            }
 
             $projectHeader = ProjectHeader::create([
                 'project_name' => $request->project_name,
