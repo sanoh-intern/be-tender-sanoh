@@ -24,7 +24,7 @@ class ProjectDetail extends Model
     protected $fillable = [
         'project_header_id',
         'supplier_id',
-        'proposal_report',
+        'proposal_attach',
         'proposal_total_amount',
         'proposal_status',
         'proposal_comment',

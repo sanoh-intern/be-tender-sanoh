@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->foreign('supplier_id')->references('id')->on('user')->onDelete('cascade');
-            $table->string('proposal_report', 255)->nullable();
+            $table->string('proposal_attach', 255)->nullable();
             $table->bigInteger('proposal_total_amount')->nullable();
             $table->string('proposal_status', 25)->nullable();
             $table->text('proposal_comment')->nullable();
