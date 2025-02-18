@@ -31,9 +31,8 @@ class ProjectHeaderWinnerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|array',
-            'user_id.*' => 'integer',
-            'project_header_id' => 'required|integer',
+            'project_detail_id' => 'required|array',
+            'project_detail_id.*' => 'integer',
         ];
     }
 

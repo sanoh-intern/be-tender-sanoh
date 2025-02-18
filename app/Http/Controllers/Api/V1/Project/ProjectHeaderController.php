@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\ProjectHeaderCreateRequest;
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
 use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
+use App\Models\ProjectDetail;
 use App\Models\ProjectHeader;
 use App\Models\ProjectInvitation;
 use App\Models\User;
@@ -204,18 +205,23 @@ class ProjectHeaderController extends Controller
      */
     public function winner(ProjectHeaderWinnerRequest $request)
     {
-        $getProject = ProjectHeader::where('id', $request->project_header_id)->first();
-        if (! $getProject) {
-            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
-        }
-
         $userWinner = [];
-        foreach ($request->user_id as $id) {
-            $checkUser = User::with('companyProfile')->where('id', $id)->first();
+        foreach ($request->project_detail_id as $id) {
+            $getProjectDetail = ProjectDetail::where('id', $id)->first();
+            if (! $getProjectDetail) {
+                return $this->returnResponseApi(false, 'Project Detail Not Found', '', 404);
+            }
+
+            $getProject = ProjectHeader::where('id', $getProjectDetail->project_header_id)->first();
+            if (! $getProject) {
+                return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
+            }
+
+            $checkUser = User::with('companyProfile')->where('id', $getProjectDetail->supplier_id)->first();
             if (! $checkUser) {
                 return $this->returnResponseApi(false, 'User Not Found', '', 404);
             } else {
-                $getProject->userWinner()->attach($id);
+                $getProject->userWinner()->attach($getProjectDetail->supplier_id);
             }
 
             $userWinner[] = $checkUser->companyProfile->company_name ?? null;
