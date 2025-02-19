@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\ProjectHeaderCreateRequest;
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
 use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
+use App\Http\Resources\Project\ProjectListInvitedProjectResource;
+use App\Http\Resources\Project\ProjectListPrivateProjectResource;
 use App\Http\Resources\Project\ProjectListPublicProjectResource;
 use App\Models\ProjectDetail;
 use App\Models\ProjectHeader;
@@ -51,6 +53,31 @@ class ProjectHeaderController extends Controller
     }
 
     /**
+     * Get list project of invited user
+     * note:
+     * 1. Must return only registration status Open
+     * 2. Must return only project status Ongoing
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function getListInvitedProject()
+    {
+        $user = Auth::user()->id;
+
+        $data = ProjectHeader::select('id', 'project_name', 'created_at', 'project_type', 'registration_due_at', 'registration_status')
+            ->where('project_status', 'Ongoing')
+            ->where('registration_status', 'Open')
+            ->whereIn(
+                'id',
+                ProjectInvitation::where('user_id', $user)
+                    ->where('invitation_status', 'Pending')
+                    ->pluck('project_header_id')
+            )
+            ->get();
+
+        return $this->returnResponseApi(true, 'Get Public Project Successful', ProjectListInvitedProjectResource::collection($data), 200);
+    }
+
+    /**
      * Create New project
      *
      * @return mixed|\Illuminate\Http\JsonResponse
@@ -77,7 +104,7 @@ class ProjectHeaderController extends Controller
                 'created_by' => Auth::user()->id,
             ]);
 
-            if (! empty($request->invite_email)) {
+            if (!empty($request->invite_email)) {
                 foreach ($request->invite_email as $email) {
                     $getUserId = User::with('role')->where('email', $email)->value('id');
                     ProjectInvitation::create([
@@ -129,7 +156,7 @@ class ProjectHeaderController extends Controller
             ]);
 
             // bisa hapus bisa tambah kalau gaada yg baru tetap
-            if (! empty($request->invite_email)) {
+            if (!empty($request->invite_email)) {
                 $newEmail = $request->invite_email;
                 $oldInviteEmail = ProjectInvitation::where('id', $getProject->id)->get()->toArray();
                 $check = array_diff($newEmail, $oldInviteEmail);
@@ -160,7 +187,7 @@ class ProjectHeaderController extends Controller
     public function updateProjectStatus(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (! $getProject) {
+        if (!$getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -188,7 +215,7 @@ class ProjectHeaderController extends Controller
     public function delete(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (! $getProject) {
+        if (!$getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
         $getProject->delete();
@@ -206,7 +233,7 @@ class ProjectHeaderController extends Controller
     public function join(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (! $getProject) {
+        if (!$getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -232,17 +259,17 @@ class ProjectHeaderController extends Controller
         $userWinner = [];
         foreach ($request->project_detail_id as $id) {
             $getProjectDetail = ProjectDetail::where('id', $id)->first();
-            if (! $getProjectDetail) {
+            if (!$getProjectDetail) {
                 return $this->returnResponseApi(false, 'Project Detail Not Found', '', 404);
             }
 
             $getProject = ProjectHeader::where('id', $getProjectDetail->project_header_id)->first();
-            if (! $getProject) {
+            if (!$getProject) {
                 return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
             }
 
             $checkUser = User::with('companyProfile')->where('id', $getProjectDetail->supplier_id)->first();
-            if (! $checkUser) {
+            if (!$checkUser) {
                 return $this->returnResponseApi(false, 'User Not Found', '', 404);
             } else {
                 $getProject->userWinner()->attach($getProjectDetail->supplier_id);

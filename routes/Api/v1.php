@@ -69,6 +69,7 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
 
     // Project Header
     Route::get('project-header/public/get', [ProjectHeaderController::class, 'getListPublicProject'] );
+    Route::get('project-header/invited/get', [ProjectHeaderController::class, 'getListInvitedProject'] );
     Route::get('project-header/join/{id}', [ProjectHeaderController::class, 'join']);
 
     // Route for logout
