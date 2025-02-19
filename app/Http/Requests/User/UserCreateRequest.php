@@ -36,8 +36,7 @@ class UserCreateRequest extends FormRequest
             'tax_id' => 'required|string|max:25',
             'email' => 'required|unique:user,email|email:rfc,static|max:225',
             'password' => 'required|min:8',
-            'role' => 'array',
-            'role.*' => 'required|string|in:1,2,3',
+            'role' => 'required|integer',
             'remember_token' => 'nullable',
         ];
     }
