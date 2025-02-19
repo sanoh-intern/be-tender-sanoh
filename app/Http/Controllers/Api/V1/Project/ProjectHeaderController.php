@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\ProjectHeaderCreateRequest;
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
 use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
+use App\Http\Resources\Project\ProjectListPublicProjectResource;
 use App\Models\ProjectDetail;
 use App\Models\ProjectHeader;
 use App\Models\ProjectInvitation;
@@ -25,6 +26,29 @@ class ProjectHeaderController extends Controller
      * 2. StoreFile = Save file to server storage
      */
     use ResponseApi, StoreFile;
+
+    /**
+     * Get list public project
+     * note:
+     * 1. Must return only project Public
+     * 2. Must return only registration status Open
+     * 3. Must return only project status Ongoing
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function getListPublicProject()
+    {
+        $data = ProjectHeader::select('id', 'project_name', 'created_at', 'project_type', 'registration_due_at', 'registration_status')
+            ->where('project_status', 'Ongoing')
+            ->where('project_type', 'Public')
+            ->where('registration_status', 'Open')
+            ->get();
+
+        if ($data->isEmpty()) {
+            return $this->returnResponseApi(false, 'No Public Project Available', '', 200);
+        }
+
+        return $this->returnResponseApi(true, 'Get Public Project Successful', ProjectListPublicProjectResource::collection($data), 200);
+    }
 
     /**
      * Create New project
