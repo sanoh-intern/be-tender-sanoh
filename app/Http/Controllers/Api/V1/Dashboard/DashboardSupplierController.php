@@ -17,6 +17,11 @@ class DashboardSupplierController extends Controller
      */
     use ResponseApi;
 
+    /**
+     * Show user mini profile
+     * @param int $id this is id user
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function miniProfile(int $id)
     {
         $user = User::with('companyProfile')->where('id', $id)->first();
