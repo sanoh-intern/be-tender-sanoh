@@ -37,7 +37,6 @@ class UserCreateRequest extends FormRequest
             'email' => 'required|unique:user,email|email:rfc,static|max:225',
             'password' => 'required|min:8',
             'role' => 'required|integer',
-            'remember_token' => 'nullable',
         ];
     }
 

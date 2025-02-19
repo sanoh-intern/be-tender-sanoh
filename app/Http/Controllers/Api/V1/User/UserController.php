@@ -29,14 +29,13 @@ class UserController extends Controller
     {
         $data = DB::transaction(function () use ($request) {
             $request->validated();
-
+            // dd($request->role);
             $user = User::create([
                 'company_photo' => $request->company_photo,
                 'role_id' => $request->role,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'account_status' => '1',
-                'remember_token' => $request->remember_token,
             ]);
             // Attach user role
             $user->role()->attach($request->role);
