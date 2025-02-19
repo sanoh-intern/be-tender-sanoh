@@ -29,8 +29,7 @@ class UserLoginResource extends JsonResource
         return [
             'status' => true,
             'email' => $this->user->email,
-            'role_id' => $this->user->role->pluck('id'),
-            'role_tag' => $this->user->role->pluck('role_tag'),
+            'role_id' => (string) $this->user->role_id,
             'access_token' => $this->whenNotNull($this->token),
             'token_type' => 'Bearer',
         ];

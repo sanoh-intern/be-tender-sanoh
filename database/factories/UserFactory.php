@@ -23,6 +23,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'role_id' => fake()->numberBetween(0,6),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => Hash::make('1234abcd'),

@@ -16,14 +16,14 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'company_photo' => $this->company_photo,
-            'company_name' => $this->companyProfile->company_name,
-            'email' => $this->email,
-            'role_tag' => $this->role->pluck('role_tag'),
-            'account_status' => $this->account_status,
-            'profile_verified_at' => $this->profile_verified_at,
-            'email_verified_at' => $this->email_verified_at,
-            'remember_token' => $this->remember_token,
+            'company_photo' => $this->company_photo ?? null,
+            'company_name' => $this->companyProfile->company_name ?? null,
+            'email' => $this->email ?? null,
+            'role_id' => $this->role_id,
+            'account_status' => $this->account_status ?? null,
+            'profile_verified_at' => $this->profile_verified_at ?? null,
+            'email_verified_at' => $this->email_verified_at ?? null,
+            'remember_token' => $this->remember_token ?? null,
         ];
     }
 }
