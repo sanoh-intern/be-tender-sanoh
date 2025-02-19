@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\ProjectHeaderCreateRequest;
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
 use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
+use App\Http\Resources\Project\ProjectHeaderResource;
 use App\Http\Resources\Project\ProjectListInvitedProjectResource;
 use App\Http\Resources\Project\ProjectListPrivateProjectResource;
 use App\Http\Resources\Project\ProjectListPublicProjectResource;
@@ -74,7 +75,29 @@ class ProjectHeaderController extends Controller
             )
             ->get();
 
-        return $this->returnResponseApi(true, 'Get Public Project Successful', ProjectListInvitedProjectResource::collection($data), 200);
+        return $this->returnResponseApi(true, 'Get Invited Project Successful', ProjectListInvitedProjectResource::collection($data), 200);
+    }
+
+    public function getProjectById(int $id)
+    {
+        $data = ProjectHeader::select(
+            'id',
+            'created_at',
+            'project_type',
+            'project_status',
+            'registration_due_at',
+            'registration_status',
+            'project_winner',
+            'project_description',
+            'project_attach',
+        )
+            ->where('id', $id)
+            ->first();
+        if (! $data) {
+            return $this->returnResponseApi(false, 'Project Header Not found', '', 404);
+        }
+
+        return $this->returnResponseApi(true, 'Get Project Header Successful', new ProjectHeaderResource($data), 200);
     }
 
     /**
@@ -88,7 +111,7 @@ class ProjectHeaderController extends Controller
             $request->validated();
 
             if ($request->hasFile('project_attach')) {
-                $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project');
+                $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project','public');
             } else {
                 $filePath = null;
             }
