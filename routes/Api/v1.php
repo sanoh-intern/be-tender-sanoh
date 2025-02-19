@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
 use App\Http\Controllers\Api\V1\Dashboard\DashboardSupplierController;
 
 // Route for login
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('v1/login', [AuthController::class, 'login']);
 
 // Route for super-admin
 Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-admin')->group(function () {
