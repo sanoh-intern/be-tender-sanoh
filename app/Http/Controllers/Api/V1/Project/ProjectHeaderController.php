@@ -7,6 +7,7 @@ use App\Http\Requests\Project\ProjectHeaderCreateRequest;
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
 use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
 use App\Http\Resources\Project\ProjectHeaderResource;
+use App\Http\Resources\Project\ProjectListFollowedProjectResource;
 use App\Http\Resources\Project\ProjectListInvitedProjectResource;
 use App\Http\Resources\Project\ProjectListPrivateProjectResource;
 use App\Http\Resources\Project\ProjectListPublicProjectResource;
@@ -78,6 +79,11 @@ class ProjectHeaderController extends Controller
         return $this->returnResponseApi(true, 'Get Invited Project Successful', ProjectListInvitedProjectResource::collection($data), 200);
     }
 
+    /**
+     * Get project header details by id
+     * @param int $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function getProjectById(int $id)
     {
         $data = ProjectHeader::select(
@@ -93,11 +99,41 @@ class ProjectHeaderController extends Controller
         )
             ->where('id', $id)
             ->first();
-        if (! $data) {
+        if (!$data) {
             return $this->returnResponseApi(false, 'Project Header Not found', '', 404);
         }
 
         return $this->returnResponseApi(true, 'Get Project Header Successful', new ProjectHeaderResource($data), 200);
+    }
+
+    /**
+     * Get List of user Followed Project
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function getListFollowedProject()
+    {
+        $user = Auth::user();
+
+        $getProjectId = $user->userProject->pluck('id');
+
+        $getProject = ProjectHeader::with([
+            'userJoin' => function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->orderBy('list_user_project.created_at', 'desc');
+            },
+            'projectDetail' => function ($query) use ($user) {
+                $query->where('supplier_id', $user->id);
+                $query->latest('created_at');
+            }
+        ])
+            ->select('id', 'project_name', 'project_type', 'project_winner')
+            ->whereIn('id', $getProjectId)
+            ->get();
+        if ($getProject->isEmpty()) {
+            return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
+        }
+
+        return $this->returnResponseApi(true, 'Get Followed Project Successful', ProjectListFollowedProjectResource::collection($getProject), 200);
     }
 
     /**
@@ -111,7 +147,7 @@ class ProjectHeaderController extends Controller
             $request->validated();
 
             if ($request->hasFile('project_attach')) {
-                $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project','public');
+                $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project', 'public');
             } else {
                 $filePath = null;
             }

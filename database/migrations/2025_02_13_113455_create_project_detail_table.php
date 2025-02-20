@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::connection('mysql')->create('project_detail', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('project_header_id')->nullable();
+            $table->foreign('project_header_id')->references('id')->on('project_header')->onDelete('cascade');
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->foreign('supplier_id')->references('id')->on('user')->onDelete('cascade');
             $table->string('proposal_attach', 255)->nullable();

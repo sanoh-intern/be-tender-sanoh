@@ -27,6 +27,8 @@ class ProjectDetail extends Model
         'supplier_id',
         'proposal_attach',
         'proposal_total_amount',
+        'proposal_revision_no',
+        'last_update',
         'proposal_status',
         'proposal_comment',
         'proposal_revision_on',

@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Role;
+use App\Models\ProjectHeader;
+use App\Models\CompanyProfile;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -65,7 +68,7 @@ class User extends Authenticatable
      */
     public function role(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'list_user_role', 'user_id', 'role_id')->withTimestamps();
+        return $this->belongsToMany(Role::class, 'list_user_role', 'user_id', 'role_id')->withPivot('created_at')->withTimestamps();
     }
 
     /**
@@ -84,5 +87,15 @@ class User extends Authenticatable
     public function companyProfile(): HasOne
     {
         return $this->hasOne(CompanyProfile::class, 'user_id', 'id');
+    }
+
+    /**
+     * The userProject that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function userProject(): BelongsToMany
+    {
+        return $this->belongsToMany(ProjectHeader::class, 'list_user_project', 'user_id', 'project_header_id')->withTimestamps();
     }
 }
