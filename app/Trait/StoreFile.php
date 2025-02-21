@@ -8,21 +8,27 @@ use Illuminate\Support\Facades\Storage;
 trait StoreFile
 {
     /**
-     * save and store file to storage
+     * save and store file and image to storage
      *
      * @param  mixed  $file
      * @return bool|string
      */
-    public function saveFile($file, string $name, string $folder, string $disk = 'local')
+    public function saveFile($file, string $prefix, string $fileType, string $folder, string $disk = 'local')
     {
-        $fileName = Carbon::now()->format('Ymd_his').'_'.uniqid($name).'_'.str_replace(' ', '_', $file->getClientOriginalName());
+        $fileName = uniqid($prefix.'_').'_'.Carbon::now()->format('Ymd_his').'_'.str_replace(' ', '_', $file->getClientOriginalName());
 
         // Save file
-        $filePath = Storage::disk($disk)->putFileAs("file/$folder", $file, $fileName);
+        $filePath = Storage::disk($disk)->putFileAs("$fileType/$folder", $file, $fileName);
 
         return $filePath;
     }
 
+    /**
+     * Delete file and image from storage
+     * @param string $filePath
+     * @param string $disk
+     * @return bool
+     */
     public function deleteFile(string $filePath, string $disk = 'local')
     {
         if (! Storage::disk($disk)->exists($filePath)) {

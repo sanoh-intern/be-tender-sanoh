@@ -147,7 +147,7 @@ class ProjectHeaderController extends Controller
             $request->validated();
 
             if ($request->hasFile('project_attach')) {
-                $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project', 'public');
+                $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Documents', 'Project', 'local');
             } else {
                 $filePath = null;
             }
@@ -195,10 +195,10 @@ class ProjectHeaderController extends Controller
                 return $this->returnResponseApi(false, 'Project Not Found', '', 404);
             }
 
-            $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Project');
+            $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Documents', 'Project', 'local');
             if ($request->hasFile('project_attach')) {
                 // dd($getProject->project_attach);
-                $oldFile = $this->deleteFile($getProject->project_attach);
+                $oldFile = $this->deleteFile($getProject->project_attach, 'local');
                 if ($oldFile == false) {
                     return $this->returnResponseApi(false, 'Old File Not Found', '', 404);
                 }

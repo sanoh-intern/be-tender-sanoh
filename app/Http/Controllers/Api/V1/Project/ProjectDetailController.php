@@ -46,7 +46,7 @@ class ProjectDetailController extends Controller
         $user = $request->supplier_id ?? Auth::user()->id;
 
         if ($request->hasFile('proposal_attach')) {
-            $filePath = $this->saveFile($request->file('proposal_attach'), 'Negotiation', 'Project_Detail_Negotitation');
+            $filePath = $this->saveFile($request->file('proposal_attach'), 'Negotiation', 'Documents', 'Project_Detail_Negotitation', 'local');
         } else {
             $filePath = null;
         }
