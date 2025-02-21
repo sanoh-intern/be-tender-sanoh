@@ -19,7 +19,7 @@ class ProjectDetailReviewRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->permissibleRole('admin-purchasing','admin-presdir');
+        return $this->permissibleRole('purchasing','presdir');
     }
 
     /**

@@ -20,8 +20,8 @@ Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-ad
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
-// Route for admin-purchasing
-Route::middleware(['auth:sanctum', 'userRole:admin-purchasing'])->prefix('v1/admin-purchasing')->group(function () {
+// Route for purchasing
+Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasing')->group(function () {
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'get']);
 
@@ -35,8 +35,8 @@ Route::middleware(['auth:sanctum', 'userRole:admin-purchasing'])->prefix('v1/adm
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
-// Route for admin-presdir
-Route::middleware(['auth:sanctum', 'userRole:admin-presdir'])->prefix('v1/admin-presdir')->group(function () {
+// Route for presdir
+Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->group(function () {
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'get']);
 
@@ -47,8 +47,8 @@ Route::middleware(['auth:sanctum', 'userRole:admin-presdir'])->prefix('v1/admin-
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
-// Route for admin-review
-Route::middleware(['auth:sanctum', 'userRole:admin-review'])->prefix('v1/admin-review')->group(function () {
+// Route for review
+Route::middleware(['auth:sanctum', 'userRole:review'])->prefix('v1/review')->group(function () {
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'get']);
 
