@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserLoginRequest;
 use App\Http\Resources\User\UserLoginResource;
+use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,8 +22,10 @@ class AuthController extends Controller
     public function login(UserLoginRequest $request)
     {
         // Auth attempt user by email and password
+        $request->validated();
+
         if (Auth::attempt($request->only(['email', 'password']))) {
-            if (Auth::user()->account_status != 1) {
+            if (Auth::user()->account_status != '1') {
                 throw new HttpResponseException(
                     response()->json([
                         'status' => false,
@@ -36,7 +39,7 @@ class AuthController extends Controller
                 response()->json([
                     'status' => false,
                     'message' => 'Invalid Email or Password. Please Try Again.',
-                    'error' => ' Please Fill with Valid Data. if The Email and Password Correct but Still Error, Please Contact PT Sanoh Indonesia.',
+                    'error' => 'Please Fill with Valid Data. if The Email and Password Correct but Still Error, Please Contact PT Sanoh Indonesia.',
                 ], 401)
             );
         }

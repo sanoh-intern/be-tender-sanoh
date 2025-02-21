@@ -8,8 +8,8 @@ use App\Http\Resources\User\UserResource;
 use App\Models\CompanyProfile;
 use App\Models\User;
 use App\Trait\ResponseApi;
+use App\Trait\StoreFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -17,8 +17,21 @@ class UserController extends Controller
      * -------TRAIT---------
      * Mandatory:
      * 1. ResponseApi = Response api should use ResponseApi trait template
+     * 2. StoreFile = Save file to server storage
      */
-    use ResponseApi;
+    use ResponseApi, StoreFile;
+
+    /**
+     * Get specific user
+     *
+     * @return UserResource
+     */
+    public function get(int $id)
+    {
+        $user = User::with('role', 'companyProfile')->where('id', $id)->first();
+
+        return $this->returnResponseApi(true, 'Get Data Success', new UserResource($user), 200);
+    }
 
     /**
      *  Create new user and attach the role
@@ -29,9 +42,15 @@ class UserController extends Controller
     {
         $data = DB::transaction(function () use ($request) {
             $request->validated();
-            // dd($request->role);
+
+            if ($request->hasFile('company_photo')) {
+                $imagePath = $this->saveFile($request->file('company_photo'), 'Company_Photo', 'Images', 'Company_Photo', 'public');
+            } else {
+                $imagePath = null;
+            }
+
             $user = User::create([
-                'company_photo' => $request->company_photo,
+                'company_photo' => $imagePath,
                 'role_id' => $request->role,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
@@ -52,17 +71,5 @@ class UserController extends Controller
         });
 
         return $this->returnResponseApi(true, 'Create User Success', new UserResource($data), 201);
-    }
-
-    /**
-     * Get specific user
-     *
-     * @return UserResource
-     */
-    public function get(int $id)
-    {
-        $user = User::with('role', 'companyProfile')->where('id', $id)->first();
-
-        return $this->returnResponseApi(true, 'Get Data Success', new UserResource($user), 200);
     }
 }
