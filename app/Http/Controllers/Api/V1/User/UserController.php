@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UserCreateRequest;
-use App\Http\Resources\User\UserResource;
-use App\Models\CompanyProfile;
 use App\Models\User;
-use App\Trait\ResponseApi;
 use App\Trait\StoreFile;
+use App\Trait\ResponseApi;
+use App\Models\CompanyProfile;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\User\UserResource;
+use App\Http\Requests\User\UserCreateRequest;
 
 class UserController extends Controller
 {
