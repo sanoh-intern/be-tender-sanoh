@@ -21,6 +21,20 @@ class ProjectDetailController extends Controller
      */
     use ResponseApi, StoreFile;
 
+    public function getListProjectDetail(int $id)
+    {
+        $user = Auth::user()->id;
+
+        $data = ProjectDetail::where('project_header_id', $id)
+        ->where('supplier_id', $user)
+        ->get();
+        if (! $data) {
+            return $this->returnResponseApi(true, 'There is no proposal submitted.', '', 200);
+        }
+
+        return $this->returnResponseApi(true, 'Get Project Detail Successful', '', 200);
+    }
+
     /**
      * Create new negotiation record
      * @param \App\Http\Requests\Project\ProjectDetailCreateRequest $request
@@ -28,7 +42,6 @@ class ProjectDetailController extends Controller
      */
     public function create(ProjectDetailCreateRequest $request)
     {
-
         $request->validated();
         $user = $request->supplier_id ?? Auth::user()->id;
 
@@ -55,7 +68,7 @@ class ProjectDetailController extends Controller
 
         $getProjectDetail = ProjectDetail::where('id', $id)->first();
         if (!$getProjectDetail) {
-            return $this->returnResponseApi(false, 'Project Detail Negotiation Not Found','', 404);
+            return $this->returnResponseApi(false, 'Project Detail Negotiation Not Found', '', 404);
         }
         $getProjectDetail->update([
             'proposal_comment' => $request->proposal_comment,
