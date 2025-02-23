@@ -25,7 +25,7 @@ class ProjectListFollowedProjectResource extends JsonResource
                     ->timezone('Asia/Jakarta')
                     ->format('Y-m-d h:i')
                 : null,
-            'last_update' => $this->tes() ?? null,
+            'last_update' => $this->latestUpdateProposal() ?? null,
             'total_amount' => $this->projectDetail->value('proposal_total_amount') ?? null,
             'proposal_revision_no' => $this->projectDetail->value('proposal_revision_no') ?? null,
             'proposal_status' => $this->projectDetail->value('proposal_status') ?? null,
@@ -34,21 +34,21 @@ class ProjectListFollowedProjectResource extends JsonResource
         ];
     }
 
-    private function tes()
+    private function latestUpdateProposal()
     {
-        $tes1 = $this->id;
-        $tes2 = $this->projectDetail->value('id');
+        $projectId = $this->id;
+        $projectDetailId = $this->projectDetail->value('id');
 
-        $tes3 = ProjectDetail::where('id', $tes2)->where('project_header_id', $tes1)->select('created_at')->latest('created_at')->first();
+        $getLatestUpdate = ProjectDetail::where('id', $projectDetailId)->where('project_header_id', $projectId)->select('created_at')->latest('created_at')->first();
 
-        if (!$tes3) {
+        if (!$getLatestUpdate) {
             return null;
         }else {
-            $tes4 = Carbon::parse($tes3->created_at)
+            $data = Carbon::parse($getLatestUpdate->created_at)
                 ->timezone('Asia/Jakarta')
                 ->format('Y-m-d h:i');
         }
 
-        return $tes4;
+        return $data;
     }
 }
