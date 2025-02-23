@@ -291,20 +291,39 @@ class ProjectHeaderController extends Controller
      */
     public function join(int $id)
     {
+        $user = Auth::user()->id;
+
         $getProject = ProjectHeader::where('id', $id)->first();
         if (!$getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
-        if ($getProject->project_type == 'Private') {
-            return $this->returnResponseApi(false, 'Project is Private', '', 403);
-        } elseif ($getProject->registration_status == 'Closed') {
-            return $this->returnResponseApi(false, 'Project Registration Closed', '', 404);
-        } else {
-            $getProject->userJoin()->attach(Auth::user()->id);
+        $checkInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject)->exists();
+
+        switch ($checkInvitation) {
+            case 'true':
+                $getInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject)->first();
+                $getInvitation->update(['invitation_status' => 'Accepted']);
+                $getProject->userJoin()->attach($user);
+                break;
+            case 'false':
+                $checkProjectType = ProjectHeader::where('id', $getProject)->value('project_type');
+                if ($checkProjectType == 'Private') {
+                    return $this->returnResponseApi(false, 'Project is Private', '', 403);
+                } else if ($checkProjectType == 'Public' && $getProject->registration_status == 'Open') {
+                    $getProject->userJoin()->attach($user);
+
+                } elseif ($getProject->registration_status == 'Closed') {
+                    return $this->returnResponseApi(false, 'Project Registration Closed', '', 404);
+                } else {
+                    return $this->returnResponseApi(false, 'Project Type Invalid', '', 406);
+                }
+
+            default:
+                return $this->returnResponseApi(false, 'User Invitation Not Found', '', 404);
         }
 
-        return $this->returnResponseApi(true, 'Join Project Successful', '', 200);
+        return $this->returnResponseApi(true, 'User Join Project Successful', '', 200);
     }
 
     /**
