@@ -31,6 +31,10 @@ class ProjectHeaderController extends Controller
      */
     use ResponseApi, StoreFile;
 
+    public function getAllProject() : Returntype {
+
+    }
+
     /**
      * Get list public project
      * note:
@@ -121,8 +125,8 @@ class ProjectHeaderController extends Controller
                 $query->where('user_id', $user->id)
                     ->orderBy('list_user_project.created_at', 'desc');
             },
-            'projectDetail' => function ($query) use ($user) {
-                $query->where('supplier_id', $user->id);
+            'projectDetail' => function ($query) use ($getProjectId) {
+                $query->where('project_header_id', $getProjectId);
                 $query->latest('created_at');
             }
         ])
