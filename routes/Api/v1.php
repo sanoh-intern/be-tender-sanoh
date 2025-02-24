@@ -27,14 +27,17 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     Route::get('user/get/{id}', [UserController::class, 'get']);
 
     // Feat Project Header
-    Route::get('project-header/manage-offer/get/all', [ProjectHeaderController::class,'getListAllProject']);
-    Route::get('project-header/registered-offer/get/all', [ProjectHeaderController::class,'getListAllProject']);
-    Route::get('project-header/get/all', [ProjectHeaderController::class,'getListAllProject']);
+    Route::get('project-header/manage-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
+    Route::get('project-header/registered-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
+    Route::get('project-header/get/{id}', [ProjectHeaderController::class, 'getProjectById']);
     Route::post('project-header/create', [ProjectHeaderController::class, 'create']);
-    Route::get('project-header/edit/{id}', [ProjectHeaderController::class,'edit']);
+    Route::get('project-header/edit/{id}', [ProjectHeaderController::class, 'edit']);
     Route::put('project-header/update/{id}', [ProjectHeaderController::class, 'update']);
     Route::patch('project-header/update/regis-status/{id}', [ProjectHeaderController::class, 'updateProjectStatus']);
     Route::delete('project-header/delete/{id}', [ProjectHeaderController::class, 'delete']);
+
+    // Project Detail
+    Route::get('user/{userId}/project-detail/list-offer/get/{id}', [ProjectDetailController::class, 'getListProjectDetail']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
@@ -80,8 +83,8 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
     Route::get('project-header/join/{id}', [ProjectHeaderController::class, 'join']);
 
     // Project Detail
-    Route::get('project-detail/list-offer/get/{id}', [ProjectDetailController::class,'getListProjectDetail']);
-    Route::post('project-detail/create', [ProjectDetailController::class,'create']);
+    Route::get('project-detail/list-offer/get/{id}', [ProjectDetailController::class, 'getListProjectDetail']);
+    Route::post('project-detail/create', [ProjectDetailController::class, 'create']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);

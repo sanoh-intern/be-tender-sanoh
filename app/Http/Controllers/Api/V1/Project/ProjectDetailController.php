@@ -27,9 +27,9 @@ class ProjectDetailController extends Controller
      * @param int $id
      * @return mixed|\Illuminate\Http\JsonResponse
      */
-    public function getListProjectDetail(int $id)
+    public function getListProjectDetail(int $userId = null, int $id)
     {
-        $user = Auth::user()->id;
+        $user = $userId ?? Auth::user()->id;
 
         $data = ProjectDetail::where('project_header_id', $id)
             ->where('supplier_id', $user)
