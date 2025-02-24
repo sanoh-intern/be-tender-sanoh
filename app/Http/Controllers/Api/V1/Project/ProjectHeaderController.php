@@ -125,8 +125,8 @@ class ProjectHeaderController extends Controller
                 $query->where('user_id', $user->id)
                     ->orderBy('list_user_project.created_at', 'desc');
             },
-            'projectDetail' => function ($query) use ($getProjectId) {
-                $query->where('project_header_id', $getProjectId);
+            'projectDetail' => function ($query) use ($user) {
+                $query->where('supplier_id', $user->id);
                 $query->latest('created_at');
             }
         ])
