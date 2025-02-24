@@ -27,8 +27,11 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     Route::get('user/get/{id}', [UserController::class, 'get']);
 
     // Feat Project Header
+    Route::get('project-header/manage-offer/get/all', [ProjectHeaderController::class,'getListAllProject']);
+    Route::get('project-header/registered-offer/get/all', [ProjectHeaderController::class,'getListAllProject']);
     Route::get('project-header/get/all', [ProjectHeaderController::class,'getListAllProject']);
     Route::post('project-header/create', [ProjectHeaderController::class, 'create']);
+    Route::get('project-header/edit/{id}', [ProjectHeaderController::class,'edit']);
     Route::put('project-header/update/{id}', [ProjectHeaderController::class, 'update']);
     Route::patch('project-header/update/regis-status/{id}', [ProjectHeaderController::class, 'updateProjectStatus']);
     Route::delete('project-header/delete/{id}', [ProjectHeaderController::class, 'delete']);

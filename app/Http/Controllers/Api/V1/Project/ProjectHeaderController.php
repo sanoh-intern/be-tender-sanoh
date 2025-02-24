@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\ProjectHeaderCreateRequest;
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
 use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
+use App\Http\Resources\Project\ProjectHeaderEditResource;
 use App\Http\Resources\Project\ProjectHeaderResource;
 use App\Http\Resources\Project\ProjectListAllProjectResource;
 use App\Http\Resources\Project\ProjectListFollowedProjectResource;
@@ -190,6 +191,27 @@ class ProjectHeaderController extends Controller
         });
 
         return $this->returnResponseApi(true, 'Create Project Header Success', $data, 201);
+    }
+
+    /**
+     * Get project header details
+     * @param int $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function edit(int $id)
+    {
+        $data = ProjectHeader::where('id', $id)->first();
+        if (! $data) {
+            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
+        }
+
+        $getInvitation = ProjectInvitation::where('project_header_id', $id)->pluck('user_id');
+        $email = [];
+        foreach ($getInvitation as $userId) {
+            $email[] = User::where('id', $userId)->value('email');
+        }
+
+        return $this->returnResponseApi(true, 'Get Project Header Detail Successful', new ProjectHeaderEditResource($data, $email), 200);
     }
 
     /**
