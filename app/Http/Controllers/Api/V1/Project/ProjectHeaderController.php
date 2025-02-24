@@ -7,6 +7,7 @@ use App\Http\Requests\Project\ProjectHeaderCreateRequest;
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
 use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
 use App\Http\Resources\Project\ProjectHeaderResource;
+use App\Http\Resources\Project\ProjectListAllProjectResource;
 use App\Http\Resources\Project\ProjectListFollowedProjectResource;
 use App\Http\Resources\Project\ProjectListInvitedProjectResource;
 use App\Http\Resources\Project\ProjectListPrivateProjectResource;
@@ -31,8 +32,14 @@ class ProjectHeaderController extends Controller
      */
     use ResponseApi, StoreFile;
 
-    public function getAllProject() : Returntype {
+    public function getListAllProject()
+    {
+        $data = ProjectHeader::with('userJoin')->get();
+        if ($data->isEmpty()) {
+            return $this->returnResponseApi(true, 'There is No Project Created', '', 200);
+        }
 
+        return $this->returnResponseApi(true, 'Get All Project Header Successful', ProjectListAllProjectResource::collection($data), 200);
     }
 
     /**
@@ -92,6 +99,7 @@ class ProjectHeaderController extends Controller
     {
         $data = ProjectHeader::select(
             'id',
+            'project_name',
             'created_at',
             'project_type',
             'project_status',
