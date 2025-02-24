@@ -47,11 +47,6 @@ class ProjectDetailController extends Controller
         return $this->returnResponseApi(true, 'Get Project Detail Successful', ProjectListProjectDetail::collection($data), 200);
     }
 
-    public function getListSupplierProjectDetail(int $id)
-    {
-        $user = '';
-    }
-
     /**
      * Create new negotiation record
      * @param \App\Http\Requests\Project\ProjectDetailCreateRequest $request
