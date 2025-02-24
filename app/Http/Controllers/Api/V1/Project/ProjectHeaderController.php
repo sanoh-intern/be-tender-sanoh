@@ -301,23 +301,25 @@ class ProjectHeaderController extends Controller
         $checkInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject)->exists();
 
         switch ($checkInvitation) {
-            case 'true':
+            case true:
                 $getInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject)->first();
                 $getInvitation->update(['invitation_status' => 'Accepted']);
                 $getProject->userJoin()->attach($user);
                 break;
-            case 'false':
-                $checkProjectType = ProjectHeader::where('id', $getProject)->value('project_type');
+            case false:
+                $checkProjectType = $getProject->project_type;
+
                 if ($checkProjectType == 'Private') {
                     return $this->returnResponseApi(false, 'Project is Private', '', 403);
                 } else if ($checkProjectType == 'Public' && $getProject->registration_status == 'Open') {
                     $getProject->userJoin()->attach($user);
 
-                } elseif ($getProject->registration_status == 'Closed') {
+                } else if ($getProject->registration_status == 'Closed') {
                     return $this->returnResponseApi(false, 'Project Registration Closed', '', 404);
                 } else {
                     return $this->returnResponseApi(false, 'Project Type Invalid', '', 406);
                 }
+                break;
 
             default:
                 return $this->returnResponseApi(false, 'User Invitation Not Found', '', 404);
