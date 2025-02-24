@@ -34,8 +34,8 @@ class ProjectDetailCreateRequest extends FormRequest
             'project_header_id' => 'required|integer',
             'supplier_id' => 'integer',
             'proposal_attach' => 'file',
-            'proposal_total_amount' => 'integer',
-            'proposal_status' => 'string',
+            'proposal_total_amount' => 'integer|min:0',
+            'proposal_status' => 'string|in:Final',
         ];
     }
 
@@ -47,13 +47,13 @@ class ProjectDetailCreateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'project_header_id.required' => 'Project header ID is required.',
-            'project_header_id.integer' => 'Project header ID must be an integer.',
-            'supplier_id.integer' => 'Supplier ID must be an integer.',
-            'proposal_attach.file' => 'Proposal attachment must be a file.',
-            'proposal_total_amount.required' => 'Proposal total amount is required.',
-            'proposal_total_amount.integer' => 'Proposal total amount must be an integer.',
-            'proposal_status.string' => 'Proposal status must be a string.',
+            'project_header_id.required' => 'The project header ID is required.',
+            'project_header_id.integer' => 'The project header ID must be an integer.',
+            'proposal_attach.file' => 'The proposal attachment must be a file.',
+            'proposal_total_amount.integer' => 'The proposal total amount must be an integer.',
+            'proposal_total_amount.min' => 'The proposal total amount must be at least 0.',
+            'proposal_status.string' => 'The proposal status must be a string.',
+            'proposal_status.in' => 'The proposal status must be "Final".',
         ];
     }
 

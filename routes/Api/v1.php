@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Project\ProjectDetailController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\User\AuthController;
 use App\Http\Controllers\Api\V1\User\UserController;
@@ -73,6 +74,10 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
     Route::get('project-header/list-public/get', [ProjectHeaderController::class, 'getListPublicProject']);
     Route::get('project-header/list-invited/get', [ProjectHeaderController::class, 'getListInvitedProject']);
     Route::get('project-header/join/{id}', [ProjectHeaderController::class, 'join']);
+
+    // Project Detail
+    Route::get('project-detail/list-offer/get/{id}', [ProjectDetailController::class,'getListProjectDetail']);
+    Route::post('project-detail/create', [ProjectDetailController::class,'create']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);

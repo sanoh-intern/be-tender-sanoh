@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Project;
 
+use App\Http\Resources\Project\ProjectListProjectDetail;
 use Carbon\Carbon;
 use App\Trait\StoreFile;
 use App\Trait\ResponseApi;
@@ -21,18 +22,23 @@ class ProjectDetailController extends Controller
      */
     use ResponseApi, StoreFile;
 
+    /**
+     * Get list project detail/offer based on user
+     * @param int $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function getListProjectDetail(int $id)
     {
         $user = Auth::user()->id;
 
         $data = ProjectDetail::where('project_header_id', $id)
-        ->where('supplier_id', $user)
-        ->get();
-        if (! $data) {
+            ->where('supplier_id', $user)
+            ->get();
+        if ($data->isEmpty()) {
             return $this->returnResponseApi(true, 'There is no proposal submitted.', '', 200);
         }
 
-        return $this->returnResponseApi(true, 'Get Project Detail Successful', '', 200);
+        return $this->returnResponseApi(true, 'Get Project Detail Successful', ProjectListProjectDetail::collection($data), 200);
     }
 
     /**
@@ -43,6 +49,7 @@ class ProjectDetailController extends Controller
     public function create(ProjectDetailCreateRequest $request)
     {
         $request->validated();
+
         $user = $request->supplier_id ?? Auth::user()->id;
 
         if ($request->hasFile('proposal_attach')) {
@@ -51,12 +58,25 @@ class ProjectDetailController extends Controller
             $filePath = null;
         }
 
+        $checkStatusFinal = ProjectDetail::where('project_header_id', $request->project_header_id)
+        ->where('supplier_id', $user)
+        ->where('proposal_status', 'Final')
+        ->exists();
+        if ($checkStatusFinal == true) {
+            return $this->returnResponseApi(false, 'You Have Send the Final Proposal', '', 403);
+        }
+
+        $countSubmittedProposal = ProjectDetail::where('project_header_id', $request->project_header_id)
+            ->where('supplier_id', $user)
+            ->count();
+
         $projectDetail = ProjectDetail::create([
             'project_header_id' => $request->project_header_id,
             'supplier_id' => $user,
             'proposal_attach' => $filePath,
             'proposal_total_amount' => $request->proposal_total_amount,
             'proposal_status' => $request->proposal_status,
+            'proposal_revision_no' => $countSubmittedProposal,
         ]);
 
         return $this->returnResponseApi(true, 'Add Negotiation Successful', $projectDetail, 200);
