@@ -18,12 +18,13 @@ class ProjectListAllProjectResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'project_type' => $this->project_type,
-            'project_created_at' => Carbon::parse($this->created_at)->timezone('Asia/jakarta')->format('Y-m-d'),
-            'project_registration_due_at' => $this->registration_due_at,
-            'project_registration_status' => $this->registration_status,
-            'project_winner' => $this->project_winner,
-            'project_registered_supplier' => $this->totalRegisteredSupp(),
+            'project_name' => $this->project_name ?? null,
+            'project_type' => $this->project_type ?? null,
+            'project_created_at' => Carbon::parse($this->created_at)->timezone('Asia/jakarta')->format('Y-m-d') ?? null,
+            'project_registration_due_at' => $this->registration_due_at ?? null,
+            'project_registration_status' => $this->registration_status ?? null,
+            'project_winner' => $this->project_winner ?? null,
+            'project_registered_supplier' => $this->totalRegisteredSupp() ?? null,
         ];
     }
 
