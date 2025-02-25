@@ -427,32 +427,38 @@ class ProjectHeaderController extends Controller
             $userWinner[] = $checkUser->companyProfile->company_name ?? null;
         }
 
-        $getProjectHeader = ProjectHeader::with('projectDetail')->find($getProjectDetail->project_header_id);
-        if (! $getProjectHeader) {
-            return $this->returnResponseApi(false, 'Project Header Not Found', '', 200);
-        }
+        try {
+            DB::transaction(function () use($getProjectDetail, $request) {
+                $getProjectHeader = ProjectHeader::with('projectDetail')->find($getProjectDetail->project_header_id);
+                if (! $getProjectHeader) {
+                    return $this->returnResponseApi(false, 'Project Header Not Found', '', 200);
+                }
 
-        $getLatestProposal = $getProjectHeader->projectDetail
-            ->sortByDesc('created_at')
-            ->unique('supplier_id')
-            ->values()
-            ->pluck('id')
-            ->toArray();
+                $getLatestProposal = $getProjectHeader->projectDetail
+                    ->sortByDesc('created_at')
+                    ->unique('supplier_id')
+                    ->values()
+                    ->pluck('id')
+                    ->toArray();
 
-        $proposalWinId = $request->project_detail_id;
+                $proposalWinId = $request->project_detail_id;
 
-        $getDeclineProposalId = array_diff($getLatestProposal, $proposalWinId);
+                $getDeclineProposalId = array_diff($getLatestProposal, $proposalWinId);
 
-        if (! empty($getDeclineProposalId)) {
-            foreach ($getDeclineProposalId as $id) {
-                ProjectDetail::where('id', $id)->update(['proposal_status' => 'Declined']);
-            }
-        }
+                if (! empty($getDeclineProposalId)) {
+                    foreach ($getDeclineProposalId as $id) {
+                        ProjectDetail::where('id', $id)->update(['proposal_status' => 'Declined']);
+                    }
+                }
 
-        if (! empty($proposalWinId)) {
-            foreach ($proposalWinId as $id) {
-                ProjectDetail::where('id', $id)->update(['proposal_status' => 'Accepted']);
-            }
+                if (! empty($proposalWinId)) {
+                    foreach ($proposalWinId as $id) {
+                        ProjectDetail::where('id', $id)->update(['proposal_status' => 'Accepted']);
+                    }
+                }
+            });
+        } catch (\Throwable $th) {
+            return $this->returnResponseApi(false, 'Update Status Error', '', 500);
         }
 
         $userWinnerToString = implode(',', $userWinner);
