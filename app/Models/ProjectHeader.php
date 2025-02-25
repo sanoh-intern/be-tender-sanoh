@@ -34,6 +34,7 @@ class ProjectHeader extends Model
         'registration_due_at',
         'final_review_by',
         'final_review_at',
+        'final_view_at',
         'created_by',
         'updated_by',
     ];

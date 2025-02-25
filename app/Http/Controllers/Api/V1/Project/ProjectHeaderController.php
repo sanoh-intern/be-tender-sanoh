@@ -154,10 +154,10 @@ class ProjectHeaderController extends Controller
     {
         // Fetch project with all related project details
         $getProject = ProjectHeader::with('projectDetail')
-            ->select('id', 'project_name', 'project_type', 'project_winner')
+            ->select('id', 'project_name', 'project_type', 'project_winner', 'final_view_at')
             ->where('id', $id)
             ->first();
-        if (! $getProject) {
+        if (!$getProject) {
             return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
         }
 
@@ -165,11 +165,17 @@ class ProjectHeaderController extends Controller
             ->sortByDesc('created_at')
             ->unique('supplier_id')
             ->values();
-        if (! $getProjectDetail) {
+        if (!$getProjectDetail) {
             return $this->returnResponseApi(false, 'Project Not Found', '', 404);
         }
 
-        return $this->returnResponseApi(true, 'Get Supplier Proposals Successful', ProjectListSupplierHeaderProposal::collection($getProjectDetail), 200);
+        return $this->returnResponseApi(
+            true,
+            'Get Supplier Proposals Successful',
+            ProjectListSupplierHeaderProposal::collection($getProjectDetail),
+            200,
+            ['final_view_at' => $getProject->final_view_at ?? 'Not Viewed Yet']
+        );
     }
 
     /**
@@ -360,12 +366,12 @@ class ProjectHeaderController extends Controller
         switch ($checkInvitation) {
             case true:
                 $getInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject->id)->first();
-                if (! $getInvitation) {
+                if (!$getInvitation) {
                     return $this->returnResponseApi(false, 'Project Invitation Not Found', '', 404);
                 }
 
                 $getInvitation->update(['invitation_status' => 'Accepted']);
-                
+
                 $getProject->userJoin()->attach($user);
                 break;
             case false:

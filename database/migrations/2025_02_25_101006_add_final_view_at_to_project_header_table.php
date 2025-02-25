@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('project_header', function (Blueprint $table) {
-            $table->timestamp('final_view_at')->after('final_review_at');
+            $table->dateTime('final_view_at')->nullable()->after('final_review_at');
         });
     }
 
