@@ -17,7 +17,7 @@ trait AuthorizationRole
         $user = Auth::user()->role_id;
 
         $getRole = Role::where('id', $user)->pluck('role_tag');
-        
+
         $check = $getRole->intersect($role)->isNotEmpty();
 
         return $check;

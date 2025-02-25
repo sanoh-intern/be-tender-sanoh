@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Project;
 
+use App\Trait\ProposalStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Trait\ProposalStatus;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProjectListProjectDetail extends JsonResource

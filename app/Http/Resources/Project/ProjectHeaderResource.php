@@ -25,7 +25,7 @@ class ProjectHeaderResource extends JsonResource
             'registration_status' => $this->registration_status ?? null,
             'project_winner' => $this->project_winner ?? null,
             'project_description' => $this->project_description ?? null,
-            'project_attach' => $this->project_attach ? asset('storage/' . $this->project_attach) : null,
+            'project_attach' => $this->project_attach ? asset('storage/'.$this->project_attach) : null,
         ];
     }
 }

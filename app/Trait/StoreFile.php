@@ -25,8 +25,7 @@ trait StoreFile
 
     /**
      * Delete file and image from storage
-     * @param string $filePath
-     * @param string $disk
+     *
      * @return bool
      */
     public function deleteFile(string $filePath, string $disk = 'local')

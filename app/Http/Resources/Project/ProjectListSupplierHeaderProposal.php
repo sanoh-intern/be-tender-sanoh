@@ -3,8 +3,8 @@
 namespace App\Http\Resources\Project;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Trait\ProposalStatus;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProjectListSupplierHeaderProposal extends JsonResource
@@ -29,9 +29,9 @@ class ProjectListSupplierHeaderProposal extends JsonResource
             'company_name' => $this->getName(),
             'proposal_total_amount' => $this->proposal_total_amount,
             'proposal_revision_no' => $this->proposal_revision_no,
-            'proposal_status' => $this->checkStatusProposal($this->supplier_id,$this->project_header_id),
+            'proposal_status' => $this->checkStatusProposal($this->supplier_id, $this->project_header_id),
             'proposal_created_at' => $this->created_at->format('Y-m-d'),
-            'is_final' => $this->proposal_status == 'Final'|'Accepted'|'Declined' ? true : false,
+            'is_final' => $this->proposal_status == 'Final' | 'Accepted' | 'Declined' ? true : false,
         ];
     }
 

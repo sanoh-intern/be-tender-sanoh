@@ -2,12 +2,12 @@
 
 namespace App\Http\Resources\Project;
 
+use App\Models\ProjectDetail;
 use App\Trait\ProposalStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\ProjectDetail;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectListFollowedProjectResource extends JsonResource
 {
@@ -42,7 +42,7 @@ class ProjectListFollowedProjectResource extends JsonResource
             'proposal_status' => $this->checkStatusProposal($userId, $this->id),
             // 'proposal_comment' => $this->projectDetail->value('proposal_comment') ?? null,
             'project_winner' => $this->project_winner ?? null,
-            'is_final' => $this->projectDetail->value('proposal_status') == 'Final'|'Accepted'|'Declined' ? true : false ?? null,
+            'is_final' => $this->projectDetail->value('proposal_status') == 'Final' | 'Accepted' | 'Declined' ? true : false ?? null,
         ];
     }
 
@@ -53,7 +53,7 @@ class ProjectListFollowedProjectResource extends JsonResource
 
         $getLatestUpdate = ProjectDetail::where('id', $projectDetailId)->where('project_header_id', $projectId)->select('created_at')->latest('created_at')->first();
 
-        if (!$getLatestUpdate) {
+        if (! $getLatestUpdate) {
             return null;
         } else {
             $data = Carbon::parse($getLatestUpdate->created_at)

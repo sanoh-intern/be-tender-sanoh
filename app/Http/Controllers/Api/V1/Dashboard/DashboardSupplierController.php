@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\Dashboard\DashboardMiniProfileResource;
 use App\Models\User;
 use App\Trait\ResponseApi;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class DashboardSupplierController extends Controller
 {
@@ -19,7 +18,8 @@ class DashboardSupplierController extends Controller
 
     /**
      * Show user mini profile
-     * @param int $id this is id user
+     *
+     * @param  int  $id  this is id user
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function miniProfile(int $id)

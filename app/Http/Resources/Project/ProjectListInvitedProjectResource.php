@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources\Project;
 
+use App\Trait\CheckRegistration;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Trait\CheckRegistration;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectListInvitedProjectResource extends JsonResource
 {
@@ -16,6 +16,7 @@ class ProjectListInvitedProjectResource extends JsonResource
      * 1. CheckRegistration = For checking if user has join the project
      */
     use CheckRegistration;
+
     /**
      * Transform the resource into an array.
      *

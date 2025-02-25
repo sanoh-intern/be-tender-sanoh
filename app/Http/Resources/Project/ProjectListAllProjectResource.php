@@ -33,9 +33,9 @@ class ProjectListAllProjectResource extends JsonResource
         $projectId = $this->id;
 
         $count = ProjectHeader::where('id', $projectId)
-        ->whereHas('userJoin')
-        ->withCount('userJoin')
-        ->value('user_join_count');
+            ->whereHas('userJoin')
+            ->withCount('userJoin')
+            ->value('user_join_count');
 
         return $count;
     }

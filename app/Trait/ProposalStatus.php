@@ -13,8 +13,8 @@ trait ProposalStatus
             ->where('project_header_id', $projectId)
             ->exists();
         if ($checkProjectDetail == false) {
-            return "Not submitted";
-        } else if ($checkProjectDetail == true) {
+            return 'Not submitted';
+        } elseif ($checkProjectDetail == true) {
             $checkWinner = ProjectHeader::whereHas('userWinner', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })->where('id', $projectId)
@@ -29,14 +29,14 @@ trait ProposalStatus
                         ->whereNotNull('final_review_at')
                         ->exists();
                     if ($checkIsAnnounced == false) {
-                        return "On Review";
+                        return 'On Review';
                     } elseif ($checkIsAnnounced == true) {
-                        return "Declined";
-                    }else {
+                        return 'Declined';
+                    } else {
                         return null;
                     }
                 case true:
-                    return "Accepted";
+                    return 'Accepted';
                 default:
                     return null;
             }

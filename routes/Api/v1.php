@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Dashboard\DashboardSupplierController;
 use App\Http\Controllers\Api\V1\Project\ProjectDetailController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
 use App\Http\Controllers\Api\V1\User\AuthController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
-use App\Http\Controllers\Api\V1\Dashboard\DashboardSupplierController;
+use Illuminate\Support\Facades\Route;
 
 // Route for login
 Route::post('v1/login', [AuthController::class, 'login']);
@@ -63,7 +63,6 @@ Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->g
 
     // Project Detail
     Route::get('user/{userId}/project-detail/list-offer/get/{id}', [ProjectDetailController::class, 'getListProjectDetail']);
-
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);

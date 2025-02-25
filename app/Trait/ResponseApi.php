@@ -8,11 +8,11 @@ trait ResponseApi
 {
     /**
      * Response api template convention
-     * @param bool $statusMessage
-     * @param mixed $message
-     * @param mixed $data
-     * @param mixed $statusCode
-     * @param mixed $addheader for additional key and value
+     *
+     * @param  mixed  $message
+     * @param  mixed  $data
+     * @param  mixed  $statusCode
+     * @param  mixed  $addheader  for additional key and value
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function returnResponseApi(bool $statusMessage = true, ?string $message = null, $data = null, ?int $statusCode = null, ?array $addheader = null)

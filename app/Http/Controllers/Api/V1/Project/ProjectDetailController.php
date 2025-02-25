@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Api\V1\Project;
 
-use App\Models\User;
-use Carbon\Carbon;
-use App\Trait\StoreFile;
-use App\Trait\ResponseApi;
-use Illuminate\Http\Request;
-use App\Models\ProjectDetail;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\Project\ProjectListProjectDetail;
 use App\Http\Requests\Project\ProjectDetailCreateRequest;
 use App\Http\Requests\Project\ProjectDetailReviewRequest;
+use App\Http\Resources\Project\ProjectListProjectDetail;
+use App\Models\ProjectDetail;
+use App\Models\User;
+use App\Trait\ResponseApi;
+use App\Trait\StoreFile;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectDetailController extends Controller
 {
@@ -26,9 +26,10 @@ class ProjectDetailController extends Controller
 
     /**
      * Get list project detail/offer based on user
-     * @param \Illuminate\Http\Request $request
-     * $request must include params userId & id only for admin
-     * $request with params id only for user
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *                                             $request must include params userId & id only for admin
+     *                                             $request with params id only for user
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getListProjectDetail(Request $request)
@@ -49,7 +50,7 @@ class ProjectDetailController extends Controller
 
     /**
      * Create new negotiation record
-     * @param \App\Http\Requests\Project\ProjectDetailCreateRequest $request
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function create(ProjectDetailCreateRequest $request)

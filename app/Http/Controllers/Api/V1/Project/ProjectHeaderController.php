@@ -11,7 +11,6 @@ use App\Http\Resources\Project\ProjectHeaderResource;
 use App\Http\Resources\Project\ProjectListAllProjectResource;
 use App\Http\Resources\Project\ProjectListFollowedProjectResource;
 use App\Http\Resources\Project\ProjectListInvitedProjectResource;
-use App\Http\Resources\Project\ProjectListPrivateProjectResource;
 use App\Http\Resources\Project\ProjectListPublicProjectResource;
 use App\Http\Resources\Project\ProjectListSupplierHeaderProposal;
 use App\Models\ProjectDetail;
@@ -50,6 +49,7 @@ class ProjectHeaderController extends Controller
      * 1. Must return only project Public
      * 2. Must return only registration status Open
      * 3. Must return only project status Ongoing
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getListPublicProject()
@@ -72,6 +72,7 @@ class ProjectHeaderController extends Controller
      * note:
      * 1. Must return only registration status Open
      * 2. Must return only project status Ongoing
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getListInvitedProject()
@@ -94,7 +95,7 @@ class ProjectHeaderController extends Controller
 
     /**
      * Get project header details by id
-     * @param int $id
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getProjectById(int $id)
@@ -113,7 +114,7 @@ class ProjectHeaderController extends Controller
         )
             ->where('id', $id)
             ->first();
-        if (!$data) {
+        if (! $data) {
             return $this->returnResponseApi(false, 'Project Header Not found', '', 404);
         }
 
@@ -122,6 +123,7 @@ class ProjectHeaderController extends Controller
 
     /**
      * Get List of user Followed Project
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getListFollowedProject()
@@ -138,7 +140,7 @@ class ProjectHeaderController extends Controller
             'projectDetail' => function ($query) use ($user) {
                 $query->where('supplier_id', $user->id);
                 $query->latest('created_at');
-            }
+            },
         ])
             ->select('id', 'project_name', 'project_type', 'project_winner')
             ->whereIn('id', $getProjectId)
@@ -156,7 +158,7 @@ class ProjectHeaderController extends Controller
             ->select('id', 'project_name', 'project_type', 'project_winner', 'final_view_at')
             ->where('id', $id)
             ->first();
-        if (!$getProject) {
+        if (! $getProject) {
             return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
         }
 
@@ -164,7 +166,7 @@ class ProjectHeaderController extends Controller
             ->sortByDesc('created_at')
             ->unique('supplier_id')
             ->values();
-        if (!$getProjectDetail) {
+        if (! $getProjectDetail) {
             return $this->returnResponseApi(false, 'Project Not Found', '', 404);
         }
 
@@ -204,7 +206,7 @@ class ProjectHeaderController extends Controller
                 'created_by' => Auth::user()->id,
             ]);
 
-            if (!empty($request->invite_email)) {
+            if (! empty($request->invite_email)) {
                 foreach ($request->invite_email as $email) {
                     $getUserId = User::with('role')->where('email', $email)->value('id');
                     ProjectInvitation::create([
@@ -223,13 +225,13 @@ class ProjectHeaderController extends Controller
 
     /**
      * Get project header details
-     * @param int $id
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function edit(int $id)
     {
         $data = ProjectHeader::where('id', $id)->first();
-        if (!$data) {
+        if (! $data) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -277,7 +279,7 @@ class ProjectHeaderController extends Controller
             ]);
 
             // bisa hapus bisa tambah kalau gaada yg baru tetap
-            if (!empty($request->invite_email)) {
+            if (! empty($request->invite_email)) {
                 $newEmail = $request->invite_email;
                 $oldInviteEmail = ProjectInvitation::where('id', $getProject->id)->get()->toArray();
                 $check = array_diff($newEmail, $oldInviteEmail);
@@ -308,7 +310,7 @@ class ProjectHeaderController extends Controller
     public function updateProjectStatus(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (!$getProject) {
+        if (! $getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -336,7 +338,7 @@ class ProjectHeaderController extends Controller
     public function delete(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (!$getProject) {
+        if (! $getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
         $getProject->delete();
@@ -356,7 +358,7 @@ class ProjectHeaderController extends Controller
         $user = Auth::user()->id;
 
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (!$getProject) {
+        if (! $getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -365,7 +367,7 @@ class ProjectHeaderController extends Controller
         switch ($checkInvitation) {
             case true:
                 $getInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject->id)->first();
-                if (!$getInvitation) {
+                if (! $getInvitation) {
                     return $this->returnResponseApi(false, 'Project Invitation Not Found', '', 404);
                 }
 
@@ -378,10 +380,10 @@ class ProjectHeaderController extends Controller
 
                 if ($checkProjectType == 'Private') {
                     return $this->returnResponseApi(false, 'Project is Private', '', 403);
-                } else if ($checkProjectType == 'Public' && $getProject->registration_status == 'Open') {
+                } elseif ($checkProjectType == 'Public' && $getProject->registration_status == 'Open') {
                     $getProject->userJoin()->attach($user);
 
-                } else if ($getProject->registration_status == 'Closed') {
+                } elseif ($getProject->registration_status == 'Closed') {
                     return $this->returnResponseApi(false, 'Project Registration Closed', '', 404);
                 } else {
                     return $this->returnResponseApi(false, 'Project Type Invalid', '', 406);
@@ -406,17 +408,17 @@ class ProjectHeaderController extends Controller
         $userWinner = [];
         foreach ($request->project_detail_id as $id) {
             $getProjectDetail = ProjectDetail::where('id', $id)->first();
-            if (!$getProjectDetail) {
+            if (! $getProjectDetail) {
                 return $this->returnResponseApi(false, 'Project Detail Not Found', '', 404);
             }
 
             $getProject = ProjectHeader::where('id', $getProjectDetail->project_header_id)->first();
-            if (!$getProject) {
+            if (! $getProject) {
                 return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
             }
 
             $checkUser = User::with('companyProfile')->where('id', $getProjectDetail->supplier_id)->first();
-            if (!$checkUser) {
+            if (! $checkUser) {
                 return $this->returnResponseApi(false, 'User Not Found', '', 404);
             } else {
                 $getProject->userWinner()->attach($getProjectDetail->supplier_id);
@@ -426,7 +428,7 @@ class ProjectHeaderController extends Controller
         }
 
         $getProjectHeader = ProjectHeader::with('projectDetail')->find($getProjectDetail->project_header_id);
-        if (!$getProjectHeader) {
+        if (! $getProjectHeader) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 200);
         }
 

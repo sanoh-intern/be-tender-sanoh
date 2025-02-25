@@ -47,7 +47,6 @@ class DatabaseSeeder extends Seeder
             'email' => '5@gmail.com',
         ]);
 
-
         // Will be used in future
         // Attach roles to the user (many-to-many)
         // $user->role()->attach([

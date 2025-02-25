@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProjectHeader extends Model
 {
@@ -57,8 +57,6 @@ class ProjectHeader extends Model
 
     /**
      * Get all of the projectDetail for the ProjectHeader
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function projectDetail(): HasMany
     {
