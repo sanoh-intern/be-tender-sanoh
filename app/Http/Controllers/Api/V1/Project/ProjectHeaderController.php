@@ -428,7 +428,7 @@ class ProjectHeaderController extends Controller
         }
 
         try {
-            DB::transaction(function () use($getProjectDetail, $request) {
+            DB::transaction(function () use($getProjectDetail, $request, $getProject, $userWinner) {
                 $getProjectHeader = ProjectHeader::with('projectDetail')->find($getProjectDetail->project_header_id);
                 if (! $getProjectHeader) {
                     return $this->returnResponseApi(false, 'Project Header Not Found', '', 200);
@@ -456,17 +456,18 @@ class ProjectHeaderController extends Controller
                         ProjectDetail::where('id', $id)->update(['proposal_status' => 'Accepted']);
                     }
                 }
+
+                $userWinnerToString = implode(',', $userWinner);
+                $getProject->update([
+                    'project_winner' => $userWinnerToString,
+                    'final_review_by' => Auth::user()->id,
+                    'final_review_at' => Carbon::now(),
+                ]);
             });
         } catch (\Throwable $th) {
             return $this->returnResponseApi(false, 'Update Status Error', '', 500);
         }
 
-        $userWinnerToString = implode(',', $userWinner);
-        $getProject->update([
-            'project_winner' => $userWinnerToString,
-            'final_review_by' => Auth::user()->id,
-            'final_review_at' => Carbon::now(),
-        ]);
 
         return $this->returnResponseApi(true, 'Project Winner Successfuly Added', '', 200);
     }
