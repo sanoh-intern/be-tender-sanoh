@@ -152,7 +152,6 @@ class ProjectHeaderController extends Controller
 
     public function getListSupplierProjectProposal(int $id)
     {
-        // Fetch project with all related project details
         $getProject = ProjectHeader::with('projectDetail')
             ->select('id', 'project_name', 'project_type', 'project_winner', 'final_view_at')
             ->where('id', $id)
@@ -425,6 +424,32 @@ class ProjectHeaderController extends Controller
 
             $userWinner[] = $checkUser->companyProfile->company_name ?? null;
         }
+
+        $getProjectHeader = ProjectHeader::with('projectDetail')->find($getProjectDetail->project_header_id);
+        if (!$getProjectHeader) {
+            return $this->returnResponseApi(false, 'Project Header Not Found', '', 200);
+        }
+
+        $getLatestProposal = $getProjectHeader->projectDetail
+            ->sortByDesc('created_at')
+            ->unique('supplier_id')
+            ->values()
+            ->pluck('id')
+            ->toArray();
+
+        $proposalWinId = $request->project_detail_id;
+
+        $getDeclineProposalId = array_diff($getLatestProposal, $proposalWinId);
+
+        if (! empty($getDeclineProposalId)) {
+            $getProjectDetail->update(['proposal_status' => 'Declined']);
+        }
+
+        if (! empty($proposalWinId)) {
+            $getProjectDetail->update(['proposal_status' => 'Accepted']);
+        }
+
+        
 
         $userWinnerToString = implode(',', $userWinner);
         $getProject->update([

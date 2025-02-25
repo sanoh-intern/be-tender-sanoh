@@ -49,11 +49,12 @@ class ProjectDetailCreateRequest extends FormRequest
         return [
             'project_header_id.required' => 'The project header ID is required.',
             'project_header_id.integer' => 'The project header ID must be an integer.',
+            'supplier_id.integer' => 'The supplier ID must be an integer.',
             'proposal_attach.file' => 'The proposal attachment must be a file.',
             'proposal_total_amount.integer' => 'The proposal total amount must be an integer.',
             'proposal_total_amount.min' => 'The proposal total amount must be at least 0.',
-            'proposal_status.string' => 'The proposal status must be a string.',
-            'proposal_status.in' => 'The proposal status must be "Final".',
+            'proposal_status.required' => 'The proposal status is required.',
+            'proposal_status.boolean' => 'The proposal status must be true or false.',
         ];
     }
 
