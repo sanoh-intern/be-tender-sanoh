@@ -38,7 +38,7 @@ trait ResponseApi
                     'status' => false,
                     'message' => 'Method Parameter Violation, Input Parameter Must Be Follow the rules',
                 ], 403)
-            ); c 
+            );
         }
     }
 }
