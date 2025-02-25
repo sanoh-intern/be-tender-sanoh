@@ -355,12 +355,17 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
-        $checkInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject)->exists();
+        $checkInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject->id)->exists();
 
         switch ($checkInvitation) {
             case true:
-                $getInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject)->first();
+                $getInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject->id)->first();
+                if (! $getInvitation) {
+                    return $this->returnResponseApi(false, 'Project Invitation Not Found', '', 404);
+                }
+
                 $getInvitation->update(['invitation_status' => 'Accepted']);
+                
                 $getProject->userJoin()->attach($user);
                 break;
             case false:
