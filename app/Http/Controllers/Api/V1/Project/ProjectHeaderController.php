@@ -13,6 +13,7 @@ use App\Http\Resources\Project\ProjectListFollowedProjectResource;
 use App\Http\Resources\Project\ProjectListInvitedProjectResource;
 use App\Http\Resources\Project\ProjectListPrivateProjectResource;
 use App\Http\Resources\Project\ProjectListPublicProjectResource;
+use App\Http\Resources\Project\ProjectListSupplierHeaderProposal;
 use App\Models\ProjectDetail;
 use App\Models\ProjectHeader;
 use App\Models\ProjectInvitation;
@@ -149,6 +150,28 @@ class ProjectHeaderController extends Controller
         return $this->returnResponseApi(true, 'Get Followed Project Successful', ProjectListFollowedProjectResource::collection($getProject), 200);
     }
 
+    public function getListSupplierProjectProposal(int $id)
+    {
+        // Fetch project with all related project details
+        $getProject = ProjectHeader::with('projectDetail')
+            ->select('id', 'project_name', 'project_type', 'project_winner')
+            ->where('id', $id)
+            ->first();
+        if (! $getProject) {
+            return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
+        }
+
+        $getProjectDetail = $getProject->projectDetail
+            ->sortByDesc('created_at')
+            ->unique('supplier_id')
+            ->values();
+        if (! $getProjectDetail) {
+            return $this->returnResponseApi(false, 'Project Not Found', '', 404);
+        }
+
+        return $this->returnResponseApi(true, 'Get Supplier Proposals Successful', ProjectListSupplierHeaderProposal::collection($getProjectDetail), 200);
+    }
+
     /**
      * Create New project
      *
@@ -201,7 +224,7 @@ class ProjectHeaderController extends Controller
     public function edit(int $id)
     {
         $data = ProjectHeader::where('id', $id)->first();
-        if (! $data) {
+        if (!$data) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
