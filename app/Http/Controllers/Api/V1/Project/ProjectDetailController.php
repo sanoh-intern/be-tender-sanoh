@@ -66,7 +66,7 @@ class ProjectDetailController extends Controller
 
         $checkStatusFinal = ProjectDetail::where('project_header_id', $request->project_header_id)
             ->where('supplier_id', $user)
-            ->where('proposal_status', 'Final')
+            ->whereNotNull('proposal_status')
             ->exists();
         if ($checkStatusFinal == true) {
             return $this->returnResponseApi(false, 'You Have Send the Final Proposal', '', 403);
