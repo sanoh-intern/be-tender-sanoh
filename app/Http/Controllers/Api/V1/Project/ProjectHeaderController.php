@@ -442,14 +442,16 @@ class ProjectHeaderController extends Controller
         $getDeclineProposalId = array_diff($getLatestProposal, $proposalWinId);
 
         if (! empty($getDeclineProposalId)) {
-            $getProjectDetail->update(['proposal_status' => 'Declined']);
+            foreach ($getDeclineProposalId as $id) {
+                ProjectDetail::where('id', $id)->update(['proposal_status' => 'Declined']);
+            }
         }
 
         if (! empty($proposalWinId)) {
-            $getProjectDetail->update(['proposal_status' => 'Accepted']);
+            foreach ($proposalWinId as $id) {
+                ProjectDetail::where('id', $id)->update(['proposal_status' => 'Accepted']);
+            }
         }
-
-        
 
         $userWinnerToString = implode(',', $userWinner);
         $getProject->update([
