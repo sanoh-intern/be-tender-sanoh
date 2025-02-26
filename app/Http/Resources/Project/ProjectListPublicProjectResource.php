@@ -28,9 +28,10 @@ class ProjectListPublicProjectResource extends JsonResource
 
         return [
             'id' => (string) $this->id ?? null,
-            'project_name' => $this->project_name ?? null,
             'created_at' => Carbon::parse($this->created_at)->timezone('Asia/Jakarta')->format('Y-m-d') ?? null,
+            'project_name' => $this->project_name ?? null,
             'project_type' => $this->project_type ?? null,
+            'project_status' => $this->project_status == 'Ongoing' ? 'Open' : ($this->project_status == 'Supplier Selected' ? 'Supplier Selected' : null),
             'registration_due_at' => Carbon::parse($this->registration_due_at)->format('Y-m-d') ?? null,
             'registration_status' => $this->registration_status ?? null,
             'is_regis' => $this->isRegis($user, $this->id),

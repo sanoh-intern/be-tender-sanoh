@@ -20,6 +20,7 @@ class ProjectListAllProjectResource extends JsonResource
             'id' => $this->id,
             'project_name' => $this->project_name ?? null,
             'project_type' => $this->project_type ?? null,
+            'project_status' => $this->project_status == 'Ongoing' ? 'Open' : ($this->project_status == 'Supplier Selected' ? 'Supplier Selected' : null),
             'project_created_at' => Carbon::parse($this->created_at)->timezone('Asia/jakarta')->format('Y-m-d') ?? null,
             'project_registration_due_at' => $this->registration_due_at ?? null,
             'project_registration_status' => $this->registration_status ?? null,

@@ -33,6 +33,12 @@ class ProjectHeaderController extends Controller
      */
     use ResponseApi, StoreFile;
 
+    /**
+     * get list all project
+     * note:
+     * 1. only for admin
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function getListAllProject()
     {
         $data = ProjectHeader::with('userJoin')->get();
@@ -54,7 +60,7 @@ class ProjectHeaderController extends Controller
      */
     public function getListPublicProject()
     {
-        $data = ProjectHeader::select('id', 'project_name', 'created_at', 'project_type', 'registration_due_at', 'registration_status')
+        $data = ProjectHeader::select('id', 'created_at', 'project_name', 'project_type', 'project_status', 'registration_due_at', 'registration_status')
             ->where('project_status', 'Ongoing')
             ->where('project_type', 'Public')
             ->where('registration_status', 'Open')
@@ -79,7 +85,7 @@ class ProjectHeaderController extends Controller
     {
         $user = Auth::user()->id;
 
-        $data = ProjectHeader::select('id', 'project_name', 'created_at', 'project_type', 'registration_due_at', 'registration_status')
+        $data = ProjectHeader::select('id', 'created_at', 'project_name', 'project_type', 'project_status', 'registration_due_at', 'registration_status')
             ->where('project_status', 'Ongoing')
             ->where('registration_status', 'Open')
             ->whereIn(
@@ -102,15 +108,15 @@ class ProjectHeaderController extends Controller
     {
         $data = ProjectHeader::select(
             'id',
-            'project_name',
             'created_at',
+            'project_name',
             'project_type',
             'project_status',
-            'registration_due_at',
-            'registration_status',
             'project_winner',
             'project_description',
             'project_attach',
+            'registration_due_at',
+            'registration_status',
         )
             ->where('id', $id)
             ->first();
@@ -459,6 +465,7 @@ class ProjectHeaderController extends Controller
 
                 $userWinnerToString = implode(',', $userWinner);
                 $getProject->update([
+                    'project_status' => 'Supplier Selected',
                     'project_winner' => $userWinnerToString,
                     'final_review_by' => Auth::user()->id,
                     'final_review_at' => Carbon::now(),
