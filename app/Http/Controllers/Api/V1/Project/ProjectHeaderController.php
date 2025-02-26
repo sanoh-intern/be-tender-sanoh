@@ -479,6 +479,11 @@ class ProjectHeaderController extends Controller
         return $this->returnResponseApi(true, 'Project Winner Successfuly Added', '', 200);
     }
 
+    /**
+     * Download Project Header Attachment
+     * @param int $id
+     * @return mixed|\Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
     public function download(int $id)
     {
         $file = ProjectHeader::select('project_name','project_attach', 'project_type')->where('id', $id)->first();
