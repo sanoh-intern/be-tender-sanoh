@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Api\V1\Project;
 
+use Auth;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Trait\StoreFile;
+use App\Trait\ResponseApi;
+use App\Models\ProjectDetail;
+use App\Models\ProjectHeader;
+use App\Models\ProjectInvitation;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\Project\ProjectHeaderResource;
 use App\Http\Requests\Project\ProjectHeaderCreateRequest;
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
 use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
 use App\Http\Resources\Project\ProjectHeaderEditResource;
-use App\Http\Resources\Project\ProjectHeaderResource;
 use App\Http\Resources\Project\ProjectListAllProjectResource;
-use App\Http\Resources\Project\ProjectListFollowedProjectResource;
-use App\Http\Resources\Project\ProjectListInvitedProjectResource;
 use App\Http\Resources\Project\ProjectListPublicProjectResource;
+use App\Http\Resources\Project\ProjectListInvitedProjectResource;
 use App\Http\Resources\Project\ProjectListSupplierHeaderProposal;
-use App\Models\ProjectDetail;
-use App\Models\ProjectHeader;
-use App\Models\ProjectInvitation;
-use App\Models\User;
-use App\Trait\ResponseApi;
-use App\Trait\StoreFile;
-use Auth;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Http\Resources\Project\ProjectListFollowedProjectResource;
 
 class ProjectHeaderController extends Controller
 {
@@ -476,5 +477,16 @@ class ProjectHeaderController extends Controller
         }
 
         return $this->returnResponseApi(true, 'Project Winner Successfuly Added', '', 200);
+    }
+
+    public function download(int $id)
+    {
+        $file = ProjectHeader::select('project_name','project_attach')->where('id', $id)->first();
+
+        $filePath = Storage::disk('local')->path($file->project_attach);
+
+        $fileName =  str_replace(' ', '_', Carbon::now()->format('Ymd').'_'.$file->project_name);
+
+        return response()->download($filePath, $fileName);
     }
 }

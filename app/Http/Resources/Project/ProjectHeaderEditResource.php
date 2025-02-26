@@ -30,7 +30,7 @@ class ProjectHeaderEditResource extends JsonResource
             'project_name' => $this->data->project_name ?? null,
             'registration_due_at' => Carbon::parse($this->data->registration_due_at)->format('Y-m-d') ?? null,
             'project_description' => $this->data->project_description ?? null,
-            'project_attach' => $this->data->project_attach ? asset('storage/'.$this->data->project_attach) : null,
+            'project_attach' => $this->data->project_attach ?? null,
             'project_type' => $this->data->project_type ?? null,
             'emails' => $this->invitedEmail,
         ];

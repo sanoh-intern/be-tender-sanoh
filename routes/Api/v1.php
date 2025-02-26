@@ -1,14 +1,18 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Dashboard\DashboardSupplierController;
-use App\Http\Controllers\Api\V1\Project\ProjectDetailController;
-use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\User\AuthController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\Project\ProjectDetailController;
+use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
+use App\Http\Controllers\Api\V1\Dashboard\DashboardSupplierController;
 
 // Route for login
 Route::post('v1/login', [AuthController::class, 'login']);
+
+// Route for download project attachment
+Route::get('v1/download/project/attachment/{id}', [ProjectHeaderController::class, 'download'])->middleware('auth:sanctum');
 
 // Route for super-admin
 Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-admin')->group(function () {
