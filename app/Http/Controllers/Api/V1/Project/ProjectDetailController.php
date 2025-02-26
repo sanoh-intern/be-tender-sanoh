@@ -94,7 +94,7 @@ class ProjectDetailController extends Controller
         $request->validated();
 
         $getProjectDetail = ProjectDetail::where('id', $id)->first();
-        if (! $getProjectDetail) {
+        if (!$getProjectDetail) {
             return $this->returnResponseApi(false, 'Project Detail Negotiation Not Found', '', 404);
         }
         $getProjectDetail->update([
@@ -104,5 +104,33 @@ class ProjectDetailController extends Controller
         ]);
 
         return $this->returnResponseApi(true, 'Project Detail Negotiation Review Successful', $getProjectDetail, 200);
+    }
+
+    /**
+     * Update status proposal to Accepted
+     * @param int $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function statusAccepted(int $id)
+    {
+        $update = ProjectDetail::where('id', $id)->update(['proposal_status' => 'Accepted']);
+        if (! $update) {
+            return $this->returnResponseApi(false, 'Proposal Not Found.', '', 404);
+        }
+        return $this->returnResponseApi(true, 'Update Proposal Status Successful', '', 200);
+    }
+
+    /**
+     * Update status proposal to Accepted
+     * @param int $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function statusDeclined(int $id)
+    {
+        $update = ProjectDetail::where('id', $id)->update(['proposal_status' => 'Declined']);
+        if (! $update) {
+            return $this->returnResponseApi(false, 'Proposal Not Found.', '', 404);
+        }
+        return $this->returnResponseApi(true, 'Update Proposal Status Successful', '', 200);
     }
 }

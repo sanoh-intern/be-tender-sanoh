@@ -63,6 +63,8 @@ Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->g
 
     // Project Detail
     Route::get('user/{userId}/project-detail/list-offer/get/{id}', [ProjectDetailController::class, 'getListProjectDetail']);
+    Route::patch('project-detail/Accepted/{id}', [ProjectDetailController::class, 'statusAccepted']);
+    Route::patch('project-detail/Declined/{id}', [ProjectDetailController::class, 'statusDeclined']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
