@@ -149,7 +149,7 @@ class ProjectHeaderController extends Controller
                 $query->latest('created_at');
             },
         ])
-            ->select('id', 'project_name', 'project_type', 'project_winner')
+            ->select('id', 'project_name', 'project_type', 'project_winner', 'project_status')
             ->whereIn('id', $getProjectId)
             ->get();
         if ($getProject->isEmpty()) {

@@ -31,6 +31,7 @@ class ProjectListFollowedProjectResource extends JsonResource
             'id' => (string) $this->id,
             'project_name' => $this->project_name ?? null,
             'project_type' => $this->project_type ?? null,
+            'project_status' => $this->project_status ?? null,
             'register_date' => $this->userJoin->first()->pivot->created_at
                 ? Carbon::parse($this->userJoin->first()->pivot->created_at)
                     ->timezone('Asia/Jakarta')
