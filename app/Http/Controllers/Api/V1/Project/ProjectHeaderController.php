@@ -299,13 +299,14 @@ class ProjectHeaderController extends Controller
                         'user_id' => $getUserId,
                         'project_id' => $getProject->id,
                         'invitation_by' => Auth::user()->id,
+                        'invitation_status' => 'Pending',
                     ]);
                 }
 
                 $deleteEmail = array_diff($oldInviteEmail, $newEmail);
                 foreach ($deleteEmail as $email) {
                     $getUserId = User::with('role')->where('email', $email)->value('id');
-                    
+
                     $getUserId = ProjectInvitation::where('id', $getUserId)->delete();
                 }
             }
