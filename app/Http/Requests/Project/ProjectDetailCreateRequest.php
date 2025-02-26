@@ -35,7 +35,7 @@ class ProjectDetailCreateRequest extends FormRequest
             'supplier_id' => 'integer',
             'proposal_attach' => 'file',
             'proposal_total_amount' => 'integer|min:0',
-            'proposal_status' => 'boolean',
+            'proposal_status' => 'nullable|boolean',
         ];
     }
 
