@@ -266,9 +266,8 @@ class ProjectHeaderController extends Controller
                 return $this->returnResponseApi(false, 'Project Not Found', '', 404);
             }
 
-            $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Documents', 'Project', 'local');
             if ($request->hasFile('project_attach')) {
-                // dd($getProject->project_attach);
+                $filePath = $this->saveFile($request->file('project_attach'), 'Project', 'Documents', 'Project', 'local');
                 $oldFile = $this->deleteFile($getProject->project_attach, 'local');
                 if ($oldFile == false) {
                     return $this->returnResponseApi(false, 'Old File Not Found', '', 404);
@@ -288,10 +287,12 @@ class ProjectHeaderController extends Controller
             // bisa hapus bisa tambah kalau gaada yg baru tetap
             if (! empty($request->invite_email)) {
                 $newEmail = $request->invite_email;
-                $oldInviteEmail = ProjectInvitation::where('id', $getProject->id)->get()->toArray();
-                $check = array_diff($newEmail, $oldInviteEmail);
 
-                foreach ($check as $email) {
+                $oldInviteEmail = ProjectInvitation::with('user')->where('project_header_id', $getProject->id)->get()->pluck('user.email')->toArray();
+
+                $addEmail = array_diff($newEmail, $oldInviteEmail);
+
+                foreach ($addEmail as $email) {
                     $getUserId = User::with('role')->where('email', $email)->value('id');
 
                     ProjectInvitation::create([
@@ -299,6 +300,13 @@ class ProjectHeaderController extends Controller
                         'project_id' => $getProject->id,
                         'invitation_by' => Auth::user()->id,
                     ]);
+                }
+
+                $deleteEmail = array_diff($oldInviteEmail, $newEmail);
+                foreach ($deleteEmail as $email) {
+                    $getUserId = User::with('role')->where('email', $email)->value('id');
+                    
+                    $getUserId = ProjectInvitation::where('id', $getUserId)->delete();
                 }
             }
 
