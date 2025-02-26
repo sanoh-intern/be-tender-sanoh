@@ -39,7 +39,7 @@ class ProjectListFollowedProjectResource extends JsonResource
                 : null,
             'proposal_last_update' => $this->latestUpdateProposal() ?? null,
             'proposal_last_amount' => $this->projectDetail->value('proposal_total_amount') ?? null,
-            'proposal_revision_no' => $this->projectDetail->value('proposal_revision_no') ?? '0',
+            'proposal_revision_no' => $this->projectDetail->value('proposal_revision_no') == null ? '-' : ($this->projectDetail->value('proposal_revision_no') ?? '0'),
             'proposal_status' => $this->checkStatusProposal($userId, $this->id),
             // 'proposal_comment' => $this->projectDetail->value('proposal_comment') ?? null,
             'project_winner' => $this->project_winner ?? null,

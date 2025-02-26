@@ -35,7 +35,7 @@ class ProjectDetailCreateRequest extends FormRequest
             'supplier_id' => 'integer',
             'proposal_attach' => 'file',
             'proposal_total_amount' => 'integer|min:0',
-            'proposal_status' => 'nullable|boolean',
+            'proposal_status' => 'nullable|in:true,false',
         ];
     }
 
@@ -53,8 +53,7 @@ class ProjectDetailCreateRequest extends FormRequest
             'proposal_attach.file' => 'The proposal attachment must be a file.',
             'proposal_total_amount.integer' => 'The proposal total amount must be an integer.',
             'proposal_total_amount.min' => 'The proposal total amount must be at least 0.',
-            'proposal_status.required' => 'The proposal status is required.',
-            'proposal_status.boolean' => 'The proposal status must be true or false.',
+            'proposal_status.in' => 'The proposal status must be either true or false.',
         ];
     }
 
