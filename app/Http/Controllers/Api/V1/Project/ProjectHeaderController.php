@@ -428,7 +428,7 @@ class ProjectHeaderController extends Controller
         }
 
         try {
-            DB::transaction(function () use($getProjectDetail, $request, $getProject, $userWinner) {
+            DB::transaction(function () use ($getProjectDetail, $request, $getProject, $userWinner) {
                 $getProjectHeader = ProjectHeader::with('projectDetail')->find($getProjectDetail->project_header_id);
                 if (! $getProjectHeader) {
                     return $this->returnResponseApi(false, 'Project Header Not Found', '', 200);
@@ -467,7 +467,6 @@ class ProjectHeaderController extends Controller
         } catch (\Throwable $th) {
             return $this->returnResponseApi(false, 'Update Status Error', '', 500);
         }
-
 
         return $this->returnResponseApi(true, 'Project Winner Successfuly Added', '', 200);
     }
