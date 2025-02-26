@@ -486,7 +486,7 @@ class ProjectHeaderController extends Controller
      */
     public function download(int $id)
     {
-        $file = ProjectHeader::select('project_name','project_attach', 'project_type')->where('id', $id)->first();
+        $file = ProjectHeader::select('project_name', 'project_attach')->where('id', $id)->first();
         if (! $file) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
