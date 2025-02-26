@@ -42,7 +42,7 @@ class ProjectListFollowedProjectResource extends JsonResource
             'proposal_status' => $this->checkStatusProposal($userId, $this->id),
             // 'proposal_comment' => $this->projectDetail->value('proposal_comment') ?? null,
             'project_winner' => $this->project_winner ?? null,
-            'is_final' => $this->projectDetail->value('proposal_status') == 'Final' | 'Accepted' | 'Declined' ? true : false ?? null,
+            'is_final' => in_array($this->projectDetail->value('proposal_status'), ['Final', 'Accepted', 'Declined']) ? true : false,
         ];
     }
 

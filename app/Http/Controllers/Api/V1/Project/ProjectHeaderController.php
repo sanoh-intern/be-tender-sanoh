@@ -491,7 +491,11 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
-        $filePath = Storage::disk('local')->path($file->project_attach);
+        try {
+            $filePath = Storage::disk('local')->path($file->project_attach);
+        } catch (\Throwable $th) {
+            return $this->returnResponseApi(false, 'There is No File', '', 404);
+        }
 
         $fileName =  str_replace(' ', '_', Carbon::now()->format('Ymd').'_'.$file->project_name);
 
