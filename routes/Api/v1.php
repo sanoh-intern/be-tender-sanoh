@@ -42,7 +42,7 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     Route::delete('project-header/delete/{id}', [ProjectHeaderController::class, 'delete']);
 
     // Project Detail
-    Route::get('user/{userId}/project-detail/list-offer/get/{id}', [ProjectDetailController::class, 'getListProjectDetail']);
+    Route::get('project-detail/list-offer/get/{userId}/{id}', [ProjectDetailController::class, 'getListProjectDetail']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
@@ -66,7 +66,7 @@ Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->g
     Route::post('project-header/winner', [ProjectHeaderController::class, 'winner']);
 
     // Project Detail
-    Route::get('user/{userId}/project-detail/list-offer/get/{id}', [ProjectDetailController::class, 'getListProjectDetail']);
+    Route::get('project-detail/list-offer/get/{id}/{userId}', [ProjectDetailController::class, 'getListProjectDetail']);
     Route::patch('project-detail/Accepted/{id}', [ProjectDetailController::class, 'statusAccepted']);
     Route::patch('project-detail/Declined/{id}', [ProjectDetailController::class, 'statusDeclined']);
 

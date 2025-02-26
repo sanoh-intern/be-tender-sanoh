@@ -28,7 +28,7 @@ class ProjectDetailController extends Controller
      * Get list project detail/offer based on user
      *
      * @param  \Illuminate\Http\Request  $request
-     *                                             $request must include params userId & id only for admin
+     *                                             $request must include params userId & id (project_header_id) only for admin
      *                                             $request with params id only for user
      * @return mixed|\Illuminate\Http\JsonResponse
      */
