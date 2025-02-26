@@ -82,7 +82,7 @@ class ProjectDetailController extends Controller
             'supplier_id' => $user,
             'proposal_attach' => $filePath,
             'proposal_total_amount' => $request->proposal_total_amount,
-            'proposal_status' => $request->proposal_status == true ? 'Final' : null ?? null,
+            'proposal_status' => $request->proposal_status == 'true' ? 'Final' : null ?? null,
             'proposal_revision_no' => $countSubmittedProposal,
         ]);
 
