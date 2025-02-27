@@ -161,7 +161,7 @@ class ProjectHeaderController extends Controller
     }
 
     /**
-     * get list of supplier latest
+     * Get list of supplier latest
      * @param int $id project header id
      * @return mixed|\Illuminate\Http\JsonResponse
      */
@@ -206,6 +206,11 @@ class ProjectHeaderController extends Controller
         );
     }
 
+    /**
+     * Get list registered supplier in project
+     * @param int $id project header id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function getlistUserRegistered(int $id)
     {
         $getProject = ProjectHeader::with('userJoin')->where('id', $id)->first();
@@ -214,7 +219,6 @@ class ProjectHeaderController extends Controller
         }
 
         $data = $getProject->userJoin->load('companyProfile');
-        // return $data;
 
         return $this->returnResponseApi(true, 'Get List Registered User Successful', ProjectHeaderListRegisteredResource::collection($data), 200);;
     }
