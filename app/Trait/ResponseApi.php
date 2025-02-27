@@ -19,9 +19,14 @@ trait ResponseApi
     {
         $response = [
             'status' => $statusMessage,
-            'message' => $message,
+            $statusMessage == false ? 'error' : 'message' => $message,
             'data' => $data,
         ];
+
+        if ($data == null | $data == '') {
+            unset($response['data']);
+        }
+
         if ($addheader !== null) {
             $response = array_merge($response, $addheader);
         }
