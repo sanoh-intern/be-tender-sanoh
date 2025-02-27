@@ -159,6 +159,11 @@ class ProjectHeaderController extends Controller
         return $this->returnResponseApi(true, 'Get Followed Project Successful', ProjectListFollowedProjectResource::collection($getProject), 200);
     }
 
+    /**
+     * get list of supplier latest
+     * @param int $id project header id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function getListSupplierProjectProposal(int $id)
     {
         $getProject = ProjectHeader::with('projectDetail')
