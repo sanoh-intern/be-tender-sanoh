@@ -558,4 +558,19 @@ class ProjectHeaderController extends Controller
 
         return response()->download($filePath, $fileName);
     }
+
+    /**
+     * Assign value final view at column
+     * @param int $id project header
+     * @return void
+     */
+    public function finalView(int $id)
+    {
+        $update = ProjectHeader::find($id)->update(['final_view_at' => Carbon::now()]);
+        if (! $update) {
+            return $this->returnResponseApi(false, 'Proposal Not Found.', '', 404);
+        }
+
+        return $this->returnResponseApi(true, 'Update View Successful', '', 200);
+    }
 }
