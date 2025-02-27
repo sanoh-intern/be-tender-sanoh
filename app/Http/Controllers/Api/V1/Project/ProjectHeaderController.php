@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers\Api\V1\Project;
 
-use Auth;
-use Carbon\Carbon;
-use App\Models\User;
-use App\Trait\StoreFile;
-use App\Trait\ResponseApi;
-use App\Models\ProjectDetail;
-use App\Models\ProjectHeader;
-use App\Models\ProjectInvitation;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Resources\Project\ProjectHeaderResource;
 use App\Http\Requests\Project\ProjectHeaderCreateRequest;
 use App\Http\Requests\Project\ProjectHeaderUpdateRequest;
 use App\Http\Requests\Project\ProjectHeaderWinnerRequest;
 use App\Http\Resources\Project\ProjectHeaderEditResource;
-use App\Http\Resources\Project\ProjectListAllProjectResource;
-use App\Http\Resources\Project\ProjectListPublicProjectResource;
-use App\Http\Resources\Project\ProjectListInvitedProjectResource;
-use App\Http\Resources\Project\ProjectListSupplierHeaderProposal;
-use App\Http\Resources\Project\ProjectListFollowedProjectResource;
 use App\Http\Resources\Project\ProjectHeaderListRegisteredResource;
+use App\Http\Resources\Project\ProjectHeaderResource;
+use App\Http\Resources\Project\ProjectListAllProjectResource;
+use App\Http\Resources\Project\ProjectListFollowedProjectResource;
+use App\Http\Resources\Project\ProjectListInvitedProjectResource;
+use App\Http\Resources\Project\ProjectListPublicProjectResource;
+use App\Http\Resources\Project\ProjectListSupplierHeaderProposal;
+use App\Models\ProjectDetail;
+use App\Models\ProjectHeader;
+use App\Models\ProjectInvitation;
+use App\Models\User;
+use App\Trait\ResponseApi;
+use App\Trait\StoreFile;
+use Auth;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectHeaderController extends Controller
 {
@@ -39,6 +39,7 @@ class ProjectHeaderController extends Controller
      * get list all project
      * note:
      * 1. only for admin
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getListAllProject()
@@ -162,7 +163,8 @@ class ProjectHeaderController extends Controller
 
     /**
      * Get list of supplier latest
-     * @param int $id project header id
+     *
+     * @param  int  $id  project header id
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getListSupplierProjectProposal(int $id)
@@ -208,7 +210,8 @@ class ProjectHeaderController extends Controller
 
     /**
      * Get list registered supplier in project
-     * @param int $id project header id
+     *
+     * @param  int  $id  project header id
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function getlistUserRegistered(int $id)
@@ -220,7 +223,7 @@ class ProjectHeaderController extends Controller
 
         $data = $getProject->userJoin->load('companyProfile');
 
-        return $this->returnResponseApi(true, 'Get List Registered User Successful', ProjectHeaderListRegisteredResource::collection($data), 200);;
+        return $this->returnResponseApi(true, 'Get List Registered User Successful', ProjectHeaderListRegisteredResource::collection($data), 200);
     }
 
     /**
@@ -419,7 +422,7 @@ class ProjectHeaderController extends Controller
             $query->where('project_header_id', $id);
             $query->where('user_id', $user);
         })
-        ->exists();
+            ->exists();
         if ($checkDuplicate == true) {
             return $this->returnResponseApi(false, 'User Has Been Join', '', 403);
         }
@@ -535,7 +538,7 @@ class ProjectHeaderController extends Controller
 
     /**
      * Download Project Header Attachment
-     * @param int $id
+     *
      * @return mixed|\Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function download(int $id)
@@ -551,7 +554,7 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'There is No File', '', 404);
         }
 
-        $fileName =  str_replace(' ', '_', Carbon::now()->format('Ymd').'_'.$file->project_name);
+        $fileName = str_replace(' ', '_', Carbon::now()->format('Ymd').'_'.$file->project_name);
 
         return response()->download($filePath, $fileName);
     }

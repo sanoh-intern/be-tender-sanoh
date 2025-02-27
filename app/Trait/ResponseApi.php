@@ -31,19 +31,20 @@ trait ResponseApi
             $response = array_merge($response, $addheader);
         }
 
-        if ($statusMessage == false) {
-            return throw new HttpResponseException(
-                response()->json($response, $statusCode)
-            );
-        } elseif ($statusMessage == true) {
-            return response()->json($response, $statusCode);
-        } else {
-            return throw new HttpResponseException(
-                response()->json([
-                    'status' => false,
-                    'message' => 'Method Parameter Violation, Input Parameter Must Be Follow the rules',
-                ], 403)
-            );
+        switch ($statusMessage) {
+            case true:
+                return response()->json($response, $statusCode);
+            case false:
+                throw new HttpResponseException(
+                    response()->json($response, $statusCode)
+                );
+            default:
+                throw new HttpResponseException(
+                    response()->json([
+                        'status' => false,
+                        'message' => 'Method Parameter Violation, Input Parameter Must Be Follow the rules',
+                    ], 403)
+                );
         }
     }
 }

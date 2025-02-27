@@ -1,12 +1,11 @@
 <?php
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\User\AuthController;
-use App\Http\Controllers\Api\V1\User\UserController;
+use App\Http\Controllers\Api\V1\Dashboard\DashboardSupplierController;
 use App\Http\Controllers\Api\V1\Project\ProjectDetailController;
 use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
-use App\Http\Controllers\Api\V1\Dashboard\DashboardSupplierController;
+use App\Http\Controllers\Api\V1\User\AuthController;
+use App\Http\Controllers\Api\V1\User\UserController;
+use Illuminate\Support\Facades\Route;
 
 // Route for login
 Route::post('v1/login', [AuthController::class, 'login']);
