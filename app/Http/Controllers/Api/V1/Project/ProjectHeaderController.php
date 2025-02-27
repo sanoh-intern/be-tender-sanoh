@@ -123,7 +123,7 @@ class ProjectHeaderController extends Controller
         )
             ->where('id', $id)
             ->first();
-        if (! $data) {
+        if (!$data) {
             return $this->returnResponseApi(false, 'Project Header Not found', '', 404);
         }
 
@@ -176,27 +176,16 @@ class ProjectHeaderController extends Controller
             ->where('id', $id)
 
             ->first();
-        if (! $getProject) {
+        if (!$getProject) {
             return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
         }
 
-        if ($checkRole == 'purchasing') {
-            $getProjectDetail = $getProject->projectDetail
-                ->whereNotIn('proposal_status', ['Final'])
-                ->sortByDesc('created_at')
-                ->unique('supplier_id')
-                ->values();
-            if (! $getProjectDetail) {
-                return $this->returnResponseApi(false, 'Project Not Found', '', 404);
-            }
-        } elseif ($checkRole == 'presdir') {
-            $getProjectDetail = $getProject->projectDetail
-                ->sortByDesc('created_at')
-                ->unique('supplier_id')
-                ->values();
-            if (! $getProjectDetail) {
-                return $this->returnResponseApi(false, 'Project Not Found', '', 404);
-            }
+        $getProjectDetail = $getProject->projectDetail
+            ->sortByDesc('created_at')
+            ->unique('supplier_id')
+            ->values();
+        if (!$getProjectDetail) {
+            return $this->returnResponseApi(false, 'Project Not Found', '', 404);
         }
 
         return $this->returnResponseApi(
@@ -217,7 +206,7 @@ class ProjectHeaderController extends Controller
     public function getlistUserRegistered(int $id)
     {
         $getProject = ProjectHeader::with('userJoin')->where('id', $id)->first();
-        if (! $getProject) {
+        if (!$getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -253,7 +242,7 @@ class ProjectHeaderController extends Controller
                 'created_by' => Auth::user()->id,
             ]);
 
-            if (! empty($request->invite_email)) {
+            if (!empty($request->invite_email)) {
                 foreach ($request->invite_email as $email) {
                     $getUserId = User::with('role')->where('email', $email)->value('id');
                     ProjectInvitation::create([
@@ -278,7 +267,7 @@ class ProjectHeaderController extends Controller
     public function edit(int $id)
     {
         $data = ProjectHeader::where('id', $id)->first();
-        if (! $data) {
+        if (!$data) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -326,7 +315,7 @@ class ProjectHeaderController extends Controller
             ]);
 
             // bisa hapus bisa tambah kalau gaada yg baru tetap
-            if (! empty($request->invite_email)) {
+            if (!empty($request->invite_email)) {
                 $newEmail = $request->invite_email;
 
                 $oldInviteEmail = ProjectInvitation::with('user')->where('project_header_id', $getProject->id)->get()->pluck('user.email')->toArray();
@@ -366,7 +355,7 @@ class ProjectHeaderController extends Controller
     public function updateProjectStatus(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (! $getProject) {
+        if (!$getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -394,7 +383,7 @@ class ProjectHeaderController extends Controller
     public function delete(int $id)
     {
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (! $getProject) {
+        if (!$getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
         $getProject->delete();
@@ -414,7 +403,7 @@ class ProjectHeaderController extends Controller
         $user = Auth::user()->id;
 
         $getProject = ProjectHeader::where('id', $id)->first();
-        if (! $getProject) {
+        if (!$getProject) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -431,7 +420,7 @@ class ProjectHeaderController extends Controller
         switch ($checkInvitation) {
             case true:
                 $getInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject->id)->first();
-                if (! $getInvitation) {
+                if (!$getInvitation) {
                     return $this->returnResponseApi(false, 'Project Invitation Not Found', '', 404);
                 }
 
@@ -472,17 +461,17 @@ class ProjectHeaderController extends Controller
         $userWinner = [];
         foreach ($request->project_detail_id as $id) {
             $getProjectDetail = ProjectDetail::where('id', $id)->first();
-            if (! $getProjectDetail) {
+            if (!$getProjectDetail) {
                 return $this->returnResponseApi(false, 'Project Detail Not Found', '', 404);
             }
 
             $getProject = ProjectHeader::where('id', $getProjectDetail->project_header_id)->first();
-            if (! $getProject) {
+            if (!$getProject) {
                 return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
             }
 
             $checkUser = User::with('companyProfile')->where('id', $getProjectDetail->supplier_id)->first();
-            if (! $checkUser) {
+            if (!$checkUser) {
                 return $this->returnResponseApi(false, 'User Not Found', '', 404);
             } else {
                 $getProject->userWinner()->attach($getProjectDetail->supplier_id);
@@ -494,7 +483,7 @@ class ProjectHeaderController extends Controller
         try {
             DB::transaction(function () use ($getProjectDetail, $request, $getProject, $userWinner) {
                 $getProjectHeader = ProjectHeader::with('projectDetail')->find($getProjectDetail->project_header_id);
-                if (! $getProjectHeader) {
+                if (!$getProjectHeader) {
                     return $this->returnResponseApi(false, 'Project Header Not Found', '', 200);
                 }
 
@@ -509,13 +498,13 @@ class ProjectHeaderController extends Controller
 
                 $getDeclineProposalId = array_diff($getLatestProposal, $proposalWinId);
 
-                if (! empty($getDeclineProposalId)) {
+                if (!empty($getDeclineProposalId)) {
                     foreach ($getDeclineProposalId as $id) {
                         ProjectDetail::where('id', $id)->update(['proposal_status' => 'Declined']);
                     }
                 }
 
-                if (! empty($proposalWinId)) {
+                if (!empty($proposalWinId)) {
                     foreach ($proposalWinId as $id) {
                         ProjectDetail::where('id', $id)->update(['proposal_status' => 'Accepted']);
                     }
@@ -544,7 +533,7 @@ class ProjectHeaderController extends Controller
     public function download(int $id)
     {
         $file = ProjectHeader::select('project_name', 'project_attach')->where('id', $id)->first();
-        if (! $file) {
+        if (!$file) {
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
@@ -554,7 +543,7 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'There is No File', '', 404);
         }
 
-        $fileName = str_replace(' ', '_', Carbon::now()->format('Ymd').'_'.$file->project_name);
+        $fileName = str_replace(' ', '_', Carbon::now()->format('Ymd') . '_' . $file->project_name);
 
         return response()->download($filePath, $fileName);
     }
@@ -567,7 +556,7 @@ class ProjectHeaderController extends Controller
     public function finalView(int $id)
     {
         $update = ProjectHeader::find($id)->update(['final_view_at' => Carbon::now()]);
-        if (! $update) {
+        if (!$update) {
             return $this->returnResponseApi(false, 'Proposal Not Found.', '', 404);
         }
 
