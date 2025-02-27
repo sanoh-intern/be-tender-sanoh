@@ -204,7 +204,7 @@ class ProjectHeaderController extends Controller
             'Get Supplier Proposals Successful',
             ProjectListSupplierHeaderProposal::collection($getProjectDetail),
             200,
-            ['final_view_at' => $getProject->final_view_at ?? 'Not Viewed Yet']
+            ['final_view_at' => $getProject->final_view_at ?? null]
         );
     }
 
