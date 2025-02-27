@@ -166,20 +166,34 @@ class ProjectHeaderController extends Controller
      */
     public function getListSupplierProjectProposal(int $id)
     {
+        $checkRole = Auth::user()->load('roleTag')->roleTag->role_tag;
+
         $getProject = ProjectHeader::with('projectDetail')
             ->select('id', 'project_name', 'project_type', 'project_winner', 'final_view_at')
             ->where('id', $id)
+
             ->first();
         if (! $getProject) {
             return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
         }
 
-        $getProjectDetail = $getProject->projectDetail
-            ->sortByDesc('created_at')
-            ->unique('supplier_id')
-            ->values();
-        if (! $getProjectDetail) {
-            return $this->returnResponseApi(false, 'Project Not Found', '', 404);
+        if ($checkRole == 'purchasing') {
+            $getProjectDetail = $getProject->projectDetail
+                ->whereNotIn('proposal_status', ['Final'])
+                ->sortByDesc('created_at')
+                ->unique('supplier_id')
+                ->values();
+            if (! $getProjectDetail) {
+                return $this->returnResponseApi(false, 'Project Not Found', '', 404);
+            }
+        } elseif ($checkRole == 'presdir') {
+            $getProjectDetail = $getProject->projectDetail
+                ->sortByDesc('created_at')
+                ->unique('supplier_id')
+                ->values();
+            if (! $getProjectDetail) {
+                return $this->returnResponseApi(false, 'Project Not Found', '', 404);
+            }
         }
 
         return $this->returnResponseApi(
@@ -189,6 +203,10 @@ class ProjectHeaderController extends Controller
             200,
             ['final_view_at' => $getProject->final_view_at ?? 'Not Viewed Yet']
         );
+    }
+
+    public function tes() : Returntype {
+
     }
 
     /**

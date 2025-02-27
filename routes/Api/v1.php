@@ -63,12 +63,12 @@ Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->g
     Route::put('project-header/update/{id}', [ProjectHeaderController::class, 'update']);
     Route::patch('project-header/update/regis-status/{id}', [ProjectHeaderController::class, 'updateProjectStatus']);
     Route::delete('project-header/delete/{id}', [ProjectHeaderController::class, 'delete']);
-    Route::post('project-header/winner', [ProjectHeaderController::class, 'winner']);
+    Route::post('project-header/accepted', [ProjectHeaderController::class, 'winner']);
 
     // Project Detail
     Route::get('project-detail/list-offer/get/{id}/{userId}', [ProjectDetailController::class, 'getListProjectDetail']);
-    Route::patch('project-detail/Accepted/{id}', [ProjectDetailController::class, 'statusAccepted']);
-    Route::patch('project-detail/Declined/{id}', [ProjectDetailController::class, 'statusDeclined']);
+    Route::patch('project-detail/accepted/{id}', [ProjectDetailController::class, 'statusAccepted']);
+    Route::patch('project-detail/declined/{id}', [ProjectDetailController::class, 'statusDeclined']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
