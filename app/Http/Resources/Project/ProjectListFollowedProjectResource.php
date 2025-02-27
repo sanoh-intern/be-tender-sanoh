@@ -35,7 +35,7 @@ class ProjectListFollowedProjectResource extends JsonResource
             'register_date' => $this->userJoin->first()->pivot->created_at
                 ? Carbon::parse($this->userJoin->first()->pivot->created_at)
                     ->timezone('Asia/Jakarta')
-                    ->format('Y-m-d h:i')
+                    ->format('Y-m-d H:i')
                 : null,
             'proposal_last_update' => $this->latestUpdateProposal() ?? null,
             'proposal_last_amount' => $this->projectDetail->value('proposal_total_amount') ?? null,
@@ -59,7 +59,7 @@ class ProjectListFollowedProjectResource extends JsonResource
         } else {
             $data = Carbon::parse($getLatestUpdate->created_at)
                 ->timezone('Asia/Jakarta')
-                ->format('Y-m-d h:i');
+                ->format('Y-m-d H:i');
         }
 
         return $data;

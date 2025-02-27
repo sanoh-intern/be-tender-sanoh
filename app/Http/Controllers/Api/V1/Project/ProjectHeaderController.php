@@ -23,6 +23,7 @@ use App\Http\Resources\Project\ProjectListPublicProjectResource;
 use App\Http\Resources\Project\ProjectListInvitedProjectResource;
 use App\Http\Resources\Project\ProjectListSupplierHeaderProposal;
 use App\Http\Resources\Project\ProjectListFollowedProjectResource;
+use App\Http\Resources\Project\ProjectHeaderListRegisteredResource;
 
 class ProjectHeaderController extends Controller
 {
@@ -205,8 +206,17 @@ class ProjectHeaderController extends Controller
         );
     }
 
-    public function tes() : Returntype {
+    public function getlistUserRegistered(int $id)
+    {
+        $getProject = ProjectHeader::with('userJoin')->where('id', $id)->first();
+        if (! $getProject) {
+            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
+        }
 
+        $data = $getProject->userJoin->load('companyProfile');
+        // return $data;
+
+        return $this->returnResponseApi(true, 'Get List Registered User Successful', ProjectHeaderListRegisteredResource::collection($data), 200);;
     }
 
     /**
