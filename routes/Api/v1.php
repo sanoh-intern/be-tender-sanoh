@@ -89,7 +89,7 @@ Route::middleware(['auth:sanctum', 'userRole:review'])->prefix('v1/review')->gro
 // Route for supplier
 Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')->group(function () {
     // Feat Dashboard
-    Route::get('dashboard/mini-profile/get/{id}', [DashboardSupplierController::class, 'miniProfile']);
+    Route::get('dashboard/mini-profile/get', [DashboardSupplierController::class, 'miniProfile']);
 
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'get']);
