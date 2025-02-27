@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Dashboard\DashboardMiniProfileResource;
 use App\Models\User;
 use App\Trait\ResponseApi;
+use Auth;
 
 class DashboardSupplierController extends Controller
 {
@@ -22,9 +23,9 @@ class DashboardSupplierController extends Controller
      * @param  int  $id  this is id user
      * @return mixed|\Illuminate\Http\JsonResponse
      */
-    public function miniProfile(int $id)
+    public function miniProfile()
     {
-        $user = User::with('companyProfile')->where('id', $id)->first();
+        $user = User::with('companyProfile')->where('id', Auth::user()->id)->first();
         if (! $user) {
             return $this->returnResponseApi(false, 'User Not Found', '', 404);
         }
