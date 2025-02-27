@@ -415,8 +415,16 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
-        $checkInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject->id)->exists();
+        $checkDuplicate = ProjectHeader::whereHas('userJoin', function ($query) use ($id, $user) {
+            $query->where('project_header_id', $id);
+            $query->where('user_id', $user);
+        })
+        ->exists();
+        if ($checkDuplicate == true) {
+            return $this->returnResponseApi(false, 'User Has Been Join', '', 403);
+        }
 
+        $checkInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject->id)->exists();
         switch ($checkInvitation) {
             case true:
                 $getInvitation = ProjectInvitation::where('user_id', $user)->where('project_header_id', $getProject->id)->first();
