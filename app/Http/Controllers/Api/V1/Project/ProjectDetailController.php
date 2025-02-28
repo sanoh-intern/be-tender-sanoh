@@ -60,9 +60,9 @@ class ProjectDetailController extends Controller
         $user = $request->supplier_id ?? Auth::user()->id;
 
         $checkDeclined = ProjectDetail::where('supplier_id', $user)
-        ->where('project_header_id', $request->project_header_id)
-        ->where('proposal_status', 'Declined')
-        ->exists();
+            ->where('project_header_id', $request->project_header_id)
+            ->where('proposal_status', 'Declined')
+            ->exists();
         if ($checkDeclined == true) {
             return $this->returnResponseApi(false, 'Your Last Proposal Has Been Declined', '', 403);
         }
