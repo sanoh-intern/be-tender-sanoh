@@ -21,6 +21,7 @@ Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-ad
     Route::get('user/list', [UserController::class, 'getListUser']);
     Route::get('user/edit/{id}', [UserController::class, 'edit']);
     Route::post('user/create', [UserController::class, 'create']);
+    Route::put('user/update/{id}', [UserController::class, 'update']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
@@ -44,7 +45,7 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     Route::delete('project-header/delete/{id}', [ProjectHeaderController::class, 'delete']);
 
     // Project Detail
-    Route::get('project-detail/list-offer/get../{id}/{user_id}', [ProjectDetailController::class, 'getListProjectDetail']);
+    Route::get('project-detail/list-offer/get/{id}/{userId}', [ProjectDetailController::class, 'getListProjectDetail']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
