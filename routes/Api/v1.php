@@ -36,7 +36,7 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     Route::get('project-header/manage-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
     Route::get('project-header/registered-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
     Route::get('project-header/get/{id}', [ProjectHeaderController::class, 'getProjectById']);
-    Route::get('project-header/registered/{user_id}', [ProjectHeaderController::class, 'getlistUserRegistered']);
+    Route::get('project-header/registered/{id}', [ProjectHeaderController::class, 'getlistUserRegistered']);
     Route::get('project-header/list-proposal/{id}', [ProjectHeaderController::class, 'getListSupplierProjectProposal']);
     Route::post('project-header/create', [ProjectHeaderController::class, 'create']);
     Route::get('project-header/edit/{id}', [ProjectHeaderController::class, 'edit']);
@@ -60,6 +60,7 @@ Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->g
     Route::get('project-header/manage-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
     Route::get('project-header/registered-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
     Route::get('project-header/get/{id}', [ProjectHeaderController::class, 'getProjectById']);
+    Route::get('project-header/registered/{id}', [ProjectHeaderController::class, 'getlistUserRegistered']);
     Route::get('project-header/list-proposal/{id}', [ProjectHeaderController::class, 'getListSupplierProjectProposal']);
     Route::post('project-header/create', [ProjectHeaderController::class, 'create']);
     Route::get('project-header/edit/{id}', [ProjectHeaderController::class, 'edit']);
