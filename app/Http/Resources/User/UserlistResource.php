@@ -22,6 +22,8 @@ class UserlistResource extends JsonResource
             'company_name' => $this->companyProfile->company_name ?? null,
             'email' => $this->email ?? null,
             'role' => $this->roleTag->role_tag ?? null,
+            'profile_verified_at' => $this->profile_verified_at ?? null,
+            'email_verified_at' => $this->email_verified_at ?? null,
         ];
     }
 }
