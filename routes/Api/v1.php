@@ -19,6 +19,7 @@ Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-ad
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
     Route::get('user/list', [UserController::class, 'getListUser']);
+    Route::get('user/edit/{id}', [UserController::class, 'edit']);
     Route::post('user/create', [UserController::class, 'create']);
 
     // Route for logout

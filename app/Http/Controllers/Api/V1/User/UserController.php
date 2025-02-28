@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserCreateRequest;
 use App\Http\Resources\User\UserResource;
+use App\Http\Resources\UserEditResource;
 use App\Http\Resources\UserlistResource;
 use App\Models\CompanyProfile;
 use App\Models\User;
@@ -41,9 +42,20 @@ class UserController extends Controller
      */
     public function getListUser()
     {
-        $data = User::with('companyProfile', 'roleTag')->orderBy('created_at','asc')->get();
+        $data = User::with('companyProfile', 'roleTag')->orderBy('created_at', 'asc')->get();
 
         return $this->returnResponseApi(true, 'Get List User Success', UserlistResource::collection($data), 200);
+    }
+
+    /**
+     * Get data edit
+     * @return void
+     */
+    public function edit(int $id)
+    {
+        $data = User::with('CompanyProfile', 'roleTag')->find($id);
+
+        return $this->returnResponseApi(true, 'Get Detail User Success', new UserEditResource($data), 200);
     }
 
     /**
