@@ -18,6 +18,7 @@ class UserlistResource extends JsonResource
             'id' => (string) $this->id,
             'id_tax' => $this->tax_id ?? null,
             'account_status' => $this->account_status ?? null,
+            'bp_code' => $this->companyProfile->bp_code ?? null,
             'company_name' => $this->companyProfile->company_name ?? null,
             'email' => $this->email ?? null,
             'role' => $this->roleTag->role_tag ?? null,
