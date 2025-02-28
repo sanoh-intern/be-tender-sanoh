@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserCreateRequest;
+use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\User\UserEditResource;
 use App\Http\Resources\User\UserlistResource;
@@ -96,5 +97,38 @@ class UserController extends Controller
         });
 
         return $this->returnResponseApi(true, 'Create User Success', new UserResource($data), 201);
+    }
+
+    /**
+     * Update user data
+     * @param \App\Http\Requests\User\UserUpdateRequest $request
+     * @param int $id
+     * @return void
+     */
+    public function update(UserUpdateRequest $request, int $id)
+    {
+        $request->validated();
+
+        $user = User::with('roleTag')->find($id);
+        if (! $user) {
+            return $this->returnResponseApi(false, 'User Not Found', '', 404);
+        }
+        $user->update([
+            'account_status' => $request->account_status ?? $user->account_status,
+            'email' => $request->email ?? $user->email,
+            'password' => Hash::make($request->password) ?? $user->password,
+            'role_id' => $request->role ?? $user->roleTag->role_tag,
+        ]);
+
+        $profile = CompanyProfile::where('user_id', $id)->first();
+        if (! $profile) {
+            return $this->returnResponseApi(false, 'Company Profile Not Found', '', 404);
+        }
+        $profile->update([
+            'tax_id' => $request->id_tax ?? $profile->tax_id,
+            'company_name' => $request->comapny_name ?? $profile->company_name,
+        ]);
+
+        return $this->returnResponseApi(true, 'Update User Success', null, 200);
     }
 }
