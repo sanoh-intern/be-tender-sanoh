@@ -17,7 +17,8 @@ Route::get('v1/download/project/attachment/{id}', [ProjectHeaderController::clas
 Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-admin')->group(function () {
 
     // Feat User
-    Route::get('user/get/{id}', [UserController::class, 'get']);
+    Route::get('user/get/{id}', [UserController::class, 'getUserById']);
+    Route::get('user/list', [UserController::class, 'getListUser']);
     Route::post('user/create', [UserController::class, 'create']);
 
     // Route for logout
@@ -27,7 +28,7 @@ Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-ad
 // Route for purchasing
 Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasing')->group(function () {
     // Feat User
-    Route::get('user/get/{id}', [UserController::class, 'get']);
+    Route::get('user/get/{id}', [UserController::class, 'getUserById']);
 
     // Feat Project Header
     Route::get('project-header/manage-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
@@ -51,7 +52,7 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
 // Route for presdir
 Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->group(function () {
     // Feat User
-    Route::get('user/get/{id}', [UserController::class, 'get']);
+    Route::get('user/get/{id}', [UserController::class, 'getUserById']);
 
     // Feat Project Header
     Route::get('project-header/manage-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
@@ -78,7 +79,7 @@ Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->g
 // Route for review
 Route::middleware(['auth:sanctum', 'userRole:review'])->prefix('v1/review')->group(function () {
     // Feat User
-    Route::get('user/get/{id}', [UserController::class, 'get']);
+    Route::get('user/get/{id}', [UserController::class, 'getUserById']);
 
     // Feat Project Header
     Route::post('project-header/winner', [ProjectHeaderController::class, 'winner']);
@@ -93,7 +94,7 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
     Route::get('dashboard/mini-profile/get', [DashboardSupplierController::class, 'miniProfile']);
 
     // Feat User
-    Route::get('user/get/{id}', [UserController::class, 'get']);
+    Route::get('user/get/{id}', [UserController::class, 'getUserById']);
 
     // Project Header
     Route::get('project-header/get/{id}', [ProjectHeaderController::class, 'getProjectById']);

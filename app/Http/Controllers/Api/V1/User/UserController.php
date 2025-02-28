@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserCreateRequest;
 use App\Http\Resources\User\UserResource;
+use App\Http\Resources\UserlistResource;
 use App\Models\CompanyProfile;
 use App\Models\User;
 use App\Trait\ResponseApi;
@@ -27,11 +28,22 @@ class UserController extends Controller
      *
      * @return UserResource
      */
-    public function get(int $id)
+    public function getUserById(int $id)
     {
         $user = User::with('role', 'companyProfile')->where('id', $id)->first();
 
         return $this->returnResponseApi(true, 'Get Data Success', new UserResource($user), 200);
+    }
+
+    /**
+     * Get list user
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function getListUser()
+    {
+        $data = User::with('companyProfile', 'roleTag')->orderBy('created_at','asc')->get();
+
+        return $this->returnResponseApi(true, 'Get List User Success', UserlistResource::collection($data), 200);
     }
 
     /**
