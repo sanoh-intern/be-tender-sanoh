@@ -44,7 +44,7 @@ class ProjectHeaderController extends Controller
      */
     public function getListAllProject()
     {
-        $data = ProjectHeader::with('userJoin')->get();
+        $data = ProjectHeader::with('userJoin')->orderByDesc('created_at')->get();
         if ($data->isEmpty()) {
             return $this->returnResponseApi(true, 'There is No Project Created', '', 200);
         }
@@ -67,6 +67,7 @@ class ProjectHeaderController extends Controller
             ->where('project_status', 'Ongoing')
             ->where('project_type', 'Public')
             ->where('registration_status', 'Open')
+            ->orderByDesc('created_at')
             ->get();
 
         if ($data->isEmpty()) {
@@ -97,6 +98,7 @@ class ProjectHeaderController extends Controller
                     ->where('invitation_status', 'Pending')
                     ->pluck('project_header_id')
             )
+            ->orderByDesc('created_at')
             ->get();
 
         return $this->returnResponseApi(true, 'Get Invited Project Successful', ProjectListInvitedProjectResource::collection($data), 200);
@@ -119,7 +121,7 @@ class ProjectHeaderController extends Controller
             'project_description',
             'project_attach',
             'registration_due_at',
-            'registration_status',
+            'registration_status'
         )
             ->where('id', $id)
             ->first();
@@ -153,6 +155,7 @@ class ProjectHeaderController extends Controller
         ])
             ->select('id', 'project_name', 'project_type', 'project_winner', 'project_status')
             ->whereIn('id', $getProjectId)
+            ->orderByDesc('created_at')
             ->get();
         if ($getProject->isEmpty()) {
             return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
@@ -169,12 +172,9 @@ class ProjectHeaderController extends Controller
      */
     public function getListSupplierProjectProposal(int $id)
     {
-        $checkRole = Auth::user()->load('roleTag')->roleTag->role_tag;
-
         $getProject = ProjectHeader::with('projectDetail')
             ->select('id', 'project_name', 'project_type', 'project_winner', 'final_view_at')
             ->where('id', $id)
-
             ->first();
         if (! $getProject) {
             return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
@@ -210,7 +210,7 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
-        $data = $getProject->userJoin->load('companyProfile');
+        $data = $getProject->userJoin->load('companyProfile')->sortByDesc('pivot.created_at');
 
         return $this->returnResponseApi(true, 'Get List Registered User Successful', ProjectHeaderListRegisteredResource::collection($data), 200);
     }
