@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     Route::delete('project-header/delete/{id}', [ProjectHeaderController::class, 'delete']);
 
     // Project Detail
-    Route::get('project-detail/list-offer/get/{userId}/{id}', [ProjectDetailController::class, 'getListProjectDetail']);
+    Route::get('project-detail/list-offer/get../{id}/{user_id}', [ProjectDetailController::class, 'getListProjectDetail']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);
