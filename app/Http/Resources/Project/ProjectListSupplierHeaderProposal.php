@@ -31,7 +31,7 @@ class ProjectListSupplierHeaderProposal extends JsonResource
             'proposal_total_amount' => $this->proposal_total_amount,
             'proposal_revision_no' => $this->proposal_revision_no,
             'proposal_status' => $this->checkStatusProposal($this->supplier_id, $this->project_header_id),
-            'proposal_created_at' => $this->created_at->format('Y-m-d'),
+            'proposal_last_update' => $this->created_at->format('Y-m-d'),
             'is_final' => in_array($this->proposal_status, ['Final', 'Accepted', 'Declined']) ? true : false,
         ];
     }
