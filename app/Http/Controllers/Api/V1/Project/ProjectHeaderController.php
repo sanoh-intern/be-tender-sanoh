@@ -71,7 +71,7 @@ class ProjectHeaderController extends Controller
             ->get();
 
         if ($data->isEmpty()) {
-            return $this->returnResponseApi(false, 'No Public Project Available', '', 200);
+            return $this->returnResponseApi(true, 'No Public Project Available', '', 200);
         }
 
         return $this->returnResponseApi(true, 'Get Public Project Successful', ProjectListPublicProjectResource::collection($data), 200);
