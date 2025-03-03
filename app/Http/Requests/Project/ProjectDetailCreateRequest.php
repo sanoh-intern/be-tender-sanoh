@@ -6,7 +6,7 @@ use App\Trait\AuthorizationRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ProjectHeaderWinnerRequest extends FormRequest
+class ProjectDetailCreateRequest extends FormRequest
 {
     /**
      * -------TRAIT---------
@@ -20,7 +20,7 @@ class ProjectHeaderWinnerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->permissibleRole('purchasing', 'presdir');
+        return $this->permissibleRole('supplier');
     }
 
     /**
@@ -31,8 +31,11 @@ class ProjectHeaderWinnerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'project_detail_id' => 'required|array',
-            'project_detail_id.*' => 'integer',
+            'project_header_id' => 'required|integer',
+            'supplier_id' => 'integer',
+            'proposal_attach' => 'file',
+            'proposal_total_amount' => 'integer|min:0',
+            'proposal_status' => 'nullable|in:true,false',
         ];
     }
 
@@ -44,11 +47,13 @@ class ProjectHeaderWinnerRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required' => 'The user ID field is required.',
-            'user_id.array' => 'The user ID must be an array.',
-            'user_id.*.integer' => 'Each user ID must be an integer.',
-            'project_header_id.required' => 'The project header ID field is required.',
+            'project_header_id.required' => 'The project header ID is required.',
             'project_header_id.integer' => 'The project header ID must be an integer.',
+            'supplier_id.integer' => 'The supplier ID must be an integer.',
+            'proposal_attach.file' => 'The proposal attachment must be a file.',
+            'proposal_total_amount.integer' => 'The proposal total amount must be an integer.',
+            'proposal_total_amount.min' => 'The proposal total amount must be at least 0.',
+            'proposal_status.in' => 'The proposal status must be either true or false.',
         ];
     }
 

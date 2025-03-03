@@ -20,7 +20,7 @@ class ProjectHeaderCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->permissibleRole('admin-purchasing');
+        return $this->permissibleRole('purchasing');
     }
 
     /**
@@ -32,7 +32,7 @@ class ProjectHeaderCreateRequest extends FormRequest
     {
         return [
             'project_name' => 'required|string',
-            'project_type' => 'required|string|in:Open,Private',
+            'project_type' => 'required|string|in:Public,Private',
             'project_description' => 'string',
             'project_attach' => 'file',
             'registration_due_at' => 'required|date',

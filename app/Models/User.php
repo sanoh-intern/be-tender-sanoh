@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -28,6 +29,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'company_photo',
+        'role_id',
         'email',
         'password',
         'account_status',
@@ -63,7 +65,15 @@ class User extends Authenticatable
      */
     public function role(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'list_user_role', 'user_id', 'role_id')->withTimestamps();
+        return $this->belongsToMany(Role::class, 'list_user_role', 'user_id', 'role_id')->withPivot('created_at')->withTimestamps();
+    }
+
+    /**
+     * Get the roleTag that owns the User
+     */
+    public function roleTag(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
     /**
@@ -72,5 +82,13 @@ class User extends Authenticatable
     public function companyProfile(): HasOne
     {
         return $this->hasOne(CompanyProfile::class, 'user_id', 'id');
+    }
+
+    /**
+     * The userProject that belong to the User
+     */
+    public function userProject(): BelongsToMany
+    {
+        return $this->belongsToMany(ProjectHeader::class, 'list_user_project', 'user_id', 'project_header_id')->withTimestamps();
     }
 }

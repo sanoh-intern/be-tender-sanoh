@@ -20,7 +20,7 @@ class ProjectHeaderUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->permissibleRole('admin-purchasing', 'admin-presdir');
+        return $this->permissibleRole('purchasing', 'presdir');
     }
 
     /**
@@ -32,7 +32,7 @@ class ProjectHeaderUpdateRequest extends FormRequest
     {
         return [
             'project_name' => 'string',
-            'project_status' => 'string|in:Ongoing,Final',
+            'project_status' => 'string|in:Final,Accepted,Declined',
             'project_type' => 'string|in:Public,Private',
             'project_description' => 'string',
             'project_attach' => 'file',
@@ -54,7 +54,7 @@ class ProjectHeaderUpdateRequest extends FormRequest
         return [
             'project_name.string' => 'The project name must be a valid string.',
             'project_status.string' => 'The project status must be a valid string.',
-            'project_status.in' => 'The project status must be either Ongoing or Final.',
+            'project_status.in' => 'The project status must be either Final, Accepted, or Declined.',
             'project_type.string' => 'The project type must be a valid string.',
             'project_type.in' => 'The project type must be either Public or Private.',
             'project_description.string' => 'The project description must be a valid string.',

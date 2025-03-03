@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProjectInvitation extends Model
 {
@@ -26,4 +27,20 @@ class ProjectInvitation extends Model
         'project_header_id',
         'invitation_by',
     ];
+
+    /**
+     * Get the user that owns the ProjectInvitation
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get the ProjectHeader that owns the ProjectInvitation
+     */
+    public function projectHeader(): BelongsTo
+    {
+        return $this->belongsTo(ProjectHeader::class, 'project_header_id', 'id');
+    }
 }

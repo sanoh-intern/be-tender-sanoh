@@ -2,6 +2,7 @@
 
 namespace App\Trait;
 
+use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
 trait AuthorizationRole
@@ -13,7 +14,9 @@ trait AuthorizationRole
      */
     public function permissibleRole(string ...$role)
     {
-        $getRole = Auth::user()->role->pluck('role_tag');
+        $user = Auth::user()->role_id;
+
+        $getRole = Role::where('id', $user)->pluck('role_tag');
 
         $check = $getRole->intersect($role)->isNotEmpty();
 

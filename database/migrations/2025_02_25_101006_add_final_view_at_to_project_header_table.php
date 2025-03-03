@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('project_header', function (Blueprint $table) {
-            $table->unsignedBigInteger('updated_by')->nullable()->after('created_at');
-            $table->foreign('updated_by')->references('id')->on('user')->onDelete('cascade');
+            $table->dateTime('final_view_at')->nullable()->after('final_review_at');
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('project_header', function (Blueprint $table) {
-            $table->dropForeign('project_header_updated_by_foreign');
-            $table->dropColumn('updated_by');
+            $table->dropColumn('final_view_at');
         });
     }
 };
