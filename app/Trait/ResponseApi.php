@@ -23,9 +23,9 @@ trait ResponseApi
             'data' => $data,
         ];
 
-        if ($data == null | $data == '') {
-            unset($response['data']);
-        }
+        // if ($data == null | $data == '') {
+        //     unset($response['data']);
+        // }
 
         if ($addheader !== null) {
             $response = array_merge($response, $addheader);
