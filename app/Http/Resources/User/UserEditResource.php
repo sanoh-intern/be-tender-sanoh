@@ -20,7 +20,7 @@ class UserEditResource extends JsonResource
             'account_status' => $this->account_status ?? null,
             'company_name' => $this->companyProfile->company_name ?? null,
             'email' => $this->email ?? null,
-            'role' => $this->roleTag->role_tag ?? null,
+            'role' => $this->roleTag->id ?? null,
         ];
     }
 }
