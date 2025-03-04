@@ -158,7 +158,7 @@ class ProjectHeaderController extends Controller
             ->orderByDesc('created_at')
             ->get();
         if ($getProject->isEmpty()) {
-            return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
+            return $this->returnResponseApi(true, 'There Is No Project You Follow', '', 200);
         }
 
         return $this->returnResponseApi(true, 'Get Followed Project Successful', ProjectListFollowedProjectResource::collection($getProject), 200);
@@ -177,7 +177,7 @@ class ProjectHeaderController extends Controller
             ->where('id', $id)
             ->first();
         if (! $getProject) {
-            return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
+            return $this->returnResponseApi(true, 'There Is No Project You Follow', '', 200);
         }
 
         $getProjectDetail = $getProject->projectDetail
@@ -207,7 +207,7 @@ class ProjectHeaderController extends Controller
     {
         $getProject = ProjectHeader::with('userJoin')->where('id', $id)->first();
         if (! $getProject) {
-            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
+            return $this->returnResponseApi(true, 'Project Header Not Found', '', 404);
         }
 
         $data = $getProject->userJoin->load('companyProfile')->sortByDesc('pivot.created_at');
