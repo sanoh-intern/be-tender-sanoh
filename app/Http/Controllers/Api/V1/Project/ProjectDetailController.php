@@ -7,6 +7,7 @@ use App\Http\Requests\Project\ProjectDetailCreateRequest;
 use App\Http\Requests\Project\ProjectDetailReviewRequest;
 use App\Http\Resources\Project\ProjectListProjectDetail;
 use App\Models\ProjectDetail;
+use App\Models\ProjectHeader;
 use App\Models\User;
 use App\Trait\ResponseApi;
 use App\Trait\StoreFile;
@@ -45,7 +46,13 @@ class ProjectDetailController extends Controller
             return $this->returnResponseApi(true, 'There is no proposal submitted.', '', 200);
         }
 
-        return $this->returnResponseApi(true, 'Get Project Detail Successful', ProjectListProjectDetail::collection($data), 200);
+        return $this->returnResponseApi(
+            true,
+            'Get Project Detail Successful',
+            ProjectListProjectDetail::collection($data),
+            200,
+            ['final_view_at' => ProjectHeader::where('id', $id)->value('final_view_at')]
+        );
     }
 
     /**
@@ -102,7 +109,7 @@ class ProjectDetailController extends Controller
         $request->validated();
 
         $getProjectDetail = ProjectDetail::where('id', $id)->first();
-        if (! $getProjectDetail) {
+        if (!$getProjectDetail) {
             return $this->returnResponseApi(false, 'Project Detail Negotiation Not Found', '', 404);
         }
         $getProjectDetail->update([
@@ -122,7 +129,7 @@ class ProjectDetailController extends Controller
     public function statusAccepted(int $id)
     {
         $update = ProjectDetail::where('id', $id)->update(['proposal_status' => 'Accepted']);
-        if (! $update) {
+        if (!$update) {
             return $this->returnResponseApi(false, 'Proposal Not Found.', '', 404);
         }
 
@@ -137,7 +144,7 @@ class ProjectDetailController extends Controller
     public function statusDeclined(int $id)
     {
         $update = ProjectDetail::where('id', $id)->update(['proposal_status' => 'Declined']);
-        if (! $update) {
+        if (!$update) {
             return $this->returnResponseApi(false, 'Proposal Not Found.', '', 404);
         }
 

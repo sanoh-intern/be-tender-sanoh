@@ -20,7 +20,7 @@ trait ResponseApi
         $response = [
             'status' => $statusMessage,
             $statusMessage == false ? 'error' : 'message' => $message,
-            'data' => $data,
+            'data' => ($data == '' || $data == null) ? [] : $data,
         ];
 
         // if ($data == null | $data == '') {
