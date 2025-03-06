@@ -270,12 +270,7 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
-        $getInvitation = ProjectInvitation::where('project_header_id', $id)->pluck('user_id');
-
-        $email = [];
-        foreach ($getInvitation as $userId) {
-            $email[] = User::where('id', $userId)->value('email');
-        }
+        $email = ProjectInvitation::where('project_header_id', $id)->pluck('email');
 
         return $this->returnResponseApi(true, 'Get Project Header Detail Successful', new ProjectHeaderEditResource($data, $email), 200);
     }
