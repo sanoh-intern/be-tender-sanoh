@@ -244,9 +244,8 @@ class ProjectHeaderController extends Controller
 
             if (! empty($request->invite_email)) {
                 foreach ($request->invite_email as $email) {
-                    $getUserId = User::with('role')->where('email', $email)->value('id');
                     ProjectInvitation::create([
-                        'user_id' => $getUserId,
+                        'email' => $email,
                         'project_header_id' => $projectHeader->id,
                         'invitation_by' => Auth::user()->id,
                     ]);
