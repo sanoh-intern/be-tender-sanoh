@@ -87,14 +87,14 @@ class ProjectHeaderController extends Controller
      */
     public function getListInvitedProject()
     {
-        $user = Auth::user()->id;
+        $user = Auth::user()->email;
 
         $data = ProjectHeader::select('id', 'created_at', 'project_name', 'project_type', 'project_status', 'registration_due_at', 'registration_status')
             ->where('project_status', 'Ongoing')
             ->where('registration_status', 'Open')
             ->whereIn(
                 'id',
-                ProjectInvitation::where('user_id', $user)
+                ProjectInvitation::where('email', $user)
                     ->where('invitation_status', 'Pending')
                     ->pluck('project_header_id')
             )
