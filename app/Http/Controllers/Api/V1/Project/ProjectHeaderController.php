@@ -540,7 +540,7 @@ class ProjectHeaderController extends Controller
         try {
             $filePath = Storage::disk('local')->path($file->project_attach);
         } catch (\Throwable $th) {
-            return $this->returnResponseApi(true, 'There is No File', '', 404);
+            return $this->returnResponseApi(true, 'There is No File', '', 200);
         }
 
         $fileName = str_replace(' ', '_', Carbon::now()->format('Ymd').'_'.$file->project_name);
