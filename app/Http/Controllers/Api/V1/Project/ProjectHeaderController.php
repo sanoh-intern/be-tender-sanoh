@@ -534,13 +534,13 @@ class ProjectHeaderController extends Controller
     {
         $file = ProjectHeader::select('project_name', 'project_attach')->where('id', $id)->first();
         if (! $file) {
-            return $this->returnResponseApi(true, 'Project Header Not Found', '', 404);
+            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
         try {
             $filePath = Storage::disk('local')->path($file->project_attach);
         } catch (\Throwable $th) {
-            return $this->returnResponseApi(false, 'There is No File', '', 404);
+            return $this->returnResponseApi(true, 'There is No File', '', 404);
         }
 
         $fileName = str_replace(' ', '_', Carbon::now()->format('Ymd').'_'.$file->project_name);
