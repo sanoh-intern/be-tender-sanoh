@@ -312,14 +312,12 @@ class ProjectHeaderController extends Controller
             if (! empty($request->invite_email)) {
                 $newEmail = $request->invite_email;
 
-                $oldInviteEmail = ProjectInvitation::with('user')->where('project_header_id', $getProject->id)->get()->pluck('user.email')->toArray();
+                $oldInviteEmail = ProjectInvitation::with('projectHeader')->where('project_header_id', $getProject->id)->pluck('email')->toArray();
 
                 $addEmail = array_diff($newEmail, $oldInviteEmail);
                 foreach ($addEmail as $email) {
-                    $getUserId = User::with('role')->where('email', $email)->value('id');
-
                     ProjectInvitation::create([
-                        'user_id' => $getUserId,
+                        'email' => $email,
                         'project_header_id' => $getProject->id,
                         'invitation_by' => Auth::user()->id,
                         'invitation_status' => 'Pending',
@@ -328,9 +326,7 @@ class ProjectHeaderController extends Controller
 
                 $deleteEmail = array_diff($oldInviteEmail, $newEmail);
                 foreach ($deleteEmail as $email) {
-                    $getUserId = User::with('role')->where('email', $email)->value('id');
-
-                    $getUserId = ProjectInvitation::where('id', $getUserId)->delete();
+                    ProjectInvitation::where('email', $email)->delete();
                 }
             }
 
