@@ -16,7 +16,7 @@ class UserEditResource extends JsonResource
     {
         return [
             'id' => (string) $this->id,
-            'id_tax' => $this->tax_id,
+            'id_tax' => $this->company_profile->tax_id,
             'account_status' => $this->account_status ?? null,
             'company_name' => $this->companyProfile->company_name ?? null,
             'email' => $this->email ?? null,
