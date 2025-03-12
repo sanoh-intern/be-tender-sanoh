@@ -20,12 +20,12 @@ trait ResponseApi
         $response = [
             'status' => $statusMessage,
             $statusMessage == false ? 'error' : 'message' => $message,
-            'data' => $data,
+            'data' => ($data == '' || $data == null) ? [] : $data,
         ];
 
-        if ($data == null | $data == '') {
-            unset($response['data']);
-        }
+        // if ($data == null | $data == '') {
+        //     unset($response['data']);
+        // }
 
         if ($addheader !== null) {
             $response = array_merge($response, $addheader);

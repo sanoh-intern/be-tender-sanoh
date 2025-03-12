@@ -71,7 +71,7 @@ class ProjectHeaderController extends Controller
             ->get();
 
         if ($data->isEmpty()) {
-            return $this->returnResponseApi(false, 'No Public Project Available', '', 200);
+            return $this->returnResponseApi(true, 'No Public Project Available', '', 200);
         }
 
         return $this->returnResponseApi(true, 'Get Public Project Successful', ProjectListPublicProjectResource::collection($data), 200);
@@ -87,14 +87,14 @@ class ProjectHeaderController extends Controller
      */
     public function getListInvitedProject()
     {
-        $user = Auth::user()->id;
+        $user = Auth::user()->email;
 
         $data = ProjectHeader::select('id', 'created_at', 'project_name', 'project_type', 'project_status', 'registration_due_at', 'registration_status')
             ->where('project_status', 'Ongoing')
             ->where('registration_status', 'Open')
             ->whereIn(
                 'id',
-                ProjectInvitation::where('user_id', $user)
+                ProjectInvitation::where('email', $user)
                     ->where('invitation_status', 'Pending')
                     ->pluck('project_header_id')
             )
@@ -158,7 +158,7 @@ class ProjectHeaderController extends Controller
             ->orderByDesc('created_at')
             ->get();
         if ($getProject->isEmpty()) {
-            return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
+            return $this->returnResponseApi(true, 'There Is No Project You Follow', '', 200);
         }
 
         return $this->returnResponseApi(true, 'Get Followed Project Successful', ProjectListFollowedProjectResource::collection($getProject), 200);
@@ -177,7 +177,7 @@ class ProjectHeaderController extends Controller
             ->where('id', $id)
             ->first();
         if (! $getProject) {
-            return $this->returnResponseApi(false, 'There Is No Project You Follow', '', 200);
+            return $this->returnResponseApi(true, 'There Is No Project You Follow', '', 200);
         }
 
         $getProjectDetail = $getProject->projectDetail
@@ -207,7 +207,7 @@ class ProjectHeaderController extends Controller
     {
         $getProject = ProjectHeader::with('userJoin')->where('id', $id)->first();
         if (! $getProject) {
-            return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
+            return $this->returnResponseApi(true, 'Project Header Not Found', '', 404);
         }
 
         $data = $getProject->userJoin->load('companyProfile')->sortByDesc('pivot.created_at');
@@ -244,9 +244,8 @@ class ProjectHeaderController extends Controller
 
             if (! empty($request->invite_email)) {
                 foreach ($request->invite_email as $email) {
-                    $getUserId = User::with('role')->where('email', $email)->value('id');
                     ProjectInvitation::create([
-                        'user_id' => $getUserId,
+                        'email' => $email,
                         'project_header_id' => $projectHeader->id,
                         'invitation_by' => Auth::user()->id,
                     ]);
@@ -271,12 +270,7 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
-        $getInvitation = ProjectInvitation::where('project_header_id', $id)->pluck('user_id');
-
-        $email = [];
-        foreach ($getInvitation as $userId) {
-            $email[] = User::where('id', $userId)->value('email');
-        }
+        $email = ProjectInvitation::where('project_header_id', $id)->pluck('email');
 
         return $this->returnResponseApi(true, 'Get Project Header Detail Successful', new ProjectHeaderEditResource($data, $email), 200);
     }
@@ -318,14 +312,12 @@ class ProjectHeaderController extends Controller
             if (! empty($request->invite_email)) {
                 $newEmail = $request->invite_email;
 
-                $oldInviteEmail = ProjectInvitation::with('user')->where('project_header_id', $getProject->id)->get()->pluck('user.email')->toArray();
+                $oldInviteEmail = ProjectInvitation::with('projectHeader')->where('project_header_id', $getProject->id)->pluck('email')->toArray();
 
                 $addEmail = array_diff($newEmail, $oldInviteEmail);
                 foreach ($addEmail as $email) {
-                    $getUserId = User::with('role')->where('email', $email)->value('id');
-
                     ProjectInvitation::create([
-                        'user_id' => $getUserId,
+                        'email' => $email,
                         'project_header_id' => $getProject->id,
                         'invitation_by' => Auth::user()->id,
                         'invitation_status' => 'Pending',
@@ -334,9 +326,7 @@ class ProjectHeaderController extends Controller
 
                 $deleteEmail = array_diff($oldInviteEmail, $newEmail);
                 foreach ($deleteEmail as $email) {
-                    $getUserId = User::with('role')->where('email', $email)->value('id');
-
-                    $getUserId = ProjectInvitation::where('id', $getUserId)->delete();
+                    ProjectInvitation::where('email', $email)->delete();
                 }
             }
 

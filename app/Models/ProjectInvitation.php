@@ -23,18 +23,10 @@ class ProjectInvitation extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'user_id',
+        'email',
         'project_header_id',
         'invitation_by',
     ];
-
-    /**
-     * Get the user that owns the ProjectInvitation
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id', 'id');
-    }
 
     /**
      * Get the ProjectHeader that owns the ProjectInvitation

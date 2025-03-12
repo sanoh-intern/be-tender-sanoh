@@ -16,11 +16,11 @@ class UserEditResource extends JsonResource
     {
         return [
             'id' => (string) $this->id,
-            'id_tax' => $this->tax_id,
+            'id_tax' => $this->company_profile->tax_id ?? null,
             'account_status' => $this->account_status ?? null,
             'company_name' => $this->companyProfile->company_name ?? null,
             'email' => $this->email ?? null,
-            'role' => $this->roleTag->role_tag ?? null,
+            'role' => $this->roleTag->id ?? null,
         ];
     }
 }

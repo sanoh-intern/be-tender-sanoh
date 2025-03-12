@@ -131,4 +131,22 @@ class UserController extends Controller
 
         return $this->returnResponseApi(true, 'Update User Success', null, 200);
     }
+
+    public function updateStatus(int $id)
+    {
+        $user = User::find($id);
+
+        switch ($user->account_status) {
+            case '0':
+                $user->update(['account_status' => '1']);
+                break;
+            case '1':
+                $user->update(['account_status' => '0']);
+                break;
+            default:
+            return $this->returnResponseApi(false, 'Account Status Unknown', '', 403);
+        }
+
+        return $this->returnResponseApi(true, 'Update Account Status Success', ['account_status' => $user->account_status], 200);
+    }
 }
