@@ -398,9 +398,9 @@ class ProjectHeaderController extends Controller
             return $this->returnResponseApi(false, 'Project Header Not Found', '', 404);
         }
 
-        $checkDuplicate = ProjectHeader::whereHas('userJoin', function ($query) use ($id, $user) {
+        $checkDuplicate = ProjectHeader::whereHas('userJoin', function ($query) use ($id, $email) {
             $query->where('project_header_id', $id);
-            $query->where('user_id', $user);
+            $query->where('email', $email);
         })
             ->exists();
         if ($checkDuplicate == true) {
