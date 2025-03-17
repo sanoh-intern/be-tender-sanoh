@@ -54,7 +54,7 @@ class UserController extends Controller
      */
     public function edit(int $id)
     {
-        $data = User::with('CompanyProfile', 'roleTag')->find($id);
+        $data = User::with('companyProfile', 'roleTag')->find($id);
 
         return $this->returnResponseApi(true, 'Get Detail User Success', new UserEditResource($data), 200);
     }
