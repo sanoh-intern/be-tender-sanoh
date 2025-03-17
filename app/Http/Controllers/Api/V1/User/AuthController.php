@@ -2,16 +2,24 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
+use App\Models\User;
+use App\Trait\ResponseApi;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\User\UserLoginRequest;
 use App\Http\Resources\User\UserLoginResource;
-use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    /**
+     * -------TRAIT---------
+     * Mandatory:
+     * 1. ResponseApi = Response api should use ResponseApi trait template
+     */
+    use ResponseApi;
+
     /**
      * Authenticate user login
      *
@@ -51,7 +59,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         // Return token response
-        return (new UserLoginResource($user, $token))->response()->setStatusCode(200);
+        return $this->returnResponseApi(true, 'Login Successful', new UserLoginResource($user, $token), 200);
     }
 
     /**

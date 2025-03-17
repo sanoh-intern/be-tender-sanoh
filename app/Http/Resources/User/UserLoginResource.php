@@ -27,7 +27,6 @@ class UserLoginResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'status' => true,
             'company_profile' => $this->user ? asset('storage/'.$this->user->company_photo) : null,
             'company_name' => $this->user->companyProfile->company_name ?? 'No Name',
             'bp_code' => $this->user->companyProfile->bp_code ?? 'Non Verified User',
