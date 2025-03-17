@@ -108,7 +108,7 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, int $id)
     {
         $request->validated();
-
+        
         $user = User::with('roleTag')->find($id);
         if (! $user) {
             return $this->returnResponseApi(false, 'User Not Found', '', 404);
@@ -126,7 +126,7 @@ class UserController extends Controller
         }
         $profile->update([
             'tax_id' => $request->id_tax ?? $profile->tax_id,
-            'company_name' => $request->comapny_name ?? $profile->company_name,
+            'company_name' => $request->company_name ?? $profile->company_name,
         ]);
 
         return $this->returnResponseApi(true, 'Update User Success', null, 200);
