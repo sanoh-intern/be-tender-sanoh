@@ -9,8 +9,8 @@ class UserLoginResource extends JsonResource
 {
     // Initialize variable
     protected $token;
-
     protected $user;
+    public static $wrap = false;
 
     // Constructor
     public function __construct($user, $token)
