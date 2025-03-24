@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
         Role::factory()->createMany([
             ['role_tag' => 'super-admin'],
             ['role_tag' => 'purchasing'],
-            ['role_tag' => 'review'],
             ['role_tag' => 'presdir'],
+            ['role_tag' => 'review'],
             ['role_tag' => 'supplier'],
         ]);
 
