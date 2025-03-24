@@ -34,7 +34,7 @@ class ProjectHeaderCreateRequest extends FormRequest
             'project_name' => 'required|string',
             'project_type' => 'required|string|in:Public,Private',
             'project_description' => 'string',
-            'project_attach' => 'file',
+            'project_attach' => 'required|mimes:pdf|max:5000',
             'registration_due_at' => 'required|date',
             'invite_email' => 'array',
             'invite_email.*' => 'email:rfc,strict',
