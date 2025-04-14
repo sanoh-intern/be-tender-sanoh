@@ -34,7 +34,7 @@ class UserLoginResource extends JsonResource
             'email' => $this->user->email,
             'role_id' => (string) $this->user->role_id,
             'role_tags' => $this->user->roleTag->role_tag,
-            'profile_verified_at' => $this->user->profile_verified_at ? true : false,
+            'profile_verified_at' => $this->user->companyProfile->profile_verified_at ? true : false,
             'access_token' => $this->whenNotNull($this->token),
             'token_type' => 'Bearer',
         ];
