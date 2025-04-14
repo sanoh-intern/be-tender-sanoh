@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'email' => $this->email ?? null,
             'role_id' => $this->role_id,
             'account_status' => $this->account_status ?? null,
-            'profile_verified_at' => $this->profile_verified_at ? true : false,
+            'profile_verified_at' => $this->companyProfile->profile_verified_at ? true : false,
             'email_verified_at' => $this->email_verified_at ?? null,
             'remember_token' => $this->remember_token ?? null,
         ];

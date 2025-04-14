@@ -21,7 +21,7 @@ class DashboardMiniProfileResource extends JsonResource
             'company_description' => $this->companyProfile->company_description ?? null,
             'business_field' => $this->companyProfile->business_field ?? null,
             'sub_business_field' => $this->companyProfile->sub_business_field ?? null,
-            'profile_verified_at' => $this->profile_verified_at ?? null,
+            'profile_verified_at' => $this->companyProfile->profile_verified_at ?? null,
         ];
     }
 }
