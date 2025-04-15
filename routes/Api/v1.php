@@ -13,6 +13,10 @@ Route::post('v1/login', [AuthController::class, 'login']);
 // Route for download project attachment
 Route::get('v1/download/project/attachment/{id}', [ProjectHeaderController::class, 'download'])->middleware('auth:sanctum');
 
+Route::prefix('v1/guest')->group(function () {
+    Route::post('register', [UserController::class,'register']);
+});
+
 // Route for super-admin
 Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-admin')->group(function () {
 

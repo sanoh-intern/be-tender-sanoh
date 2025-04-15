@@ -4,16 +4,22 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserCreateRequest;
+use App\Http\Requests\User\UserRegisterRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\User\UserEditResource;
 use App\Http\Resources\User\UserlistResource;
+use App\Jobs\mail\MailUserAfterRegisterJob;
+use App\Mail\MailUserAfterRegister;
 use App\Models\CompanyProfile;
 use App\Models\User;
 use App\Trait\ResponseApi;
 use App\Trait\StoreFile;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Mail;
+use Str;
 
 class UserController extends Controller
 {
@@ -80,7 +86,6 @@ class UserController extends Controller
                 'role_id' => $request->role,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'account_status' => '1',
             ]);
             // Attach user role
             $user->role()->attach($request->role);
@@ -108,7 +113,7 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, int $id)
     {
         $request->validated();
-        
+
         $user = User::with('roleTag')->find($id);
         if (! $user) {
             return $this->returnResponseApi(false, 'User Not Found', '', 404);
@@ -132,6 +137,11 @@ class UserController extends Controller
         return $this->returnResponseApi(true, 'Update User Success', null, 200);
     }
 
+    /**
+     * Update status user account (active/inactive)
+     * @param int $id
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function updateStatus(int $id)
     {
         $user = User::find($id);
@@ -148,5 +158,33 @@ class UserController extends Controller
         }
 
         return $this->returnResponseApi(true, 'Update Account Status Success', ['account_status' => $user->account_status], 200);
+    }
+
+    /**
+     * Create new account for guest
+     * @param \App\Http\Requests\User\UserRegisterRequest $request
+     * @return void
+     */
+    public function register(UserRegisterRequest $request) {
+        $request->validated();
+        $password = Str::random(8);
+
+        DB::transaction(function () use($request, $password) {
+            $user = User::create([
+                'email' => $request->email,
+                'password' => Hash::make($password),
+                'role_id' => 5,
+            ]);
+
+            CompanyProfile::create([
+                'user_id' => $user->id,
+                'tax_id' => $request->tax_id,
+                'company_name' => $request->company_name,
+            ]);
+
+            Mail::to($request->email)->queue(new MailUserAfterRegister($password));
+        });
+
+        return $this->returnResponseApi(true, 'Create Account Success', null, 201);
     }
 }
