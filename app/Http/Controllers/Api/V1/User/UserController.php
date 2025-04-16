@@ -181,10 +181,27 @@ class UserController extends Controller
                 'tax_id' => $request->tax_id,
                 'company_name' => $request->company_name,
             ]);
-
-            Mail::to($request->email)->queue(new MailUserAfterRegister($password));
         });
 
+        Mail::to($request->email)->queue(new MailUserAfterRegister($password));
+
         return $this->returnResponseApi(true, 'Create Account Success', null, 201);
+    }
+
+    public function resendPassword(string $email){
+        $user = User::where('email', $email)->first();
+        if (! $user) {
+            return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
+        }
+
+        $password = Str::random(8);
+  
+        $user->update([
+            'password' => Hash::make($password),
+        ]);
+
+        Mail::to($email)->queue(new MailUserAfterRegister($password));
+
+        return $this->returnResponseApi(true, 'Resend Password Success', null, 200);
     }
 }
