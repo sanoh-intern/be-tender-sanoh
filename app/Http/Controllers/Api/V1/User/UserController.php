@@ -225,11 +225,20 @@ class UserController extends Controller
         PasswordResetTokens::create([
             'email' => $request->email,
             'token' => $createToken,
-            'created_at' => Carbon::now()->format('Y-m-d'),
+            'created_at' => Carbon::now(),
         ]);
 
         Mail::to($request->email)->queue(new MailPasswordResetToken($createToken));
 
         return $this->returnResponseApi(true, 'Send Password Reset Token Success', null, 200);
+    }
+
+    public function verificationToken(string $token) {
+        $token = PasswordResetTokens::where('token', $token)->delete();
+        if (! $token) {
+            return $this->returnResponseApi(true, 'Token invalid', null, 404);
+        }
+
+        return $this->returnResponseApi(true, 'Verification Token Success', null, 200);
     }
 }

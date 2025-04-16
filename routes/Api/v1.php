@@ -15,8 +15,9 @@ Route::get('v1/download/project/attachment/{id}', [ProjectHeaderController::clas
 
 Route::prefix('v1/guest')->group(function () {
     Route::post('register', [UserController::class,'register']);
-    Route::post('resend/password', [UserController::class,'resendPassword']);
-    Route::post('reset/password', [UserController::class,'resetPassword']);
+    Route::post('resend-password', [UserController::class,'resendPassword']);
+    Route::post('reset-password', [UserController::class,'resetPassword']);
+    Route::get('verification-token/{token}', [UserController::class,'verificationToken']);
 });
 
 // Route for super-admin
