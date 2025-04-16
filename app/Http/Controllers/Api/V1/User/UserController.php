@@ -4,17 +4,22 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserCreateRequest;
+use App\Http\Requests\User\UserEmailRequest;
 use App\Http\Requests\User\UserRegisterRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\User\UserEditResource;
 use App\Http\Resources\User\UserlistResource;
 use App\Jobs\mail\MailUserAfterRegisterJob;
+use App\Mail\MailPasswordResetToken;
+use App\Mail\MailResetPasswordToken;
 use App\Mail\MailUserAfterRegister;
 use App\Models\CompanyProfile;
+use App\Models\PasswordResetTokens;
 use App\Models\User;
 use App\Trait\ResponseApi;
 use App\Trait\StoreFile;
+use Carbon\Carbon;
 use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -167,7 +172,7 @@ class UserController extends Controller
      */
     public function register(UserRegisterRequest $request) {
         $request->validated();
-        $password = Str::random(8);
+        $password = Str::password(8);
 
         DB::transaction(function () use($request, $password) {
             $user = User::create([
@@ -188,20 +193,43 @@ class UserController extends Controller
         return $this->returnResponseApi(true, 'Create Account Success', null, 201);
     }
 
-    public function resendPassword(string $email){
-        $user = User::where('email', $email)->first();
+    public function resendPassword(UserEmailRequest $request){
+        $request->validated();
+
+        $user = User::where('email', $request->email)->first();
         if (! $user) {
             return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
         }
 
-        $password = Str::random(8);
-  
+        $password = Str::password(8);
+
         $user->update([
             'password' => Hash::make($password),
         ]);
 
-        Mail::to($email)->queue(new MailUserAfterRegister($password));
+        Mail::to($request->email)->queue(new MailUserAfterRegister($password));
 
         return $this->returnResponseApi(true, 'Resend Password Success', null, 200);
+    }
+
+    public function resetPassword(UserEmailRequest $request) {
+        $request->validated();
+
+        $user = User::where('email', $request->email)->first();
+        if (! $user) {
+            return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
+        }
+
+        $createToken = Str::random(6);
+
+        PasswordResetTokens::create([
+            'email' => $request->email,
+            'token' => $createToken,
+            'created_at' => Carbon::now()->format('Y-m-d'),
+        ]);
+
+        Mail::to($request->email)->queue(new MailPasswordResetToken($createToken));
+
+        return $this->returnResponseApi(true, 'Send Password Reset Token Success', null, 200);
     }
 }
