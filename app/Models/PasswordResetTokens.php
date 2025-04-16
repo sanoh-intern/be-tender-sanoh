@@ -12,6 +12,12 @@ class PasswordResetTokens extends Model
      // Table name
      protected $table = 'password_reset_tokens';
 
+    // Primary Key
+    protected $primaryKey = 'email';
+
+    // Key type
+    protected $keyType = 'string';
+
     // Timestamps
     public $timestamps = false;
 
@@ -23,6 +29,7 @@ class PasswordResetTokens extends Model
      protected $fillable = [
         'email',
         'token',
+        'status',
         'created_at',
      ];
 }

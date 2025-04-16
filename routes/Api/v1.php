@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Project\ProjectDetailController;
 use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
 use App\Http\Controllers\Api\V1\User\AuthController;
 use App\Http\Controllers\Api\V1\User\UserController;
+use App\Http\Middleware\VerifyPasswordResetToken;
 use Illuminate\Support\Facades\Route;
 
 // Route for login
@@ -16,8 +17,9 @@ Route::get('v1/download/project/attachment/{id}', [ProjectHeaderController::clas
 Route::prefix('v1/guest')->group(function () {
     Route::post('register', [UserController::class,'register']);
     Route::post('resend-password', [UserController::class,'resendPassword']);
-    Route::post('reset-password', [UserController::class,'resetPassword']);
-    Route::get('verification-token/{token}', [UserController::class,'verificationToken']);
+    Route::post('reset-password', [UserController::class,'resetPasswordToken']);
+    Route::post('reset-password/update', [UserController::class,'resetPassword'])->middleware('ensureResetTokenIsValid');
+    Route::post('verification-token', [UserController::class,'verificationToken']);
 });
 
 // Route for super-admin

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserCreateRequest;
 use App\Http\Requests\User\UserEmailRequest;
 use App\Http\Requests\User\UserRegisterRequest;
+use App\Http\Requests\User\UserTokenRequest;
+use App\Http\Requests\User\UserUpdatePasswordRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\User\UserEditResource;
@@ -21,6 +23,7 @@ use App\Trait\ResponseApi;
 use App\Trait\StoreFile;
 use Carbon\Carbon;
 use GuzzleHttp\Promise\Create;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Mail;
@@ -120,7 +123,7 @@ class UserController extends Controller
         $request->validated();
 
         $user = User::with('roleTag')->find($id);
-        if (! $user) {
+        if (!$user) {
             return $this->returnResponseApi(false, 'User Not Found', '', 404);
         }
         $user->update([
@@ -131,7 +134,7 @@ class UserController extends Controller
         ]);
 
         $profile = CompanyProfile::where('user_id', $id)->first();
-        if (! $profile) {
+        if (!$profile) {
             return $this->returnResponseApi(false, 'Company Profile Not Found', '', 404);
         }
         $profile->update([
@@ -159,7 +162,7 @@ class UserController extends Controller
                 $user->update(['account_status' => '0']);
                 break;
             default:
-            return $this->returnResponseApi(false, 'Account Status Unknown', '', 403);
+                return $this->returnResponseApi(false, 'Account Status Unknown', '', 403);
         }
 
         return $this->returnResponseApi(true, 'Update Account Status Success', ['account_status' => $user->account_status], 200);
@@ -170,11 +173,12 @@ class UserController extends Controller
      * @param \App\Http\Requests\User\UserRegisterRequest $request
      * @return void
      */
-    public function register(UserRegisterRequest $request) {
+    public function register(UserRegisterRequest $request)
+    {
         $request->validated();
         $password = Str::password(8);
 
-        DB::transaction(function () use($request, $password) {
+        DB::transaction(function () use ($request, $password) {
             $user = User::create([
                 'email' => $request->email,
                 'password' => Hash::make($password),
@@ -193,11 +197,28 @@ class UserController extends Controller
         return $this->returnResponseApi(true, 'Create Account Success', null, 201);
     }
 
-    public function resendPassword(UserEmailRequest $request){
+    public function resetPassword(UserUpdatePasswordRequest $request)
+    {
         $request->validated();
 
         $user = User::where('email', $request->email)->first();
-        if (! $user) {
+        if (!$user) {
+            return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return $this->returnResponseApi(true, 'Reset Password Success', null, 200);
+    }
+
+    public function resendPassword(UserEmailRequest $request)
+    {
+        $request->validated();
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
             return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
         }
 
@@ -212,32 +233,52 @@ class UserController extends Controller
         return $this->returnResponseApi(true, 'Resend Password Success', null, 200);
     }
 
-    public function resetPassword(UserEmailRequest $request) {
+    public function resetPasswordToken(UserEmailRequest $request)
+    {
         $request->validated();
 
         $user = User::where('email', $request->email)->first();
-        if (! $user) {
+        if (!$user) {
             return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
         }
 
         $createToken = Str::random(6);
 
-        PasswordResetTokens::create([
-            'email' => $request->email,
-            'token' => $createToken,
-            'created_at' => Carbon::now(),
-        ]);
+        /**
+         * Check if token with the same email already exists
+         * (to avoid error, when resend mail token if mail doesnt reach to user)
+         */
+        $duplicateToken = PasswordResetTokens::where('email', $request->email)->first();
+        if ($duplicateToken) {
+            $duplicateToken->delete();
+        }
+
+        PasswordResetTokens::create(
+            [
+                'email' => $request->email,
+                'token' => $createToken,
+                'created_at' => Carbon::now(),
+            ]
+        );
 
         Mail::to($request->email)->queue(new MailPasswordResetToken($createToken));
 
         return $this->returnResponseApi(true, 'Send Password Reset Token Success', null, 200);
     }
 
-    public function verificationToken(string $token) {
-        $token = PasswordResetTokens::where('token', $token)->delete();
-        if (! $token) {
+    public function verificationToken(UserTokenRequest $request)
+    {
+        $request->validated();
+
+        $checkToken = PasswordResetTokens::where('token', $request->token)
+            ->where('email', $request->email)
+            ->where('status', 0)->first();
+        if (!$checkToken) {
             return $this->returnResponseApi(true, 'Token invalid', null, 404);
         }
+        $checkToken->update(['status' => 1]);
+
+        Cache::put("reset-password-$checkToken->email", $checkToken->token, now()->addMinutes(5));
 
         return $this->returnResponseApi(true, 'Verification Token Success', null, 200);
     }
