@@ -7,7 +7,6 @@ use App\Trait\ResponseApi;
 use Illuminate\Http\Request;
 use App\Models\PasswordResetTokens;
 use Illuminate\Support\Facades\Cache;
-use Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureResetTokenIsValid
