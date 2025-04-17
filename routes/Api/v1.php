@@ -5,7 +5,6 @@ use App\Http\Controllers\Api\V1\Project\ProjectDetailController;
 use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
 use App\Http\Controllers\Api\V1\User\AuthController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Middleware\VerifyPasswordResetToken;
 use Illuminate\Support\Facades\Route;
 
 // Route for login

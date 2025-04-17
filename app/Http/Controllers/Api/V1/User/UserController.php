@@ -12,9 +12,7 @@ use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\User\UserEditResource;
 use App\Http\Resources\User\UserlistResource;
-use App\Jobs\mail\MailUserAfterRegisterJob;
 use App\Mail\MailPasswordResetToken;
-use App\Mail\MailResetPasswordToken;
 use App\Mail\MailUserAfterRegister;
 use App\Models\CompanyProfile;
 use App\Models\PasswordResetTokens;
@@ -22,7 +20,6 @@ use App\Models\User;
 use App\Trait\ResponseApi;
 use App\Trait\StoreFile;
 use Carbon\Carbon;
-use GuzzleHttp\Promise\Create;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -197,6 +194,11 @@ class UserController extends Controller
         return $this->returnResponseApi(true, 'Create Account Success', null, 201);
     }
 
+    /**
+     * Reset Password *after Password reset token verified
+     * @param \App\Http\Requests\User\UserUpdatePasswordRequest $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function resetPassword(UserUpdatePasswordRequest $request)
     {
         $request->validated();
@@ -213,36 +215,45 @@ class UserController extends Controller
         return $this->returnResponseApi(true, 'Reset Password Success', null, 200);
     }
 
+    /**
+     * Resend password mail *after Register, if user doesnt receive mail
+     * @param \App\Http\Requests\User\UserEmailRequest $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function resendPassword(UserEmailRequest $request)
     {
         $request->validated();
+        $password = Str::password(8);
 
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
         }
-
-        $password = Str::password(8);
-
+        // Update password
         $user->update([
             'password' => Hash::make($password),
         ]);
 
+        // Send Mail
         Mail::to($request->email)->queue(new MailUserAfterRegister($password));
 
         return $this->returnResponseApi(true, 'Resend Password Success', null, 200);
     }
 
+    /**
+     * Send mail Password reset token
+     * @param \App\Http\Requests\User\UserEmailRequest $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function resetPasswordToken(UserEmailRequest $request)
     {
         $request->validated();
+        $createToken = Str::random(6);
 
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
         }
-
-        $createToken = Str::random(6);
 
         /**
          * Check if token with the same email already exists
@@ -261,11 +272,17 @@ class UserController extends Controller
             ]
         );
 
+        // Send mail
         Mail::to($request->email)->queue(new MailPasswordResetToken($createToken));
 
         return $this->returnResponseApi(true, 'Send Password Reset Token Success', null, 200);
     }
 
+    /**
+     * Verify password reset token
+     * @param \App\Http\Requests\User\UserTokenRequest $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function verificationToken(UserTokenRequest $request)
     {
         $request->validated();
@@ -276,8 +293,11 @@ class UserController extends Controller
         if (!$checkToken) {
             return $this->returnResponseApi(true, 'Token invalid', null, 404);
         }
+
+        // Update token status
         $checkToken->update(['status' => 1]);
 
+        // Create cache
         Cache::put("reset-password-$checkToken->email", $checkToken->token, now()->addMinutes(5));
 
         return $this->returnResponseApi(true, 'Verification Token Success', null, 200);
