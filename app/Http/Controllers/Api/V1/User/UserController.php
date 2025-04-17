@@ -87,7 +87,6 @@ class UserController extends Controller
             }
 
             $user = User::create([
-                'company_photo' => $imagePath,
                 'role_id' => $request->role,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
@@ -97,8 +96,9 @@ class UserController extends Controller
 
             CompanyProfile::create([
                 'user_id' => $user->id,
-                'company_name' => $request->company_name,
                 'tax_id' => $request->tax_id,
+                'company_name' => $request->company_name,
+                'company_photo' => $imagePath,
             ]);
 
             $getData = User::with('role', 'companyProfile')->find($user->id);

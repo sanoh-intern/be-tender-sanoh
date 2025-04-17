@@ -16,7 +16,7 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'company_photo' => $this->company_photo ? asset('storage/'.$this->company_photo) : null,
+            'company_photo' => $this->companyProfile->company_photo ? asset('storage/'.$this->companyProfile->company_photo) : null,
             'company_name' => $this->companyProfile->company_name ?? null,
             'email' => $this->email ?? null,
             'role_id' => $this->role_id,
