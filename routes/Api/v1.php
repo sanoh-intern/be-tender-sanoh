@@ -4,7 +4,9 @@ use App\Http\Controllers\Api\V1\Dashboard\DashboardSupplierController;
 use App\Http\Controllers\Api\V1\Project\ProjectDetailController;
 use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
 use App\Http\Controllers\Api\V1\User\AuthController;
+use App\Http\Controllers\Api\V1\User\CompanyProfileController;
 use App\Http\Controllers\Api\V1\User\UserController;
+use App\Models\CompanyProfile;
 use Illuminate\Support\Facades\Route;
 
 // Route for login
@@ -107,6 +109,9 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
 
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
+
+    // Feat company profile
+    Route::patch('company-profile/update/{id}', [CompanyProfileController::class, 'update']);
 
     // Project Header
     Route::get('project-header/get/{id}', [ProjectHeaderController::class, 'getProjectById']);
