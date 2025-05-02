@@ -111,7 +111,7 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
 
     // Feat company profile
-    Route::patch('company-profile/update/{id}', [CompanyProfileController::class, 'update']);
+    Route::post('company-profile/update', [CompanyProfileController::class, 'update']);
 
     // Project Header
     Route::get('project-header/get/{id}', [ProjectHeaderController::class, 'getProjectById']);
