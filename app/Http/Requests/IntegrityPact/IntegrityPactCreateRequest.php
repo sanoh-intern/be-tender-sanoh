@@ -4,6 +4,7 @@ namespace App\Http\Requests\IntegrityPact;
 
 use App\Trait\AuthorizationRole;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class IntegrityPactCreateRequest extends FormRequest
 {
@@ -49,5 +50,16 @@ class IntegrityPactCreateRequest extends FormRequest
             'integrity_pact_desc.string' => 'The integrity pact description must be a string.',
             'integrity_pact_desc.max' => 'The integrity pact description may not be greater than 255 characters.',
         ];
+    }
+
+    public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'status' => false,
+                'message' => 'Please Fill Input Field with Valid Data',
+                'error' => $validator->errors(),
+            ], 403)
+        );
     }
 }
