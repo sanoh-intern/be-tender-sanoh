@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\IntegrityPact;
+namespace App\Http\Controllers\Api\V1\IntegrityPact;
 
 use App\Trait\StoreFile;
 use App\Trait\ResponseApi;
-use Illuminate\Http\Request;
 use App\Models\IntegrityPact;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
