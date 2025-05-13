@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Project\ProjectDetailController;
 use App\Http\Controllers\Api\V1\Project\ProjectHeaderController;
 use App\Http\Controllers\Api\V1\User\AuthController;
 use App\Http\Controllers\Api\V1\User\CompanyProfileController;
+use App\Http\Controllers\Api\V1\User\PersonInChargeController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Models\CompanyProfile;
 use Illuminate\Support\Facades\Route;
@@ -112,6 +113,11 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
 
     // Feat company profile
     Route::post('company-profile/update', [CompanyProfileController::class, 'update']);
+
+    // Feat Person In Charge
+    Route::post('pic/create', [PersonInChargeController::class,'createPic']);
+    Route::patch('pic/update/{personInCharge}', [PersonInChargeController::class,'update']);
+    Route::delete('pic/delete/{personInCharge}', [PersonInChargeController::class,'destroy']);
 
     // Project Header
     Route::get('project-header/get/{id}', [ProjectHeaderController::class, 'getProjectById']);
