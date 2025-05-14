@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Nib\NibController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\User\AuthController;
 use App\Http\Controllers\Api\V1\User\UserController;
@@ -123,6 +124,11 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
     Route::post('intergrity-pact/create', [IntegrityPactController::class,'createIntegrityPact']);
     Route::post('intergrity-pact/update/{integrityPact}', [IntegrityPactController::class,'update']);
     Route::delete('intergrity-pact/delete/{integrityPact}', [IntegrityPactController::class,'destroy']);
+
+    // Feat NIB
+    Route::post('nib/create', [NibController::class,'createNib']);
+    Route::post('nib/update/{nib}', [NibController::class,'update']);
+    Route::delete('nib/delete/{nib}', [NibController::class,'destroy']);
 
     // Project Header
     Route::get('project-header/get/{id}', [ProjectHeaderController::class, 'getProjectById']);
