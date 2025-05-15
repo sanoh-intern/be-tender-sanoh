@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\BusinessLicense\BusinessLicenseController;
 use App\Http\Controllers\Api\V1\Nib\NibController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\User\AuthController;
@@ -129,6 +130,11 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
     Route::post('nib/create', [NibController::class,'createNib']);
     Route::post('nib/update/{nib}', [NibController::class,'update']);
     Route::delete('nib/delete/{nib}', [NibController::class,'destroy']);
+
+    // Feat Business License
+    Route::post('business-license/create', [BusinessLicenseController::class,'createBusinessLicense']);
+    Route::post('business-license/update/{businessLicense}', [BusinessLicenseController::class,'update']);
+    Route::delete('business-license/delete/{businessLicense}', [BusinessLicenseController::class,'destroy']);
 
     // Project Header
     Route::get('project-header/get/{id}', [ProjectHeaderController::class, 'getProjectById']);
