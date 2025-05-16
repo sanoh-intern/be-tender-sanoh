@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Trait\StoreFile;
 use App\Trait\ResponseApi;
 use App\Models\CompanyProfile;
-use App\Models\VerifyNotification;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
@@ -46,16 +45,9 @@ class CompanyProfileController extends Controller
                 $imagePath = $this->saveFile($request->file('company_photo'), 'Company_Photo', 'Images', 'Company_Photo', 'public');
                 $request['company_photo'] = $imagePath;
             }
-            
+
             // Update record
             $companyProfile->update($request->all());
-
-            // Create notification
-            VerifyNotification::create([
-                'user_id' => $userId,
-                'category' => 'Company Profile',
-                'description' => 'Need to Verify Updated Company Profile',
-            ]);
         });
 
         return $this->returnResponseApi(true, 'Update Company Profile Success', null, 200);
