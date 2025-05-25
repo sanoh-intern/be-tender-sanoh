@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Api\V1\User;
 
 use Auth;
-use App\Models\User;
 use App\Trait\StoreFile;
 use App\Trait\ResponseApi;
 use App\Models\CompanyProfile;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
-use App\Http\Resources\User\UserEditResource;
 use App\Http\Requests\CompanyProfile\CompanyProfileUpdateRequest;
 
 class CompanyProfileController extends Controller
@@ -22,14 +19,6 @@ class CompanyProfileController extends Controller
      * 2. StoreFile = Save file to server storage
      */
     use ResponseApi, StoreFile;
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

@@ -2,29 +2,36 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
+use App\Http\Resources\User\UserProfileResource;
+use Str;
+use Mail;
+use Carbon\Carbon;
+use App\Models\Nib;
+use App\Models\User;
+use App\Trait\StoreFile;
+use App\Trait\ResponseApi;
+use App\Models\IntegrityPact;
+use App\Models\CompanyProfile;
+use App\Models\PersonInCharge;
+use App\Models\BusinessLicense;
+use App\Trait\AuthorizationRole;
+use Illuminate\Support\Facades\DB;
+use App\Mail\MailUserAfterRegister;
+use App\Models\PasswordResetTokens;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UserCreateRequest;
-use App\Http\Requests\User\UserEmailRequest;
-use App\Http\Requests\User\UserRegisterRequest;
-use App\Http\Requests\User\UserTokenRequest;
-use App\Http\Requests\User\UserUpdatePasswordRequest;
-use App\Http\Requests\User\UserUpdateRequest;
+use App\Mail\MailPasswordResetToken;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\User\UserResource;
+use App\Http\Requests\User\UserEmailRequest;
+use App\Http\Requests\User\UserTokenRequest;
+use App\Http\Requests\User\UserCreateRequest;
+use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserEditResource;
 use App\Http\Resources\User\UserlistResource;
-use App\Mail\MailPasswordResetToken;
-use App\Mail\MailUserAfterRegister;
-use App\Models\CompanyProfile;
-use App\Models\PasswordResetTokens;
-use App\Models\User;
-use App\Trait\ResponseApi;
-use App\Trait\StoreFile;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Mail;
-use Str;
+use App\Http\Requests\User\UserRegisterRequest;
+use App\Http\Requests\User\UserUpdatePasswordRequest;
 
 class UserController extends Controller
 {
@@ -33,8 +40,64 @@ class UserController extends Controller
      * Mandatory:
      * 1. ResponseApi = Response api should use ResponseApi trait template
      * 2. StoreFile = Save file to server storage
+     * 3. AuthorizationRole = Check user role
      */
-    use ResponseApi, StoreFile;
+    use ResponseApi, StoreFile, AuthorizationRole;
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function getUserProfile($userId = null)
+    {
+        if ($this->permissibleRole('supplier')) {
+            $userId = Auth::user()->id;
+        } elseif ($this->permissibleRole('purchasing', 'presdir')) {
+            $userId;
+        }
+
+        // Company profile
+        $companyProfile = CompanyProfile::where('user_id', $userId)->first();
+        if (!$companyProfile) {
+            return $this->returnResponseApi(false, 'Company Profile Data Not Found', null, 404);
+        }
+
+        // Person In Charge
+        $personInCharge = PersonInCharge::where('user_id', $userId)->get();
+        if (empty($personInCharge)) {
+            return $this->returnResponseApi(false, 'Person In Charge Data Not Found', null, 404);
+        }
+
+        // Nib
+        $nib = Nib::where('user_id', $userId)->first();
+        if (!$nib) {
+            return $this->returnResponseApi(false, 'NIB Data Not Found', null, 404);
+        }
+
+        // Business license
+        $businessLicenses = BusinessLicense::where('user_id', $userId)->get();
+        if (empty($businessLicenses)) {
+            return $this->returnResponseApi(false, 'Business License Data Not Found', null, 404);
+        }
+
+        // integrity pact
+        $integrityPact = IntegrityPact::where('user_id', $userId)->first();
+        if (!$integrityPact) {
+            return $this->returnResponseApi(false, 'Integrity Pact Data Not Found', null, 404);
+        }
+
+        return $this->returnResponseApi(
+            true,
+            'Get User Profile Data Success',
+            new UserProfileResource(
+                $companyProfile,
+                $personInCharge,
+                $nib,
+                $businessLicenses,
+                $integrityPact
+            ),
+            200
+        );
+    }
 
     /**
      * Get specific user

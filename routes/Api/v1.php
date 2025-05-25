@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-ad
 Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasing')->group(function () {
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
+    Route::get('user/profile/{userId}', [UserController::class, 'getUserProfile']);
 
     // Feat Verification
     Route::get('verification/get', [VerificationController::class, 'getListVerify']);
@@ -74,6 +75,7 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
 Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->group(function () {
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
+    Route::get('user/profile/{userId}', [UserController::class, 'getUserProfile']);
 
     // Feat Verification
     Route::get('verification/get', [VerificationController::class, 'getListVerify']);
@@ -121,6 +123,7 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
 
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
+    Route::get('user/profile', [UserController::class, 'getUserProfile']);
 
     // Feat Verification
     Route::get('verification/get', [VerificationController::class, 'getListUserVerify']);
