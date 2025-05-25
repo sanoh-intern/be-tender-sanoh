@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\BusinessLicense\BusinessLicenseController;
+use App\Http\Controllers\Api\V1\File\FileController;
 use App\Http\Controllers\Api\V1\Nib\NibController;
 use App\Http\Controllers\Api\V1\Verification\VerificationController;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +49,9 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
     Route::get('user/profile/{userId}', [UserController::class, 'getUserProfile']);
 
+    // Feat file
+    Route::post('stream/file', [FileController::class, 'streamFile']);
+
     // Feat Verification
     Route::get('verification/get', [VerificationController::class, 'getListVerify']);
     Route::patch('verification/approve/{verificationId}', [VerificationController::class, 'approveVerify']);
@@ -76,6 +80,9 @@ Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->g
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
     Route::get('user/profile/{userId}', [UserController::class, 'getUserProfile']);
+
+    // Feat file
+    Route::post('stream/file', [FileController::class, 'streamFile']);
 
     // Feat Verification
     Route::get('verification/get', [VerificationController::class, 'getListVerify']);
@@ -120,6 +127,9 @@ Route::middleware(['auth:sanctum', 'userRole:review'])->prefix('v1/review')->gro
 Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')->group(function () {
     // Feat Dashboard
     Route::get('dashboard/mini-profile/get', [DashboardSupplierController::class, 'miniProfile']);
+
+    // Feat file
+    Route::post('stream/file', [FileController::class, 'streamFile']);
 
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
