@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('password_reset_tokens', function (Blueprint $table) {
-            $table->tinyInteger('status')->default(false)->after('token');
+            $table->unsignedTinyInteger('status')->default(false)->after('token');
         });
     }
 
