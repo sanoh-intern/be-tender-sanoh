@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VerifyNotification extends Model
 {
@@ -17,6 +18,20 @@ class VerifyNotification extends Model
         'user_id',
         'category',
         'description',
+        'status',
+        'message',
+        'verify_by',
+        'verify_at',
         'expires_at',
     ];
+
+    /**
+     * Get the companyProfile that owns the VerifyNotification
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function companyProfile(): BelongsTo
+    {
+        return $this->belongsTo(CompanyProfile::class, 'user_id', 'user_id');
+    }
 }

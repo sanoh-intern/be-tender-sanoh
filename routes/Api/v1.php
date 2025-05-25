@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\BusinessLicense\BusinessLicenseController;
 use App\Http\Controllers\Api\V1\Nib\NibController;
+use App\Http\Controllers\Api\V1\Verification\VerificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\User\AuthController;
 use App\Http\Controllers\Api\V1\User\UserController;
@@ -46,6 +47,10 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
 
+    // Feat Verification
+    Route::get('verification/get', [VerificationController::class, 'getListVerify']);
+    Route::patch('verification/approve/{verificationId}', [VerificationController::class, 'approveVerify']);
+
     // Feat Project Header
     Route::get('project-header/manage-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
     Route::get('project-header/registered-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
@@ -69,6 +74,10 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
 Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->group(function () {
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
+
+    // Feat Verification
+    Route::get('verification/get', [VerificationController::class, 'getListVerify']);
+    Route::patch('verification/approve/{verificationId}', [VerificationController::class, 'approveVerify']);
 
     // Feat Project Header
     Route::get('project-header/manage-offer/get/all', [ProjectHeaderController::class, 'getListAllProject']);
@@ -112,6 +121,10 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
 
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
+
+    // Feat Verification
+    Route::get('verification/get', [VerificationController::class, 'getListUserVerify']);
+    Route::post('verification/request', [VerificationController::class, 'verifyRequest']);
 
     // Feat company profile
     Route::post('company-profile/update', [CompanyProfileController::class, 'update']);
