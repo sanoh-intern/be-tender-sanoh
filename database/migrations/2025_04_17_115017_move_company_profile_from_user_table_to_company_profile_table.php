@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('User', function (Blueprint $table) {
+        Schema::table('user', function (Blueprint $table) {
             $table->dropColumn('company_photo');
         });
 
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->dropColumn('company_photo');
         });
 
-        Schema::table('User', function (Blueprint $table) {
+        Schema::table('user', function (Blueprint $table) {
             $table->string('company_photo', 255)->after('role_id');
         });
 
