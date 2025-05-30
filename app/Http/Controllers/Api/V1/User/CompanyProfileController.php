@@ -6,6 +6,7 @@ use Auth;
 use App\Trait\StoreFile;
 use App\Trait\ResponseApi;
 use App\Models\CompanyProfile;
+use App\Trait\AuthorizationRole;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompanyProfile\CompanyProfileUpdateRequest;
@@ -17,8 +18,9 @@ class CompanyProfileController extends Controller
      * Mandatory:
      * 1. ResponseApi = Response api should use ResponseApi trait template
      * 2. StoreFile = Save file to server storage
+     * 3. AuthorizationRole = for checking permissible user role
      */
-    use ResponseApi, StoreFile;
+    use ResponseApi, StoreFile, AuthorizationRole;
 
     /**
      * Update the specified resource in storage.
@@ -26,7 +28,12 @@ class CompanyProfileController extends Controller
     public function update(CompanyProfileUpdateRequest $request, CompanyProfile $companyProfile)
     {
         $request->validated();
-        $userId = Auth::user()->id;
+        if ($this->permissibleRole('purchasing', 'review')) {
+            $userId = null;
+        } else {
+            $userId = Auth::user()->id;
+        }
+
 
         DB::transaction(function () use ($request, $companyProfile, $userId) {
             // Check if company photo exist
@@ -36,7 +43,12 @@ class CompanyProfileController extends Controller
             }
 
             // Update record
-            $companyProfile->update($request->all());
+            if ($userId != null) {
+                $companyProfile->where('user_id', $userId)->update($request->all());
+            } else {
+                $companyProfile->update($request->all());
+            }
+
         });
 
         return $this->returnResponseApi(true, 'Update Company Profile Success', null, 200);

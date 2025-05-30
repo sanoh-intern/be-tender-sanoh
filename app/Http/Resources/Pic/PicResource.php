@@ -15,7 +15,7 @@ class PicResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'pic_id' => $this->pic_id ?? null,
+            'pic_id' => $this->id ?? null,
             'job_position' => $this->job_position ?? null,
             'department' => $this->department ?? null,
             'pic_name' => $this->pic_name ?? null,

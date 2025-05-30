@@ -33,7 +33,7 @@ class PersonInChargeController
                 PersonInCharge::create([
                     'user_id' => $userId,
                     'job_position' => $data['job_position'],
-                    'departement' => $data['departement'],
+                    'department' => $data['department'],
                     'pic_name' => $data['pic_name'],
                     'pic_telp_number_1' => $data['pic_telp_number_1'],
                     'pic_telp_number_2' => $data['pic_telp_number_2'],

@@ -49,6 +49,9 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
     Route::get('user/profile/{userId}', [UserController::class, 'getUserProfile']);
 
+    // Feat company profile
+    Route::post('company-profile/update/{companyProfile}', [CompanyProfileController::class, 'update']);
+
     // Feat file
     Route::post('stream/file', [FileController::class, 'streamFile']);
 

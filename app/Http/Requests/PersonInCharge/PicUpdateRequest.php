@@ -32,7 +32,7 @@ class PicUpdateRequest extends FormRequest
     {
         return [
             'job_position' => 'sometimes|string|max:25',
-            'departement' => 'sometimes|string|max:25',
+            'department' => 'sometimes|string|max:25',
             'pic_name' => 'sometimes|string|max:255',
             'pic_telp_number_1' => 'sometimes|string|max:13',
             'pic_telp_number_2' => 'sometimes|string|max:13',
@@ -51,8 +51,8 @@ class PicUpdateRequest extends FormRequest
         return [
             'job_position.string' => 'The job position must be a string.',
             'job_position.max' => 'The job position may not be greater than 25 characters.',
-            'departement.string' => 'The department must be a string.',
-            'departement.max' => 'The department may not be greater than 25 characters.',
+            'department.string' => 'The department must be a string.',
+            'department.max' => 'The department may not be greater than 25 characters.',
             'pic_name.string' => 'The PIC name must be a string.',
             'pic_name.max' => 'The PIC name may not be greater than 255 characters.',
             'pic_telp_number_1.string' => 'The first PIC telephone number must be a string.',

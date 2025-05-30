@@ -24,7 +24,7 @@ class PersonInCharge extends Model
     protected $fillable = [
         'user_id',
         'job_position',
-        'departement',
+        'department',
         'pic_name',
         'pic_telp_number_1',
         'pic_telp_number_2',
