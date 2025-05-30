@@ -15,7 +15,7 @@ class NibResource extends JsonResource
     public function toArray(Request $request): array
     {
         return[
-            'nib_id' => $this->nib_id ?? null,
+            'nib_id' => $this->id ?? null,
             'nib_number' => $this->nib_number ?? null,
             'nib_file' => $this->nib_file ?? null,
             'issuing_agency' => $this->issuing_agency ?? null,
