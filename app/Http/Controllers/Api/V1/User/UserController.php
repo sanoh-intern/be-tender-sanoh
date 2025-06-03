@@ -57,33 +57,19 @@ class UserController extends Controller
 
         // Company profile
         $companyProfile = CompanyProfile::where('user_id', $userId)->first();
-        if (!$companyProfile) {
-            return $this->returnResponseApi(false, 'Company Profile Data Not Found', null, 404);
-        }
 
         // Person In Charge
         $personInCharge = PersonInCharge::where('user_id', $userId)->get();
-        if (empty($personInCharge)) {
-            return $this->returnResponseApi(false, 'Person In Charge Data Not Found', null, 404);
-        }
 
         // Nib
         $nib = Nib::where('user_id', $userId)->first();
-        if (!$nib) {
-            return $this->returnResponseApi(false, 'NIB Data Not Found', null, 404);
-        }
 
         // Business license
         $businessLicenses = BusinessLicense::where('user_id', $userId)->get();
-        if (empty($businessLicenses)) {
-            return $this->returnResponseApi(false, 'Business License Data Not Found', null, 404);
-        }
 
         // integrity pact
         $integrityPact = IntegrityPact::where('user_id', $userId)->first();
-        if (!$integrityPact) {
-            return $this->returnResponseApi(false, 'Integrity Pact Data Not Found', null, 404);
-        }
+
 
         return $this->returnResponseApi(
             true,

@@ -39,10 +39,11 @@ class CompanyProfileUpdateRequest extends FormRequest
                 'max:25'
             ],
             'tax_id' => 'sometimes|string|max:25',
+            'tax_id_file' => 'sometimes|file|mimes:pdf',
             'company_name' => 'sometimes|string|max:255',
             'company_status' => 'sometimes|string|max:25',
             'company_description' => 'sometimes|string',
-            'company_photo' => 'sometimes|string|max:255',
+            'company_photo' => 'sometimes|file|mimes:png,jpg,jpeg',
             'company_url' => 'sometimes|string|max:255',
             'business_field' => 'sometimes|string|max:255',
             'sub_business_field' => 'sometimes|string|max:255',
@@ -58,6 +59,7 @@ class CompanyProfileUpdateRequest extends FormRequest
             'company_phone_2' => 'sometimes|string|max:25',
             'company_fax_1' => 'sometimes|string|max:25',
             'company_fax_2' => 'sometimes|string|max:25',
+            'skpp_file' => 'sometimes|file|mimes:pdf',
         ];
     }
 
@@ -65,12 +67,14 @@ class CompanyProfileUpdateRequest extends FormRequest
     {
         return [
             'bp_code.prohibited' => 'BP Code is not allowed for suppliers.',
-            'bp_code.required' => 'BP Code is required.',
             'bp_code.string' => 'BP Code must be a string.',
             'bp_code.max' => 'BP Code may not be greater than 25 characters.',
 
             'tax_id.string' => 'Tax ID must be a string.',
             'tax_id.max' => 'Tax ID may not be greater than 25 characters.',
+
+            'tax_id_file.file' => 'Tax ID File must be a file.',
+            'tax_id_file.mimes' => 'Tax ID File must be a PDF file.',
 
             'company_name.string' => 'Company Name must be a string.',
             'company_name.max' => 'Company Name may not be greater than 255 characters.',
@@ -80,8 +84,8 @@ class CompanyProfileUpdateRequest extends FormRequest
 
             'company_description.string' => 'Company Description must be a string.',
 
-            'company_photo.string' => 'Company Photo must be a string.',
-            'company_photo.max' => 'Company Photo may not be greater than 255 characters.',
+            'company_photo.file' => 'Company Photo must be a file.',
+            'company_photo.mimes' => 'Company Photo must be a file of type: png, jpg, jpeg.',
 
             'company_url.string' => 'Company URL must be a string.',
             'company_url.max' => 'Company URL may not be greater than 255 characters.',
@@ -127,6 +131,9 @@ class CompanyProfileUpdateRequest extends FormRequest
 
             'company_fax_2.string' => 'Company Fax 2 must be a string.',
             'company_fax_2.max' => 'Company Fax 2 may not be greater than 25 characters.',
+
+            'skpp_file.file' => 'SKPP File must be a file.',
+            'skpp_file.mimes' => 'SKPP File must be a PDF file.',
         ];
     }
 

@@ -31,9 +31,9 @@ class UserProfileResource extends JsonResource
         return [
             'general_data' => new CompanyProfileResource($this->companyData),
             'person_in_charge' => PicResource::collection($this->picData),
-            'nib' => new NibResource($this->nibData),
+            'nib' => new NibResource($this->nibData ?? (object)[]),
             'business_licences' => BusinessLicenseResource::collection($this->businessLicenseData),
-            'integrity_pact' => new IntegrityPactResource($this->integrityPactData),
+            'integrity_pact' => new IntegrityPactResource($this->integrityPactData ?? (object)[]),
         ];
     }
 }

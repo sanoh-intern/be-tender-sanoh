@@ -27,6 +27,7 @@ class CompanyProfile extends Model
         'user_id',
         'bp_code',
         'tax_id',
+        'tax_id_file',
         'company_name',
         'company_status',
         'company_description',
@@ -45,6 +46,7 @@ class CompanyProfile extends Model
         'company_phone_2',
         'company_fax_1',
         'company_fax_2',
+        'skpp_file',
         'profile_verified_by',
         'profile_verified_at',
     ];
