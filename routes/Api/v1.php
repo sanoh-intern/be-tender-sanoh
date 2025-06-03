@@ -140,7 +140,7 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
 
     // Feat Verification
     Route::get('verification/get', [VerificationController::class, 'getListUserVerify']);
-    Route::post('verification/create', [VerificationController::class, 'verifyRequest']);
+    Route::post('verification/request', [VerificationController::class, 'verifyRequest']);
 
     // Feat company profile
     Route::post('company-profile/update', [CompanyProfileController::class, 'update']);
