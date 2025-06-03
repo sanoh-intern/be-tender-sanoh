@@ -145,12 +145,12 @@ class VerificationController extends Controller
     public function getListUserVerify()
     {
         $userId = Auth::user()->id;
-        $data = VerifyNotification::where('user_id', $userId)->get();
-        if (isEmpty($data)) {
+        $data = VerifyNotification::where('user_id', $userId)->where('category', 'Verification')->get();
+        if (empty($data)) {
             return $this->returnResponseApi(true, 'There is No Verification Request', null, 404);
         }
 
-        return $this->returnResponseApi(true, 'Request Verify Data Successful', new VerifcationListHistoryuserResource($data), 201);
+        return $this->returnResponseApi(true, 'Request Verify Data Successful', VerifcationListHistoryuserResource::collection($data), 201);
     }
 
     /**
@@ -163,7 +163,7 @@ class VerificationController extends Controller
 
         $companyName = CompanyProfile::where('user_id', $userId)->get('company_name');
 
-        $checkReqDuplication = VerifyNotification::where('user_id', $userId)->where('category', 'verification')->whereNull('status')->exists();
+        $checkReqDuplication = VerifyNotification::where('user_id', $userId)->where('category', 'Verification')->whereNull('status')->exists();
         if ($checkReqDuplication == true) {
             return $this->returnResponseApi(true, 'User Already Requested Verification', null, 403);
         } else {
