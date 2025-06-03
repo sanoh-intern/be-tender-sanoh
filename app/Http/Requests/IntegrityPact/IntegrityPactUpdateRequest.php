@@ -31,7 +31,7 @@ class IntegrityPactUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'integrity_pact_file' => 'required|file|mimes:pdf',
+            'integrity_pact_file' => 'sometimes|file|mimes:pdf',
             'integrity_pact_desc' => 'sometimes|string|max:255',
         ];
     }
@@ -44,7 +44,6 @@ class IntegrityPactUpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'integrity_pact_file.required' => 'The integrity pact file is required.',
             'integrity_pact_file.file' => 'The integrity pact file must be a valid file.',
             'integrity_pact_file.mimes' => 'The integrity pact file must be a PDF.',
             'integrity_pact_desc.string' => 'The description must be a string.',

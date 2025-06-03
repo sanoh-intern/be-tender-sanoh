@@ -31,14 +31,14 @@ class PicCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'data' => 'required|array',
+            'data' => 'array',
             'data.*.job_position' => 'sometimes|string|max:25',
             'data.*.department' => 'sometimes|string|max:25',
             'data.*.pic_name' => 'sometimes|string|max:255',
-            'data.*.pic_telp_number_1' => 'sometimes|string|max:13',
-            'data.*.pic_telp_number_2' => 'sometimes|string|max:13',
-            'data.*.pic_email_1' => 'sometimes|string|max:255|email:rfc,static',
-            'data.*.pic_email_2' => 'sometimes|string|max:255|email:rfc,static',
+            'data.*.pic_telp_number_1' => 'sometimes|string|max:13|nullable',
+            'data.*.pic_telp_number_2' => 'sometimes|string|max:13|nullable',
+            'data.*.pic_email_1' => 'sometimes|string|max:255|email:rfc,static|nullable',
+            'data.*.pic_email_2' => 'sometimes|string|max:255|email:rfc,static|nullable',
         ];
     }
 

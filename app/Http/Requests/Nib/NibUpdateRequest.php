@@ -31,12 +31,12 @@ class NibUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nib_number' => 'required|max:13',
-            'nib_file' => 'required|file|mimes:pdf',
-            'issuing_agency' => 'required|string',
-            'issuing_date' => 'required|date',
-            'investment_status' => 'required|in:Done,In Progress',
-            'kbli' => 'required',
+            'nib_number' => 'sometimes|max:13',
+            'nib_file' => 'sometimes|file|mimes:pdf',
+            'issuing_agency' => 'sometimes|string',
+            'issuing_date' => 'sometimes|date',
+            'investment_status' => 'sometimes|in:Done,In Progress',
+            'kbli' => 'sometimes',
         ];
     }
 
@@ -48,18 +48,12 @@ class NibUpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nib_number.required' => 'The NIB number is required.',
             'nib_number.max' => 'The NIB number must not exceed 13 characters.',
-            'nib_file.required' => 'The NIB file is required.',
             'nib_file.file' => 'The NIB file must be a valid file.',
             'nib_file.mimes' => 'The NIB file must be a PDF.',
-            'issuing_agency.required' => 'The issuing agency is required.',
             'issuing_agency.string' => 'The issuing agency must be a string.',
-            'issuing_date.required' => 'The issuing date is required.',
             'issuing_date.date' => 'The issuing date must be a valid date.',
-            'investment_status.required' => 'The investment status is required.',
             'investment_status.in' => 'The investment status must be either "Done" or "In Progress".',
-            'kbli.required' => 'The KBLI is required.',
         ];
     }
 
