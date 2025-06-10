@@ -78,6 +78,8 @@ class CompanyProfileController extends Controller
                     'company_fax_1' => $request->company_fax_1,
                     'company_fax_2' => $request->company_fax_2,
                     'skpp_file' => $skppFile,
+                    'profile_verified_by' => null,
+                    'profile_verified_at' => null,
                 ]);
             } else {
                 $companyProfile->update([
@@ -104,6 +106,8 @@ class CompanyProfileController extends Controller
                     'company_fax_1' => $request->company_fax_1,
                     'company_fax_2' => $request->company_fax_2,
                     'skpp_file' => $skppFile,
+                    'profile_verified_by' => null,
+                    'profile_verified_at' => null,
                 ]);
             }
 

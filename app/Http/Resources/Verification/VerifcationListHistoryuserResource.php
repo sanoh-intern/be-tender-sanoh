@@ -35,7 +35,7 @@ class VerifcationListHistoryuserResource extends JsonResource
                 $cast = 'Rejected';
                 break;
 
-                case null:
+                case 'Process':
                 $cast = 'Pending';
                 break;
         }

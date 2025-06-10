@@ -139,6 +139,7 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
     Route::get('user/profile', [UserController::class, 'getUserProfile']);
 
     // Feat Verification
+    Route::get('verification/status', [VerificationController::class, 'verificationStatus']);
     Route::get('verification/get', [VerificationController::class, 'getListUserVerify']);
     Route::post('verification/request', [VerificationController::class, 'verifyRequest']);
 
