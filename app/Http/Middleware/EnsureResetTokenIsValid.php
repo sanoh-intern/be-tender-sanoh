@@ -25,11 +25,10 @@ class EnsureResetTokenIsValid
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $email = $request->input('email');
         $token = $request->input('token');
-        $cacheToken = Cache::get("reset-password-$email");
+        $cacheToken = Cache::get("reset-password-$token");
 
-        $recordToken = PasswordResetTokens::where('email', $email)->where('token', $token)->first();
+        $recordToken = PasswordResetTokens::where('token', $token)->where('token', $token)->first();
         // Check record
         if (! $recordToken) {
             return $this->returnResponseApi(false, 'Token Not Found', null, 404);
@@ -39,10 +38,6 @@ class EnsureResetTokenIsValid
         if ($token != $cacheToken && $cacheToken == null && $recordToken->status == 0) {
             return $this->returnResponseApi(false, 'Token Invalid', null, 404);
         }
-
-        // Action after pass checking
-        Cache::forget("reset-password-$email");
-        $recordToken->delete();
 
         return $next($request);
     }

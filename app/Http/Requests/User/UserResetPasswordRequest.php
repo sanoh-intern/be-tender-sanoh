@@ -5,7 +5,7 @@ namespace App\Http\Requests\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserTokenRequest extends FormRequest
+class UserResetPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,6 +24,7 @@ class UserTokenRequest extends FormRequest
     {
         return [
             'token' => 'required|max:6',
+            'password' => 'required|string|min:8|',
         ];
     }
 
@@ -32,6 +33,9 @@ class UserTokenRequest extends FormRequest
         return [
             'token.required' => 'Token is required.',
             'token.max' => 'Token may not be greater than 6 characters.',
+            'password.required' => 'Password is required.',
+            'password.string' => 'Password must be a string.',
+            'password.min' => 'Password must be at least 8 characters.',
         ];
     }
 

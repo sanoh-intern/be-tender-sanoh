@@ -24,7 +24,7 @@ Route::prefix('v1/guest')->group(function () {
     Route::post('register', [UserController::class,'register']);
     Route::post('resend-password', [UserController::class,'resendPassword']);
     Route::post('reset-password', [UserController::class,'resetPasswordToken']);
-    Route::post('reset-password/update', [UserController::class,'resetPassword'])->middleware('ensureResetTokenIsValid');
+    Route::post('reset-password/update', [UserController::class,'resetPasswordGuest'])->middleware('ensureResetTokenIsValid');
     Route::post('verification-token', [UserController::class,'verificationToken']);
 });
 

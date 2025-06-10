@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
+use App\Http\Requests\User\UserResetPasswordRequest;
 use App\Http\Resources\User\UserProfileResource;
 use Str;
 use Mail;
@@ -244,27 +245,6 @@ class UserController extends Controller
     }
 
     /**
-     * Reset Password *after Password reset token verified
-     * @param \App\Http\Requests\User\UserUpdatePasswordRequest $request
-     * @return mixed|\Illuminate\Http\JsonResponse
-     */
-    public function resetPassword(UserUpdatePasswordRequest $request)
-    {
-        $request->validated();
-
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
-        }
-
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        return $this->returnResponseApi(true, 'Reset Password Success', null, 200);
-    }
-
-    /**
      * Resend password mail *after Register, if user doesnt receive mail
      * @param \App\Http\Requests\User\UserEmailRequest $request
      * @return mixed|\Illuminate\Http\JsonResponse
@@ -290,7 +270,7 @@ class UserController extends Controller
     }
 
     /**
-     * Send mail Password reset token
+     * Send mail Password reset token (proses 1 reset password by role guest)
      * @param \App\Http\Requests\User\UserEmailRequest $request
      * @return mixed|\Illuminate\Http\JsonResponse
      */
@@ -321,6 +301,16 @@ class UserController extends Controller
             ]
         );
 
+        // Create cache
+        Cache::put(
+            "reset-password-$createToken",
+            [
+                'email' => $request->email,
+                'token' => $createToken,
+            ],
+            now()->addMinutes(5)
+        );
+
         // Send mail
         Mail::to($request->email)->queue(new MailPasswordResetToken($createToken));
 
@@ -328,7 +318,7 @@ class UserController extends Controller
     }
 
     /**
-     * Verify password reset token
+     * Verify password reset token (proses 2 reset password by role guest)
      * @param \App\Http\Requests\User\UserTokenRequest $request
      * @return mixed|\Illuminate\Http\JsonResponse
      */
@@ -337,7 +327,6 @@ class UserController extends Controller
         $request->validated();
 
         $checkToken = PasswordResetTokens::where('token', $request->token)
-            ->where('email', $request->email)
             ->where('status', 0)->first();
         if (!$checkToken) {
             return $this->returnResponseApi(true, 'Token invalid', null, 404);
@@ -346,9 +335,40 @@ class UserController extends Controller
         // Update token status
         $checkToken->update(['status' => 1]);
 
-        // Create cache
-        Cache::put("reset-password-$checkToken->email", $checkToken->token, now()->addMinutes(5));
 
         return $this->returnResponseApi(true, 'Verification Token Success', null, 200);
+    }
+
+    /**
+     * Reset Password *after Password reset token verified (proses 3 reset password by role guest)
+     * @param \App\Http\Requests\User\UserResetPasswordRequest $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function resetPasswordGuest(UserResetPasswordRequest $request)
+    {
+        $request->validated();
+
+        $cacheOtp = Cache::get("reset-password-$request->token");
+
+        $user = User::where('email', $cacheOtp['email'])->first();
+        if (!$user) {
+            return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        $checkToken = PasswordResetTokens::where('token', $cacheOtp['token'])
+            ->where('email', $cacheOtp['email'])
+            ->where('status', 1)->first();
+        if (!$checkToken) {
+            return $this->returnResponseApi(true, 'Token invalid', null, 404);
+        }
+        $checkToken->delete();
+
+        Cache::forget("reset-password-$request->token");
+
+        return $this->returnResponseApi(true, 'Reset Password Success', null, 200);
     }
 }
