@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
+use App\Http\Resources\CompanyProfile\CompanyDataResource;
 use Auth;
 use App\Trait\StoreFile;
 use App\Trait\ResponseApi;
@@ -116,4 +117,16 @@ class CompanyProfileController extends Controller
         return $this->returnResponseApi(true, 'Update Company Profile Success', null, 200);
     }
 
+    public function companyData()
+    {
+        $data = CompanyProfile::with('user')
+            ->select('id', 'user_id', 'bp_code', 'company_name', 'profile_verified_by', 'profile_verified_at')
+            ->orderByDesc('created_at')
+            ->get();
+        if (empty($data)) {
+            return $this->returnResponseApi(true, 'There is No Company Data', '', 404);
+        }
+
+        return $this->returnResponseApi(true, 'Get Company Data Success', CompanyDataResource::collection($data), 200);
+    }
 }
