@@ -16,10 +16,11 @@ class VerifcationListResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'verification_id' => $this->id,
+            'verification_id' => $this->latestVerification->id,
+            'user_id' => $this->id,
             'tax_id' => $this->companyProfile->tax_id ?? null,
             'comapany_name' => $this->companyProfile->company_name ?? null,
-            'request_date' => Carbon::parse($this->created_at)->format('y-m-d'),
+            'request_date' => Carbon::parse($this->latestVerification->created_at)->format('Y-m-d'),
         ];
     }
 }

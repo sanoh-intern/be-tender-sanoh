@@ -6,6 +6,7 @@ use App\Http\Resources\Verification\VerificationStatusResource;
 use App\Models\BusinessLicense;
 use App\Models\IntegrityPact;
 use App\Models\Nib;
+use App\Models\User;
 use Carbon\Carbon;
 use Log;
 use Auth;
@@ -131,7 +132,11 @@ class VerificationController extends Controller
      */
     public function getListVerify()
     {
-        $verifyData = VerifyNotification::with('companyProfile')->where('category', 'Verification')->whereNull('expires_at')->get();
+        $verifyData = User::whereHas('latestVerification', function ($query) {
+            $query->where('status', 'Process');
+        })->with('latestVerification', 'companyProfile')->get();
+        // dd($verifyData);
+        // $verifyData = VerifyNotification::with('companyProfile')->where('category', 'Verification')->whereNull('expires_at')->get();
         if (empty($verifyData)) {
             return $this->returnResponseApi(true, 'There is No Verification Request', null, 404);
         }
@@ -140,10 +145,10 @@ class VerificationController extends Controller
     }
 
     /**
-     * Get list all user request for verification
+     * Get user all request for verification
      * @return mixed|\Illuminate\Http\JsonResponse
      */
-    public function getListUserVerify()
+    public function getUserListVerify()
     {
         $userId = Auth::user()->id;
         $data = VerifyNotification::where('user_id', $userId)->where('category', 'Verification')->get();

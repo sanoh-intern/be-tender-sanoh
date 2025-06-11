@@ -89,4 +89,13 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(ProjectHeader::class, 'list_user_project', 'user_id', 'project_header_id')->withTimestamps();
     }
+
+    /**
+     * Latest Verification
+     * @return HasOne<verifyNotification, User>
+     */
+    public function latestVerification(): HasOne
+    {
+        return $this->hasOne(VerifyNotification::class)->latestOfMany();
+    }
 }

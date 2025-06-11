@@ -34,4 +34,14 @@ class VerifyNotification extends Model
     {
         return $this->belongsTo(CompanyProfile::class, 'user_id', 'user_id');
     }
+
+    /**
+     * Get the user that owns the VerifyNotification
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -90,6 +90,9 @@ Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->g
     // Feat file
     Route::post('stream/file', [FileController::class, 'streamFile']);
 
+    // Feat Company Data
+    Route::get('company-data/get',[CompanyProfileController::class,'companyData']);
+
     // Feat Verification
     Route::get('verification/get', [VerificationController::class, 'getListVerify']);
     Route::patch('verification/approve/{verificationId}', [VerificationController::class, 'approveVerify']);
@@ -143,7 +146,7 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
 
     // Feat Verification
     Route::get('verification/status', [VerificationController::class, 'verificationStatus']);
-    Route::get('verification/get', [VerificationController::class, 'getListUserVerify']);
+    Route::get('verification/get', [VerificationController::class, 'getUserListVerify']);
     Route::post('verification/request', [VerificationController::class, 'verifyRequest']);
 
     // Feat company profile
