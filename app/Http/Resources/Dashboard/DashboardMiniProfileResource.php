@@ -4,6 +4,7 @@ namespace App\Http\Resources\Dashboard;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Storage;
 
 class DashboardMiniProfileResource extends JsonResource
 {
@@ -16,6 +17,7 @@ class DashboardMiniProfileResource extends JsonResource
     {
         return [
             'id' => (string) $this->id,
+            'company_photo' => $this->companyProfile ? asset('storage/'.$this->companyProfile->company_photo) : null,
             'company_name' => $this->companyProfile->company_name ?? null,
             'tax_id' => $this->companyProfile->tax_id ?? null,
             'company_description' => $this->companyProfile->company_description ?? null,
