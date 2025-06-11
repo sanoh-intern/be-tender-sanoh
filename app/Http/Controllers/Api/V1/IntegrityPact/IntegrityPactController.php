@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\IntegrityPact;
 
+use App\Models\User;
 use App\Trait\StoreFile;
 use App\Trait\ResponseApi;
 use App\Models\IntegrityPact;
@@ -83,9 +84,10 @@ class IntegrityPactController extends Controller
      */
     public function destroy(IntegrityPact $integrityPact)
     {
-        if ($integrityPact->user_id == Auth::user()->id) {
+        $userId = Auth::user()->id;
+        if ($integrityPact->user_id == $userId) {
+            IntegrityPact::where('user_id', $userId)->delete();
             $this->deleteFile($integrityPact->integrity_pact_file);
-            $integrityPact->delete();
         } else {
             return $this->returnResponseApi(true, 'You are not authorized to access this resource.', null, 403);
         }

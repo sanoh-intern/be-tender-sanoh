@@ -50,7 +50,8 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
     Route::get('user/profile/{userId}', [UserController::class, 'getUserProfile']);
 
     // Feat company profile
-    Route::post('company-profile/update/{companyProfile}', [CompanyProfileController::class, 'update']);
+    Route::post('company-profile/update/{companyProfile}', [CompanyProfileController::class, 'updateFile']);
+    Route::patch('company-profile/update/{companyProfile}', [CompanyProfileController::class, 'update']);
 
     // Feat Company Data
     Route::get('company-data/get',[CompanyProfileController::class,'companyData']);
@@ -150,7 +151,8 @@ Route::middleware(['auth:sanctum', 'userRole:supplier'])->prefix('v1/supplier')-
     Route::post('verification/request', [VerificationController::class, 'verifyRequest']);
 
     // Feat company profile
-    Route::post('company-profile/update', [CompanyProfileController::class, 'update']);
+    Route::post('company-profile/update', [CompanyProfileController::class,'updateFile']);
+    Route::patch('company-profile/update', [CompanyProfileController::class, 'update']);
 
     // Feat Person In Charge
     Route::post('pic/create', [PersonInChargeController::class,'createPic']);

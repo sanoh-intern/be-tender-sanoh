@@ -30,6 +30,7 @@ class CompanyProfile extends Model
         'tax_id_file',
         'company_name',
         'company_status',
+        'company_photo',
         'company_description',
         'company_url',
         'business_field',

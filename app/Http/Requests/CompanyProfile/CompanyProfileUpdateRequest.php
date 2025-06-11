@@ -39,11 +39,9 @@ class CompanyProfileUpdateRequest extends FormRequest
                 'max:25'
             ],
             'tax_id' => 'sometimes|string|max:25',
-            'tax_id_file' => 'sometimes|file|mimes:pdf',
             'company_name' => 'sometimes|string|max:255',
             'company_status' => 'sometimes|string|max:25',
             'company_description' => 'sometimes|string',
-            'company_photo' => 'sometimes|file|mimes:png,jpg,jpeg',
             'company_url' => 'sometimes|string|max:255',
             'business_field' => 'sometimes|string|max:255',
             'sub_business_field' => 'sometimes|string|max:255',
@@ -59,7 +57,6 @@ class CompanyProfileUpdateRequest extends FormRequest
             'company_phone_2' => 'sometimes|string|max:25',
             'company_fax_1' => 'sometimes|string|max:25',
             'company_fax_2' => 'sometimes|string|max:25',
-            'skpp_file' => 'sometimes|file|mimes:pdf',
         ];
     }
 

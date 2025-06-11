@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
-use App\Http\Resources\CompanyProfile\CompanyDataResource;
 use Auth;
 use App\Trait\StoreFile;
 use App\Trait\ResponseApi;
@@ -10,7 +9,9 @@ use App\Models\CompanyProfile;
 use App\Trait\AuthorizationRole;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CompanyProfile\CompanyDataResource;
 use App\Http\Requests\CompanyProfile\CompanyProfileUpdateRequest;
+use App\Http\Requests\CompanyProfile\CompanyProfileUpdateFileRequest;
 
 class CompanyProfileController extends Controller
 {
@@ -28,91 +29,110 @@ class CompanyProfileController extends Controller
      */
     public function update(CompanyProfileUpdateRequest $request, CompanyProfile $companyProfile)
     {
-        $request->validated();
         if ($this->permissibleRole('purchasing', 'review')) {
             $userId = null;
         } else {
             $userId = Auth::user()->id;
         }
 
+        // Update record
+        if ($userId != null) {
+            $companyProfile->where('user_id', $userId)->update($request->validated());
+        } else {
+            $companyProfile->update($request->validated());
+        }
 
-        DB::transaction(function () use ($request, $companyProfile, $userId) {
-            // dd($request);
-            // Check if company photo exist
-            if ($request->hasFile('company_photo')) {
-                $companyPhoto = $this->saveFile($request->file('company_photo'), 'Company_Photo', 'Images', 'Company_Photo', 'public');
+        return $this->returnResponseApi(true, 'Update Company Profile Success', null, 200);
+    }
+
+    public function updateFile(CompanyProfileUpdateFileRequest $request, CompanyProfile $companyProfile)
+    {
+        $request->validated();
+
+        if ($this->permissibleRole('purchasing', 'review')) {
+            $userId = null;
+            // Get file path
+            $getfile = $companyProfile->select('company_photo', 'tax_id_file', 'skpp_file')->first();
+        } else {
+            $userId = Auth::user()->id;
+            // Get file path
+            $getfile = $companyProfile->select('company_photo', 'tax_id_file', 'skpp_file')->where('user_id', $userId)->first();
+        }
+
+
+        // Check if company photo exist
+        if ($request->hasFile('company_photo')) {
+            // Delete old photo
+            if ($getfile->company_photo != null) {
+                $this->deleteFile($getfile->company_photo, 'public');
             }
 
-            // Check if tax_id_file exist
-            if ($request->hasFile('tax_id_file')) {
-                $taxIdFile = $this->saveFile($request->file('tax_id_file'), 'tax_id', 'Documents', 'tax_id');
-            }
 
-            // Check if skpp_file exist
-            if ($request->hasFile('skpp_file')) {
-                $skppFile = $this->saveFile($request->file('skpp_file'), 'skpp', 'Documents', 'skpp');
-            }
-
-            // Update record
+            // Save new photo
+            $companyPhoto = $this->saveFile($request->file('company_photo'), 'Company_Photo', 'Images', 'Company_Photo', 'public');
             if ($userId != null) {
                 $companyProfile->where('user_id', $userId)->update([
-                    'bp_code' => $request->bp_code,
-                    'tax_id' => $request->tax_id,
-                    'tax_id_file' => $taxIdFile,
-                    'company_name' => $request->company_name,
-                    'company_status' => $request->company_status,
-                    'company_description' => $request->company_description,
                     'company_photo' => $companyPhoto,
-                    'company_url' => $request->company_url,
-                    'business_field' => $request->business_field,
-                    'sub_business_field' => $request->sub_business_field,
-                    'product' => $request->product,
-                    'adr_line_1' => $request->adr_line_1,
-                    'adr_line_2' => $request->adr_line_2,
-                    'adr_line_3' => $request->adr_line_3,
-                    'adr_line_4' => $request->adr_line_4,
-                    'province' => $request->province,
-                    'city' => $request->city,
-                    'postal_code' => $request->postal_code,
-                    'company_phone_1' => $request->company_phone_1,
-                    'company_phone_2' => $request->company_phone_2,
-                    'company_fax_1' => $request->company_fax_1,
-                    'company_fax_2' => $request->company_fax_2,
+                    'profile_verified_by' => null,
+                    'profile_verified_at' => null,
+                ]);
+            } else {
+
+                $companyProfile->update([
+                    'company_photo' => $companyPhoto,
+                    'profile_verified_by' => null,
+                    'profile_verified_at' => null,
+                ]);
+            }
+        }
+
+        // Check if tax_id_file exist
+        if ($request->hasFile('tax_id_file')) {
+            // Delete old tax id file
+            if ($getfile->tax_id_file) {
+                $this->deleteFile($getfile->tax_id_file, 'public');
+            }
+
+            // Save new tax id
+            $taxIdFile = $this->saveFile($request->file('tax_id_file'), 'tax_id', 'Documents', 'tax_id');
+            if ($userId != null) {
+                $companyProfile->where('user_id', $userId)->update([
+                    'tax_id_file' => $taxIdFile,
+                    'profile_verified_by' => null,
+                    'profile_verified_at' => null,
+                ]);
+            } else {
+                $companyProfile->update([
+                    'tax_id_file' => $taxIdFile,
+                    'profile_verified_by' => null,
+                    'profile_verified_at' => null,
+                ]);
+            }
+        }
+
+        // Check if skpp_file exist
+        if ($request->hasFile('skpp_file')) {
+            // Delete old skpp file
+            if ($getfile->skpp_file) {
+                $this->deleteFile($getfile->skpp_file, 'public');
+            }
+
+            // Save new skpp file
+            $skppFile = $this->saveFile($request->file('skpp_file'), 'skpp', 'Documents', 'skpp');
+            if ($userId != null) {
+                $companyProfile->where('user_id', $userId)->update([
                     'skpp_file' => $skppFile,
                     'profile_verified_by' => null,
                     'profile_verified_at' => null,
                 ]);
             } else {
                 $companyProfile->update([
-                    'bp_code' => $request->bp_code,
-                    'tax_id' => $request->tax_id,
-                    'tax_id_file' => $taxIdFile,
-                    'company_name' => $request->company_name,
-                    'company_status' => $request->company_status,
-                    'company_description' => $request->company_description,
-                    'company_photo' => $companyPhoto,
-                    'company_url' => $request->company_url,
-                    'business_field' => $request->business_field,
-                    'sub_business_field' => $request->sub_business_field,
-                    'product' => $request->product,
-                    'adr_line_1' => $request->adr_line_1,
-                    'adr_line_2' => $request->adr_line_2,
-                    'adr_line_3' => $request->adr_line_3,
-                    'adr_line_4' => $request->adr_line_4,
-                    'province' => $request->province,
-                    'city' => $request->city,
-                    'postal_code' => $request->postal_code,
-                    'company_phone_1' => $request->company_phone_1,
-                    'company_phone_2' => $request->company_phone_2,
-                    'company_fax_1' => $request->company_fax_1,
-                    'company_fax_2' => $request->company_fax_2,
                     'skpp_file' => $skppFile,
                     'profile_verified_by' => null,
                     'profile_verified_at' => null,
                 ]);
             }
-
-        });
+        }
 
         return $this->returnResponseApi(true, 'Update Company Profile Success', null, 200);
     }
