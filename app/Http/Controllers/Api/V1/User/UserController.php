@@ -254,6 +254,21 @@ class UserController extends Controller
         $request->validated();
         $password = Str::password(8);
 
+        $checkEmailVerify = User::where('email', $request->email)->whereNotNull('email_verified_at')->exists();
+        if ($checkEmailVerify == true) {
+            return $this->returnResponseApi(false, 'Forbidden', '', 403);
+        }
+
+        if (!empty(Cache::get("resend-password-$request->email"))) {
+            return $this->returnResponseApi(
+                false,
+                'Password resend request is temporarily restricted. Please wait 1 minute before trying again.',
+                '',
+                404
+            );
+        }
+        Cache::put("resend-password-$request->email", ['email' => $request->email], now()->addMinutes(1));
+
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return $this->returnResponseApi(false, 'User Email Not Found', '', 404);
@@ -349,6 +364,9 @@ class UserController extends Controller
         $request->validated();
 
         $cacheOtp = Cache::get("reset-password-$request->token");
+        if (empty($cacheOtp)) {
+            return $this->returnResponseApi(false, 'OTP Expired', '', 404);
+        }
 
         $user = User::where('email', $cacheOtp['email'])->first();
         if (!$user) {
@@ -356,7 +374,7 @@ class UserController extends Controller
         }
 
         $user->update([
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->new_password),
         ]);
 
         $checkToken = PasswordResetTokens::where('token', $cacheOtp['token'])
@@ -368,6 +386,26 @@ class UserController extends Controller
         $checkToken->delete();
 
         Cache::forget("reset-password-$request->token");
+
+        return $this->returnResponseApi(true, 'Reset Password Success', null, 200);
+    }
+
+    /**
+     * Reset password for Authenticated user supplier
+     * @param \App\Http\Requests\User\UserResetPasswordRequest $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function resetPasswordSupplier(UserResetPasswordRequest $request)
+    {
+        $request->validated();
+
+        $user = User::where('id', Auth::user()->id)->first();
+        if (!$user) {
+            return $this->returnResponseApi(false, 'User Not Found', '', 404);
+        }
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
 
         return $this->returnResponseApi(true, 'Reset Password Success', null, 200);
     }

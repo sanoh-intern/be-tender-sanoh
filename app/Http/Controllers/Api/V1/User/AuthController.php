@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Models\User;
 use App\Trait\ResponseApi;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -54,6 +55,11 @@ class AuthController extends Controller
 
         // Get Auth User
         $user = Auth::user();
+        if ($user->email_verified_at == null) {
+            $user->update([
+                'email_verified_at' => Carbon::now(),
+            ]);
+        }
 
         // Generate a token
         $token = $user->createToken('auth_token')->plainTextToken;

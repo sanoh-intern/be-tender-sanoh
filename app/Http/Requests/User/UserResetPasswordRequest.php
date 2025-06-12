@@ -2,17 +2,27 @@
 
 namespace App\Http\Requests\User;
 
+use Illuminate\Validation\Rule;
+use App\Trait\AuthorizationRole;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UserResetPasswordRequest extends FormRequest
 {
     /**
+     * -------TRAIT---------
+     * Mandatory:
+     * 1. AuthorizationRole = for checking permissible user role
+     */
+    use AuthorizationRole;
+
+    /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::guest() || $this->permissibleRole('supplier', 'purchasing', 'review');;
     }
 
     /**
@@ -23,8 +33,14 @@ class UserResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token' => 'required|max:6',
-            'password' => 'required|string|min:8|',
+            'token' => [
+                Rule::when(
+                    Auth::guest(), // true if no authenticated user (i.e., guest)
+                    ['required', 'string', 'max:25'],
+                    ['sometimes', 'string', 'max:25']
+                ),
+            ],
+            'new_password' => 'required|string|min:8|',
         ];
     }
 
