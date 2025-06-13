@@ -52,11 +52,11 @@ class CompanyProfileController extends Controller
         if ($this->permissibleRole('purchasing', 'review')) {
             $userId = null;
             // Get file path
-            $getfile = $companyProfile->select('company_photo', 'tax_id_file', 'skpp_file')->first();
+            $getfile = $companyProfile->select('company_photo', 'tax_id_file', 'sppkp_file')->first();
         } else {
             $userId = Auth::user()->id;
             // Get file path
-            $getfile = $companyProfile->select('company_photo', 'tax_id_file', 'skpp_file')->where('user_id', $userId)->first();
+            $getfile = $companyProfile->select('company_photo', 'tax_id_file', 'sppkp_file')->where('user_id', $userId)->first();
         }
 
 
@@ -110,24 +110,24 @@ class CompanyProfileController extends Controller
             }
         }
 
-        // Check if skpp_file exist
-        if ($request->hasFile('skpp_file')) {
-            // Delete old skpp file
-            if ($getfile->skpp_file) {
-                $this->deleteFile($getfile->skpp_file, 'public');
+        // Check if sppkp_file exist
+        if ($request->hasFile('sppkp_file')) {
+            // Delete old sppkp file
+            if ($getfile->sppkp_file) {
+                $this->deleteFile($getfile->sppkp_file, 'public');
             }
 
-            // Save new skpp file
-            $skppFile = $this->saveFile($request->file('skpp_file'), 'skpp', 'Documents', 'skpp');
+            // Save new sppkp file
+            $sppkpFile = $this->saveFile($request->file('sppkp_file'), 'sppkp', 'Documents', 'sppkp');
             if ($userId != null) {
                 $companyProfile->where('user_id', $userId)->update([
-                    'skpp_file' => $skppFile,
+                    'sppkp_file' => $sppkpFile,
                     'profile_verified_by' => null,
                     'profile_verified_at' => null,
                 ]);
             } else {
                 $companyProfile->update([
-                    'skpp_file' => $skppFile,
+                    'sppkp_file' => $sppkpFile,
                     'profile_verified_by' => null,
                     'profile_verified_at' => null,
                 ]);

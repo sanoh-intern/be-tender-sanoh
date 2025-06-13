@@ -32,7 +32,7 @@ class CompanyProfileUpdateFileRequest extends FormRequest
         return [
             'tax_id_file' => 'sometimes|file|mimes:pdf',
             'company_photo' => 'sometimes|file|mimes:png,jpg,jpeg',
-            'skpp_file' => 'sometimes|file|mimes:pdf',
+            'sppkp_file' => 'sometimes|file|mimes:pdf',
         ];
     }
 
@@ -43,8 +43,8 @@ class CompanyProfileUpdateFileRequest extends FormRequest
             'tax_id_file.mimes' => 'The tax ID file must be a PDF file.',
             'company_photo.file' => 'The company photo must be a valid file.',
             'company_photo.mimes' => 'The company photo must be a file of type: png, jpg, jpeg.',
-            'skpp_file.file' => 'The SKPP file must be a valid file.',
-            'skpp_file.mimes' => 'The SKPP file must be a PDF file.',
+            'sppkp_file.file' => 'The SPPKP file must be a valid file.',
+            'sppkp_file.mimes' => 'The SPPKP file must be a PDF file.',
         ];
     }
 }

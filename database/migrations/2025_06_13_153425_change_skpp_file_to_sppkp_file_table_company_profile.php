@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('company_profile', function (Blueprint $table) {
-            $table->string('tax_id_file', 255)->nullable()->after('tax_id');
-            $table->string('sppkp_file', 255)->nullable()->after('company_fax_2');
+            $table->renameColumn('skpp_file', 'sppkp_file');
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('company_profile', function (Blueprint $table) {
-            $table->dropColumn('tax_id_file');
-            $table->dropColumn('sppkp_file');
+            $table->renameColumn('sppkp_file', 'skpp_file');
         });
     }
 };

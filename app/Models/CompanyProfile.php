@@ -47,7 +47,7 @@ class CompanyProfile extends Model
         'company_phone_2',
         'company_fax_1',
         'company_fax_2',
-        'skpp_file',
+        'sppkp_file',
         'profile_verified_by',
         'profile_verified_at',
     ];

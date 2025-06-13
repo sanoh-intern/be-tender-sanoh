@@ -37,7 +37,7 @@ class CompanyProfileResource extends JsonResource
             'company_phone_2' => $this->company_phone_2 ?? null,
             'company_fax_1' => $this->company_fax_1 ?? null,
             'company_fax_2' => $this->company_fax_2 ?? null,
-            'skpp_file' => $this->skpp_file ?? null
+            'sppkp_file' => $this->sppkp_file ?? null
         ];
     }
 }

@@ -129,8 +129,8 @@ class CompanyProfileUpdateRequest extends FormRequest
             'company_fax_2.string' => 'Company Fax 2 must be a string.',
             'company_fax_2.max' => 'Company Fax 2 may not be greater than 25 characters.',
 
-            'skpp_file.file' => 'SKPP File must be a file.',
-            'skpp_file.mimes' => 'SKPP File must be a PDF file.',
+            'sppkp_file.file' => 'SPPKP File must be a file.',
+            'sppkp_file.mimes' => 'SPPKP File must be a PDF file.',
         ];
     }
 
