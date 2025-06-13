@@ -17,6 +17,8 @@ class DashboardMiniProfileResource extends JsonResource
     {
         return [
             'id' => (string) $this->id,
+            'bp_code' => $this->bp_code ?? null,
+            'email' => $this->email ?? null,
             'company_photo' => $this->companyProfile ? asset('storage/'.$this->companyProfile->company_photo) : null,
             'company_name' => $this->companyProfile->company_name ?? null,
             'tax_id' => $this->companyProfile->tax_id ?? null,

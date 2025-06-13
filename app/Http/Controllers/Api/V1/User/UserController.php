@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Requests\User\UserResetPasswordRequest;
 use App\Http\Resources\User\UserProfileResource;
+use Nette\Utils\Random;
 use Str;
 use Mail;
 use Carbon\Carbon;
@@ -252,7 +253,7 @@ class UserController extends Controller
     public function resendPassword(UserEmailRequest $request)
     {
         $request->validated();
-        $password = Str::password(8);
+        $password = Random::generate(8);
 
         $checkEmailVerify = User::where('email', $request->email)->whereNotNull('email_verified_at')->exists();
         if ($checkEmailVerify == true) {
@@ -292,7 +293,7 @@ class UserController extends Controller
     public function resetPasswordToken(UserEmailRequest $request)
     {
         $request->validated();
-        $createToken = Str::random(6);
+        $createToken = Random::generate(6, '0-9');
 
         $user = User::where('email', $request->email)->first();
         if (!$user) {
