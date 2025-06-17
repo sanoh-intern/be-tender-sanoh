@@ -33,7 +33,7 @@ class User extends Authenticatable
         'password',
         'account_status',
         'email_verified_at',
-        'expires_at',
+        'deleted_at',
     ];
 
     /**
