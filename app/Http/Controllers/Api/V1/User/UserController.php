@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Requests\User\UserResetPasswordRequest;
 use App\Http\Resources\User\UserProfileResource;
+use GuzzleHttp\Psr7\Request;
 use Nette\Utils\Random;
+use RequestParseBodyException;
 use Str;
 use Mail;
 use Carbon\Carbon;
@@ -191,6 +193,14 @@ class UserController extends Controller
         ]);
 
         return $this->returnResponseApi(true, 'Update User Success', null, 200);
+    }
+
+    public function delete(User $user) {
+        $user->update([
+            'deleted_at' => Carbon::now(),
+        ]);
+
+        return $this->returnResponseApi(true, 'Update Account Status Success', null, 200);
     }
 
     /**

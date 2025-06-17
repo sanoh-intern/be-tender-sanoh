@@ -42,6 +42,14 @@ class AuthController extends Controller
                         'error' => "Account with (email:{$request->email}) is Inactive",
                     ], 401)
                 );
+            } elseif (Auth::user()->deleted_at != null) {
+                throw new HttpResponseException(
+                    response()->json([
+                        'status' => false,
+                        'message' => 'Account is Deleted. Please Contact PT Sanoh Indonesia.',
+                        'error' => "Account with (email:{$request->email}) is Deleted",
+                    ], 401)
+                );
             }
         } else {
             throw new HttpResponseException(

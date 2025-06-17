@@ -44,6 +44,7 @@ Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-ad
     Route::post('user/create', [UserController::class, 'create']);
     Route::put('user/update/{id}', [UserController::class, 'update']);
     Route::patch('user/update/status/{id}', [UserController::class, 'updateStatus']);
+    Route::delete('user/delete/{user}',[UserController::class,'delete']);
 
     // Route for logout
     Route::post('logout', [AuthController::class, 'logout']);

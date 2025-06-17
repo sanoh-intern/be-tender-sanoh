@@ -24,6 +24,7 @@ class UserlistResource extends JsonResource
             'role' => $this->roleTag->role_tag ?? null,
             'profile_verified_at' => $this->companyProfile->profile_verified_at ?? null,
             'email_verified_at' => $this->email_verified_at ?? null,
+            'deleted' => ($this->deleted_at) ? true : false,
         ];
     }
 }

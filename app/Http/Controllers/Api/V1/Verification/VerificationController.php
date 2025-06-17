@@ -222,11 +222,6 @@ class VerificationController extends Controller
             $arrayData['profile_verified_at']
         );
         $checkNull = in_array(null, $arrayData, true);
-        // dd($arrayData);
-        // dd($checkNull);
-        if ($checkNull == true) {
-            return $this->returnResponseApi(false, 'Users must fill in the required data.', null, 403);
-        }
 
         // Check Verification Condition
         $data = [];
