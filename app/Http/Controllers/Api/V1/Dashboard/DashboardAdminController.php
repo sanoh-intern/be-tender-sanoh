@@ -105,7 +105,7 @@ class DashboardAdminController extends Controller
             $active_token_details = $active_tokens->map(function ($token) {
             return [
                 'username' => $token->tokenable->email,
-                'name' => $token->tokenable->companyProfile->company_name,
+                'name' => $token->tokenable->companyProfile->company_name ?? null,
                 'role' => $token->tokenable->roleTag->role_tag,
                 'last_login' => $token->created_at->format('d/m/Y - H:i:s'),
                 'last_update' => $token->last_used_at ? $token->last_used_at->format('d/m/Y - H:i:s') : null,
