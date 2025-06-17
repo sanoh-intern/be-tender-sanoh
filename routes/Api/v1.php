@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\BusinessLicense\BusinessLicenseController;
+use App\Http\Controllers\Api\V1\Dashboard\DashboardAdminController;
 use App\Http\Controllers\Api\V1\File\FileController;
 use App\Http\Controllers\Api\V1\Nib\NibController;
 use App\Http\Controllers\Api\V1\Verification\VerificationController;
@@ -30,6 +31,11 @@ Route::prefix('v1/guest')->group(function () {
 
 // Route for super-admin
 Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-admin')->group(function () {
+    // Feat Dashboard
+    Route::get('dashboard', [DashboardAdminController::class, 'loginStats']);
+    Route::get('user/monthly', [DashboardAdminController::class, 'loginPerformance']);
+    Route::get('user/online', [DashboardAdminController::class, 'userOnline']);
+    Route::post('user/logout', [DashboardAdminController::class, 'userRevoke']);
 
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
