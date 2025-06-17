@@ -54,7 +54,9 @@ class DashboardAdminController extends Controller
             $tokenable = $tokens->sortByDesc('tokenable_type')->first()->tokenable;
 
             return [
-                'username' => ($tokenable && $tokenable->companyProfile) ? $tokenable->companyProfile->company_name : 'Unknown',
+                'username' => ($tokenable && $tokenable->companyProfile && $tokenable->companyProfile->company_name !== null)
+                    ? $tokenable->companyProfile->company_name
+                    : 'unknown',
                 'login_count' => $tokens->count(),
             ];
         });
@@ -72,7 +74,9 @@ class DashboardAdminController extends Controller
             $tokenable = $tokens->first()->tokenable;
 
             return [
-                'username' => ($tokenable && $tokenable->companyProfile) ? $tokenable->companyProfile->company_name : 'Unknown',
+                'username' => ($tokenable && $tokenable->companyProfile && $tokenable->companyProfile->company_name !== null)
+                    ? $tokenable->companyProfile->company_name
+                    : 'unknown',
                 'login_count' => $tokens->count(),
             ];
         });
