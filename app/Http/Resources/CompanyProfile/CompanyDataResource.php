@@ -3,10 +3,18 @@
 namespace App\Http\Resources\CompanyProfile;
 
 use Illuminate\Http\Request;
+use App\Trait\CheckVerificationStatus;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CompanyDataResource extends JsonResource
 {
+    /**
+     * -------TRAIT---------
+     * Mandatory:
+     * 1. ChckVerificationStatus = Get current verification status
+     */
+    use  CheckVerificationStatus;
+
     /**
      * Transform the resource into an array.
      *
@@ -19,25 +27,19 @@ class CompanyDataResource extends JsonResource
             'user_id' => $this->user_id,
             'supplier_name' => $this->company_name,
             'bp_code' => $this->bp_code,
-            'verification_status' => $this->verifyStatus(),
+            'verification_status' => $this->getStatusVerification($this->user_id),
+            'verified_at' => $this->profile_verified_at
         ];
     }
 
     /**
-     * Check status verification
-     * @return bool|string
+     * Get user varification status using trait
+     * @param mixed $userId
+     * @return mixed|string
      */
-    private function verifyStatus() {
-        $verify_by = $this->profile_verified_by;
+    private function getStatusVerification($userId) {
+        $data = $this->checkVerificationStatus($userId);
 
-        $verify_at = $this->profile_verified_at;
-
-        if ($verify_by == null && $verify_at == null) {
-            return false;
-        } elseif ($verify_by != null && $verify_at != null) {
-            return true;
-        } else {
-            return "Status Not Found";
-        }
+        return $data['status_verification'];
     }
 }

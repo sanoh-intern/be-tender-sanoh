@@ -29,11 +29,11 @@ class UserProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'general_data' => new CompanyProfileResource($this->companyData),
-            'person_in_charge' => PicResource::collection($this->picData),
-            'nib' => new NibResource($this->nibData ?? (object)[]),
-            'business_licences' => BusinessLicenseResource::collection($this->businessLicenseData),
-            'integrity_pact' => new IntegrityPactResource($this->integrityPactData ?? (object)[]),
+            'general_data' => new CompanyProfileResource($this->companyData) ?? null,
+            'person_in_charge' => $this->picData->isNotEmpty() ? PicResource::collection($this->picData) : null,
+            'nib' => new NibResource($this->nibData) ?? null,
+            'business_licences' => $this->businessLicenseData->isNotEmpty() ? BusinessLicenseResource::collection($this->businessLicenseData) : null,
+            'integrity_pact' => new IntegrityPactResource($this->integrityPactData) ?? null,
         ];
     }
 }

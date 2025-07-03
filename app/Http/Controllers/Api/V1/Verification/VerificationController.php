@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Api\V1\Verification;
 
-use App\Http\Resources\Verification\VerificationStatusResource;
-use App\Models\BusinessLicense;
-use App\Models\IntegrityPact;
-use App\Models\Nib;
-use App\Models\User;
-use Carbon\Carbon;
+use App\Trait\CheckVerificationStatus;
 use Log;
 use Auth;
+use Carbon\Carbon;
+use App\Models\Nib;
+use App\Models\User;
 use App\Trait\GetEmail;
 use App\Trait\ResponseApi;
 use Illuminate\Http\Request;
+use App\Models\IntegrityPact;
 use App\Models\CompanyProfile;
+use App\Models\BusinessLicense;
 use App\Models\VerifyNotification;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -22,6 +22,7 @@ use function PHPUnit\Framework\isEmpty;
 use App\Mail\MailInternalVerificationRequest;
 use App\Http\Resources\Verification\VerifcationListResource;
 use App\Http\Requests\Verification\VerificationApproveRequest;
+use App\Http\Resources\Verification\VerificationStatusResource;
 use App\Http\Resources\Verification\VerifcationListHistoryuserResource;
 
 class VerificationController extends Controller
@@ -31,8 +32,9 @@ class VerificationController extends Controller
      * Mandatory:
      * 1. ResponseApi = Response api should use ResponseApi trait template
      * 2. GetEmail = Get email user
+     * 3. ChckVerificationStatus = Get current verification status
      */
-    use ResponseApi, GetEmail;
+    use ResponseApi, GetEmail, CheckVerificationStatus;
 
     /**
      * Approve user verification request
@@ -156,7 +158,7 @@ class VerificationController extends Controller
             return $this->returnResponseApi(true, 'There is No Verification Request', null, 404);
         }
 
-        return $this->returnResponseApi(true, 'Request Verify Data Successful', VerifcationListHistoryuserResource::collection($data), 201);
+        return $this->returnResponseApi(true, 'Get Verify Data Successful', VerifcationListHistoryuserResource::collection($data), 201);
     }
 
     /**
@@ -195,93 +197,8 @@ class VerificationController extends Controller
     {
         $userId = Auth::user()->id;
 
-        $companyProfile = CompanyProfile::where('user_id', $userId)->first();
-        if (!$companyProfile) {
-            return $this->returnResponseApi(false, 'Company Profile Not Found', null, 404);
-        }
+        $data = $this->checkVerificationStatus($userId);
 
-        // Get Data Verification
-        $verify = VerifyNotification::where('user_id', $userId)->latest()->first();
-
-        // Check null
-        $arrayData = $companyProfile->toArray();
-        unset(
-            $arrayData['company_description'],
-            $arrayData['company_url'],
-            $arrayData['company_photo'],
-            $arrayData['sub_business_field'],
-            $arrayData['adr_line_2'],
-            $arrayData['adr_line_3'],
-            $arrayData['adr_line_4'],
-            $arrayData['company_phone_2'],
-            $arrayData['company_fax_2'],
-            $arrayData['bp_code'],
-            $arrayData['created_at'],
-            $arrayData['updated_at'],
-            $arrayData['profile_verified_by'],
-            $arrayData['profile_verified_at']
-        );
-        $checkNull = in_array(null, $arrayData, true);
-
-        // Check Verification Condition
-        $data = [];
-        if ($checkNull == true) { // Complete profile
-            $data['status_verification'] = 'Please complete your company profile before requesting verification.';
-            $data['updated_at'] = $companyProfile->updated_at;
-        } elseif (empty($verify)) { // If there is no verification
-            $data['status_verification'] = 'Please request verification.';
-            $data['updated_at'] = $companyProfile->updated_at;
-        } elseif (
-                // updated profile
-            ($companyProfile->profile_verified_by == null && $companyProfile->profile_verified_at == null) &&
-            ($companyProfile->created_at != $companyProfile->updated_at) &&
-            ($verify->status == 'Accepted' || empty($verify))
-        ) {
-            $data['status_verification'] = 'Your profile has been updated. Please request verification.';
-            $data['updated_at'] = $companyProfile->updated_at;
-        } elseif (
-                // updated profile
-            ($companyProfile->profile_verified_by == null && $companyProfile->profile_verified_at == null) &&
-            ($companyProfile->created_at != $companyProfile->updated_at) &&
-            ($verify->status == 'Declined' || empty($verify))
-        ) {
-            $data['status_verification'] = 'Your Last verifiy Request is Declined. Please request re-verification.';
-            $data['updated_at'] = $companyProfile->updated_at;
-        } elseif (
-                // Not Verified 1 (firstime request verify)
-            ($companyProfile->profile_verified_by == null && $companyProfile->profile_verified_at == null) &&
-            empty($verify)
-        ) {
-            $data['status_verification'] = 'Your profile has not been verified yet. Please request verification.';
-            $data['updated_at'] = $companyProfile->updated_at;
-        } elseif (
-                // Not Verified 2 (user update)
-            (($companyProfile->profile_verified_by == null && $companyProfile->profile_verified_at == null) && $verify->status != 'Process') &&
-            ($companyProfile->created_at != $companyProfile->updated_at)
-        ) {
-            $data['status_verification'] = 'Your profile has not been verified yet. Please request verification.';
-            $data['updated_at'] = $companyProfile->updated_at;
-        } elseif (
-                // Verify on process
-            ($companyProfile->profile_verified_by == null && $companyProfile->profile_verified_at == null) &&
-            $verify->status == 'Process' ||
-            ($companyProfile->profile_verified_by != null && $companyProfile->profile_verified_at != null) &&
-            $verify->status == 'Process'
-        ) {
-            $data['status_verification'] = 'Under verification, please wait.';
-            $data['updated_at'] = $companyProfile->updated_at;
-        } elseif (
-                // Verified
-            ($companyProfile->profile_verified_by != null && $companyProfile->profile_verified_at != null) &&
-            $verify->status == 'Accepted'
-        ) {
-            $data['status_verification'] = 'Your company profile is verified.';
-            $data['updated_at'] = $companyProfile->updated_at;
-        } else {
-            return $this->returnResponseApi(true, 'Verification Status Not Found', null, 404);
-        }
-
-        // dd($data);
         return $this->returnResponseApi(true, 'Status Verify Successful', new VerificationStatusResource($data), 201);
     }
 }

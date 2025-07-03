@@ -32,6 +32,7 @@ Route::prefix('v1/guest')->group(function () {
 // Route for super-admin
 Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-admin')->group(function () {
     // Feat Dashboard
+    Route::get('dashboard/mini-profile/get', [DashboardSupplierController::class, 'miniProfile']);
     Route::get('dashboard', [DashboardAdminController::class, 'loginStats']);
     Route::get('user/monthly', [DashboardAdminController::class, 'loginPerformance']);
     Route::get('user/online', [DashboardAdminController::class, 'userOnline']);
@@ -52,6 +53,9 @@ Route::middleware(['auth:sanctum', 'userRole:super-admin'])->prefix('v1/super-ad
 
 // Route for purchasing
 Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasing')->group(function () {
+    // Feat Dashboard
+    Route::get('dashboard/mini-profile/get', [DashboardSupplierController::class, 'miniProfile']);
+
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
     Route::get('user/profile/{userId}', [UserController::class, 'getUserProfile']);
@@ -91,6 +95,9 @@ Route::middleware(['auth:sanctum', 'userRole:purchasing'])->prefix('v1/purchasin
 
 // Route for presdir
 Route::middleware(['auth:sanctum', 'userRole:presdir'])->prefix('v1/presdir')->group(function () {
+    // Feat Dashboard
+    Route::get('dashboard/mini-profile/get', [DashboardSupplierController::class, 'miniProfile']);
+
     // Feat User
     Route::get('user/get/{id}', [UserController::class, 'getUserById']);
     Route::get('user/profile/{userId}', [UserController::class, 'getUserProfile']);
