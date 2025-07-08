@@ -40,7 +40,7 @@ class MailUserAfterRegister extends Mailable
             markdown: 'mail.mail-user-after-register',
             with: [
                 'password' => $this->password,
-                'url' => env('APP_URL'),
+                'url' => "https://e-proc.sanohindonesia.co.id",
             ],
         );
     }
