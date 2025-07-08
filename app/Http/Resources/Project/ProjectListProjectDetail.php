@@ -30,7 +30,7 @@ class ProjectListProjectDetail extends JsonResource
             'proposal_revision_no' => $this->proposal_revision_no ?? null,
             'proposal_comment' => $this->proposal_comment ?? null,
             'proposal_status' => $this->checkStatusProposal($this->supplier_id, $this->project_header_id),
-            'project_attach' => $this->project_attach ?? null,
+            'proposal_attach' => $this->proposal_attach ?? null,
             'is_final' => $this->proposal_status ? true : false,
         ];
     }

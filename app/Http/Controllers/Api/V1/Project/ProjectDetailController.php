@@ -45,6 +45,7 @@ class ProjectDetailController extends Controller
         if ($data->isEmpty()) {
             return $this->returnResponseApi(true, 'There is no proposal submitted.', '', 200);
         }
+        dd($data);
 
         return $this->returnResponseApi(
             true,
